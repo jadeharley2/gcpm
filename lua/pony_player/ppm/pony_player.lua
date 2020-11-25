@@ -265,6 +265,7 @@ end
 if SERVER then
 	util.AddNetworkString("ppm_data")
 	function PPM.setPonyValues(ent) 
+		--MsgN("pny is valid ",ent,PPM.isValidPony(ent))
 		if !PPM.isValidPony(ent) then return end 
 
 		net.Start("ppm_data")
@@ -272,6 +273,33 @@ if SERVER then
 		net.WriteTable(ent.ponydata)
 		net.Broadcast()
  
+		PPM.setupMaterials(ent)
+	end
+	--set materials on server to prevent material reset on clients
+	function PPM.setupMaterials(ent)
+		local submaterials = {
+			eyeltex = 0,
+			eyertex = 1,
+			bodytex = 2,
+			hairtex1 = 5,
+			hairtex2 = 6,
+			tailtex = 7,
+			tailtex2 = 8,
+			ccmarktex = 9
+		}
+		for k,v in pairs(submaterials) do
+			local matname = "ph2"..(ent:EntIndex()+10).."t"..k 
+			ent:SetSubMaterial(v, "!"..matname) 
+			
+		--	MsgN("setupMaterials ",ent, "  !"..matname)
+		end
+		local tph_horn= "ph2"..(ent:EntIndex()+10).."thorn"
+		local tph_wings= "ph2"..(ent:EntIndex()+10).."twings"
+		local tph_tail2= "ph2"..(ent:EntIndex()+10).."ttail2"
+		ent:SetSubMaterial(3, "!"..tph_horn)  
+		ent:SetSubMaterial(4, "!"..tph_wings)  
+		ent:SetSubMaterial(submaterials.tailtex2, "!"..tph_tail2)
+		
 	end
 end 
 function PPM.getPonyValues(ent, localvals) 
@@ -375,11 +403,15 @@ if CLIENT then
 		PPM.RequestUpdate(ragdoll)
 		--PPM.copyLocalMaterialDataTo(entity,ragdoll)
 	end )
-
+	
 end 
 /////////////////////////////////////////////////////////////////SERVER
 if SERVER then 
 
+	hook.Add( "CreateEntityRagdoll", "pony_inherit", function( entity, ragdoll )
+		PPM.copyPonyTo(entity,ragdoll)  
+		MsgN("ccpp ",entity," -> ",ragdoll)
+	end )
 	function HOOK_OnEntityCreated( ent ) 
 	end 
 	local function HOOK_SpawnedRagdoll(ply, model, ent)

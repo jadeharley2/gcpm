@@ -128,6 +128,26 @@ if(SERVER) then
 			ply.pi_prevplmodel=newmodel
 		end
 	end 
+	function SendPonies(ply)
+		for name, ent in pairs(ents.GetAll()) do
+			if PPM.isValidPony(ent) and ent.ponydata then
+				PPM.setupMaterials(ent)
+				MsgN("send ",ent)
+				net.Start("ppm_data")
+				net.WriteEntity(ent)
+				net.WriteTable(ent.ponydata)
+				if ply=="all" then
+					if ent:IsPlayer() then 
+						net.SendOmit(ent)
+					else
+						net.Broadcast()
+					end
+				else
+					net.Send(ply)
+				end
+			end
+		end 
+	end
 	function HOOK_PlayerSwitchWeapon(ply,oldwep,newwep)
 		if(table.HasValue(ponyarray_temp ,ply:GetInfo( "cl_playermodel" ))) then 
 			newwep:SetMaterial("Models/effects/vol_light001") 
@@ -154,4 +174,18 @@ if(SERVER) then
 	hook.Add("PlayerSwitchWeapon", "pony_weapons_autohide", HOOK_PlayerSwitchWeapon)
 	hook.Add("PlayerLeaveVehicle", "pony_fixclothes", HOOK_PlayerLeaveVehicle)
 	MsgN("Loaded pony_player\\serverside.lua");
+
+	
+    hook.Add( "PlayerInitialSpawn", "FullLoadSetup", function( ply )
+        hook.Add( "SetupMove", ply, function( self, ply, _, cmd )
+            if self == ply and not cmd:IsForced() then
+                hook.Run( "PlayerFullLoad", self )
+                hook.Remove( "SetupMove", self )
+            end
+        end )
+    end )
+    hook.Add("FullLoadSetup", "ppm_sendall", function(ply)
+        SendPonies(ply)
+	end)
+	concommand.Add("ppm_resend", function() SendPonies("all") end)
  end

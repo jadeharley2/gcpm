@@ -266,6 +266,8 @@ if CLIENT then
 		ccmarktex = base_cmark,
 	}
 	function PPM.UpdateAllTextures(ent) 
+
+
 		--if true then return end
 		local result = false  
 		if !PPM.isValidPonyLight(ent) then return end 
@@ -275,7 +277,7 @@ if CLIENT then
 			
 			for k ,v in pairs(PPM.rendertargettasks) do
 				--MsgN("aaa ",ent,"  ", v.hash(pony))
-				if(PPM.TextureIsOutdated(ent, k, v.hash(pony))) then
+				if true then --(PPM.TextureIsOutdated(ent, k, v.hash(pony))) then
 				--MsgN("Outdated texture at "..tostring(ent)..tostring(ent:GetModel())..tostring(ent:GetClass()))
 					--if texturespreframe>0 then
 					ent.ponydata_tex = ent.ponydata_tex or {}
@@ -313,12 +315,14 @@ if CLIENT then
 							m:SetInt("$translucent",1)
 						end
 						
+					
 						ent:SetSubMaterial(matid, "!"..tempPlayerHash)
-						--MsgN("set sub material ",ent,":",matid," = ", "!"..tempPlayerHash)
+					--	MsgN("set sub material ",ent,":",matid," = ", "!"..tempPlayerHash)
 					end
 				end
 			end
-			 
+			
+			MsgN("update ent ",ent)
 		
 			local tph_horn= "ph2"..(ent:EntIndex()+10).."thorn"
 			local x_table = table.Copy(base_horn)
@@ -340,6 +344,8 @@ if CLIENT then
 
 
 			ent:SetMaterial()
+
+			
 		end
 		return result
 	end
