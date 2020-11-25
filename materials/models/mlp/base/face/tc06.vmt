@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/mlp/base/face/p_purple2"
+	"$detail" "models/mlp/base/face/p_purple2_r"
+}
