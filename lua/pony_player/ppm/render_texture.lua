@@ -276,7 +276,7 @@ if CLIENT then
 			for k ,v in pairs(PPM.rendertargettasks) do
 				--MsgN("aaa ",ent,"  ", v.hash(pony))
 				if(PPM.TextureIsOutdated(ent, k, v.hash(pony))) then
-				//MsgN("Outdated texture at "..tostring(ent)..tostring(ent:GetModel())..tostring(ent:GetClass()))
+				--MsgN("Outdated texture at "..tostring(ent)..tostring(ent:GetModel())..tostring(ent:GetClass()))
 					--if texturespreframe>0 then
 					ent.ponydata_tex = ent.ponydata_tex or {}
 					PPM.currt_ent = ent
@@ -314,7 +314,7 @@ if CLIENT then
 						end
 						
 						ent:SetSubMaterial(matid, "!"..tempPlayerHash)
-						MsgN("set sub material ",ent,":",matid," = ", "!"..tempPlayerHash)
+						--MsgN("set sub material ",ent,":",matid," = ", "!"..tempPlayerHash)
 					end
 				end
 			end

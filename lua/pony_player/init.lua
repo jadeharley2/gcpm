@@ -33,26 +33,5 @@ concommand.Add("print_hooks",function( ply )
 			MsgN("     -  "..ov_name )
 			end
 		end 
-end)
- /*
-AddCSLuaFile("pony_player.lua")
-AddCSLuaFile("net.lua")
-AddCSLuaFile("preset.lua")
-AddCSLuaFile("presets_base.lua")
-AddCSLuaFile("render.lua")
-AddCSLuaFile("presets.lua")
-AddCSLuaFile("editor.lua")
-
-include("pony_player.lua")
-include("net.lua")
-if CLIENT then  
- 
-include("render.lua")
-include("presets.lua")
-include("editor.lua")
-include("presets_base.lua")
-end 
-if SERVER then  
-end
-*/
+end) 
  MsgN("Loaded pony_player\\init.lua");
