@@ -10,78 +10,7 @@ if(SERVER) then
 			PPM.setupPony(ply,false)
 			PONYPM:pi_SetupItem(item,ply)  
 		end
-	end)  
-	/*
-	BODYGROUP_BODY = 1
-	BODYGROUP_HORN = 2
-	BODYGROUP_WING = 3
-	BODYGROUP_MANE = 4
-	BODYGROUP_TAIL = 5
-	BODYGROUP_CMARK = 6
-
-
-	net.Receive( "player_pony_set_charpars", function(len, ply)    
-		ply.pny_kind = net.ReadFloat()
-		ply.pny_gender = net.ReadFloat()
-		ply.pny_body_type = net.ReadFloat()
-		
-		ply.pny_mane = net.ReadFloat()
-		ply.pny_tail = net.ReadFloat()
-		ply.pny_eye = net.ReadFloat()
-		
-		ply.pny_haircolor1 = net.ReadVector()
-		ply.pny_haircolor2 = net.ReadVector()
-		ply.pny_coatcolor = net.ReadVector()
-		
-		ply.pny_cmark = net.ReadFloat()
-		
-		PlayerSetValues( ply )
-	end)  
-	function PlayerSetValues( ply )
-		ply:SetNetworkedFloat("pny_kind",ply.pny_kind)
-		ply:SetNetworkedFloat("pny_gender",ply.pny_gender)
-		ply:SetNetworkedFloat("pny_body_type",ply.pny_body_type)
-		
-		ply:SetNetworkedFloat("pny_mane",ply.pny_mane)
-		ply:SetNetworkedFloat("pny_tail",ply.pny_tail)
-		ply:SetNetworkedFloat("pny_eye",ply.pny_eye)
-		
-		ply:SetNetworkedVector("pny_haircolor1",ply.pny_haircolor1)
-		ply:SetNetworkedVector("pny_haircolor2",ply.pny_haircolor2)
-		ply:SetNetworkedVector("pny_coatcolor",ply.pny_coatcolor)
-		
-		ply:SetNetworkedFloat("pny_cmark",ply.pny_cmark)
-		
-		if(ply.pny_kind==1) then
-			ply:SetBodygroup(BODYGROUP_HORN,1)//h
-			ply:SetBodygroup(BODYGROUP_WING,1)//w
-		elseif(ply.pny_kind==2)then
-			ply:SetBodygroup(BODYGROUP_HORN,1) 
-			ply:SetBodygroup(BODYGROUP_WING,0) 
-		elseif(ply.pny_kind==3)then   
-			ply:SetBodygroup(BODYGROUP_HORN,0) 
-			ply:SetBodygroup(BODYGROUP_WING,1) 
-		else
-			ply:SetBodygroup(BODYGROUP_HORN,0) 
-			ply:SetBodygroup(BODYGROUP_WING,0) 
-		end
-		
-		if(ply.pny_mane!=nil)then
-			ply:SetBodygroup(BODYGROUP_MANE,ply.pny_mane-1) 
-			ply:SetBodygroup(BODYGROUP_TAIL,ply.pny_tail-1) 
-		end
-	
-		/*
-		MsgN(ply.pny_kind)
-		MsgN(ply.pny_gender)
-		MsgN(ply.pny_body_type)
-		MsgN(ply.pny_mane)
-		MsgN(ply.pny_tail)
-		MsgN(ply.pny_haircolor1)
-		MsgN(ply.pny_haircolor2)
-		MsgN(ply.pny_coatcolor)
-	end
-		*/
+	end)   
 	function PlayerSetModel( ply )
 	
 		local newmodel =ply:GetInfo( "cl_playermodel" )
@@ -132,7 +61,7 @@ if(SERVER) then
 		for name, ent in pairs(ents.GetAll()) do
 			if PPM.isValidPony(ent) and ent.ponydata then
 				PPM.setupMaterials(ent)
-				MsgN("send ",ent)
+				--MsgN("send ",ent)
 				net.Start("ppm_data")
 				net.WriteEntity(ent)
 				net.WriteTable(ent.ponydata)

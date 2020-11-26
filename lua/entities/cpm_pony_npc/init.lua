@@ -26,7 +26,7 @@ local schdChase = ai_schedule.New( "AIFighter Chase" ) //creates the schedule us
  
 function ENT:Initialize()
  
-	self:SetModel( "models/mlp/player_default_base.mdl" )
+	self:SetModel("models/mlp/player_default_base.mdl" )
  
 	self:SetHullType( HULL_HUMAN );
 	self:SetHullSizeNormal();
@@ -36,29 +36,53 @@ function ENT:Initialize()
  
 	self:CapabilitiesAdd( CAP_MOVE_GROUND )
 	self:CapabilitiesAdd(CAP_OPEN_DOORS)
-	self:CapabilitiesAdd(CAP_TURN_HEAD)
-	self:SetMaxYawSpeed( 5000 )
+	self:CapabilitiesAdd(CAP_TURN_HEAD) 
+	self:CapabilitiesAdd(CAP_ANIMATEDFACE) 
+	self:CapabilitiesAdd(CAP_TURN_HEAD) 
+	self:CapabilitiesAdd(CAP_USE_SHOT_REGULATOR) 
+	self:CapabilitiesAdd(CAP_AIM_GUN)  
  
-	//don't touch stuff above here
+	self:SetMaxYawSpeed( 5000 )
+  
 	self:SetHealth(100) 
 	PPM.setupPony(self)
+ 
 end
 
 function ENT:SpawnFunction( ply, tr )
-if ( !tr.Hit ) then return end
-local ent = ents.Create("cpm_pony_npc" )
-ent:SetPos( tr.HitPos + tr.HitNormal * 16 ) 
-ent:Spawn()
-ent:Activate()
-undo.Create( "npc" )
- undo.AddEntity( ent )
- undo.SetPlayer( ply )
-undo.Finish()
-return ent
+	if ( !tr.Hit ) then return end
+	local ent = ents.Create("cpm_pony_npc" )
+	ent:SetPos( tr.HitPos + tr.HitNormal * 16 ) 
+	ent:Spawn()
+	ent:Activate()
+	undo.Create( "npc" )
+	undo.AddEntity( ent )
+	undo.SetPlayer( ply )
+	undo.Finish()
+	return ent
 end
+
+function ENT:OnTakeDamage(dmg)
+	self:SetHealth(self:Health() - dmg:GetDamage())
+	if self:Health() <= 0 then  
+		self:SetSchedule( SCHED_FALL_TO_GROUND )  
+	end
+end 
+ 
+ 
+/*---------------------------------------------------------
+   Name: SelectSchedule
+---------------------------------------------------------*/
+function ENT:SelectSchedule()
+ 
+	self:SetSchedule(SCHED_IDLE_STAND)
+ 
+end
+
+
 concommand.Add("ppm_spawn_pnpc",function(ply,tr)
-local ent = scripted_ents.GetStored("cpm_pony_npc")
-ent.t:SpawnFunction(ply, ply:GetEyeTrace())
+	local ent = scripted_ents.GetStored("cpm_pony_npc")
+	ent.t:SpawnFunction(ply, ply:GetEyeTrace())
 end)
 concommand.Add("ppm_spawn_pragdoll",function(ply,tr)
 	tr =ply:GetEyeTrace()
@@ -70,25 +94,7 @@ concommand.Add("ppm_spawn_pragdoll",function(ply,tr)
 	PPM.setupPony(ent)
 	ent:Activate()
 	undo.Create( "ragdoll" )
-	 undo.AddEntity( ent )
-	 undo.SetPlayer( ply )
+	undo.AddEntity( ent )
+	undo.SetPlayer( ply )
 	undo.Finish() 
 end)
-
- function ENT:OnTakeDamage(dmg)
-  self:SetHealth(self:Health() - dmg:GetDamage())
-  if self:Health() <= 0 then //run on death
-  self:SetSchedule( SCHED_FALL_TO_GROUND ) //because it's given a new schedule, the old one will end.
-  end
- end 
- 
- 
-/*---------------------------------------------------------
-   Name: SelectSchedule
----------------------------------------------------------*/
-function ENT:SelectSchedule()
- 
-		self:SetSchedule(SCHED_IDLE_WANDER)
-	//self:StartSchedule( schdChase ) //run the schedule we created earlier
- 
-end
