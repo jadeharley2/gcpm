@@ -1,0 +1,12 @@
+{
+	"title"		:	"GCPM",
+	"type"		:	"model", 
+	"ignore"	:
+	[
+		"*.svn*",
+		"*.txt",
+		"*.ini",
+		"*.md",
+		".git*"
+	]
+}

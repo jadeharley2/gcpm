@@ -101,9 +101,7 @@ if(SERVER) then
 	PPM.camoffcetenabled =CreateConVar( "ppm_enable_camerashift", "1" ,{ FCVAR_REPLICATED, FCVAR_ARCHIVE } , "Enables ViewOffset Setup"  )
 	hook.Add("PlayerSetModel","items_Flush",PlayerSetModel)
 	hook.Add("PlayerSwitchWeapon", "pony_weapons_autohide", HOOK_PlayerSwitchWeapon)
-	hook.Add("PlayerLeaveVehicle", "pony_fixclothes", HOOK_PlayerLeaveVehicle)
-	MsgN("Loaded pony_player\\serverside.lua");
-
+	hook.Add("PlayerLeaveVehicle", "pony_fixclothes", HOOK_PlayerLeaveVehicle) 
 	
     hook.Add( "PlayerInitialSpawn", "FullLoadSetup", function( ply )
         hook.Add( "SetupMove", ply, function( self, ply, _, cmd )
@@ -113,7 +111,7 @@ if(SERVER) then
             end
         end )
     end )
-    hook.Add("FullLoadSetup", "ppm_sendall", function(ply)
+	hook.Add("PlayerFullLoad", "ppm_sendall", function(ply) 
         SendPonies(ply)
 	end)
 	concommand.Add("ppm_resend", function() SendPonies("all") end)
