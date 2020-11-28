@@ -19,10 +19,24 @@ function PPM.UpdateMaterials(ent)
     end 
 
 end
+PPM.pony_ents = PPM.pony_ents or {}
+
+function PPM.UpdatePonylist(e)
+    for k,v in pairs(PPM.pony_ents) do
+        if not PPM.isValidPonyLight(e) then
+            PPM.pony_ents[k] = nil
+        end
+    end
+    if PPM.isValidPonyLight(e) then
+        PPM.pony_ents[e] = true
+    end
+end
+
 PPM.update_list = PPM.update_list or {}
 function PPM.RequestUpdate(ent)
     PPM.update_list[ent] = true
     PPM.UpdateBones(ent) 
+    PPM.UpdatePonylist(ent)
 end
 
 
@@ -92,3 +106,44 @@ function HOOK_PostDrawOpaqueRenderables()
     end  
 end
 hook.Add("PostDrawOpaqueRenderables","test_Redraw",HOOK_PostDrawOpaqueRenderables)
+
+timer.Create("ppm_matcheck", 1.5, 0, function()
+
+    for e,_ in pairs(PPM.pony_ents) do
+        if e.ponydata_tex and e.ponydata_tex.materials then
+            for k,v in pairs(e.ponydata_tex.materials) do 
+                --MsgN(v.id," ", v.hash," ",v.material)
+                e:SetSubMaterial(v.id, v.hash)
+            end 
+        else
+            PPM.UpdateAllTextures(e) 
+        end 
+    end
+
+end)
+timer.Create("ppm_entcheck", 3.5, 0, function()
+    local rtd = {}
+    for name, ent in pairs(ents.GetAll()) do
+        if ent:EntIndex()>0  and PPM.isValidPonyLight(ent) then
+            if not ent.ponydata then 
+                -- something is wrong, request server update
+                rtd[#rtd+1] = ent
+            else
+                if not PPM.pony_ents[ent] then
+                    MsgN("ulisted pony ",ent)
+                    PPM.pony_ents[ent] = true
+                end
+            end
+        end
+    end 
+    if #rtd>0 then
+        MsgN("rtd check ",#rtd)
+        net.Start("ppm_request_fix")
+        net.WriteInt(#rtd, 16)
+        for k,v in ipairs(rtd) do
+            MsgN("request fix of ",v,v:EntIndex())
+            net.WriteEntity(v)
+        end
+        net.SendToServer()
+    end
+end)

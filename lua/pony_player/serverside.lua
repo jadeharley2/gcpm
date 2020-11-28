@@ -2,6 +2,7 @@ if(SERVER) then
 	util.AddNetworkString( "player_equip_item" )
 	util.AddNetworkString( "player_pony_cm_send" )
 	//util.AddNetworkString( "player_pony_set_charpars" )
+	util.AddNetworkString( "ppm_request_fix" )
 	
 	net.Receive( "player_equip_item", function(len, ply)    
 		local id =net.ReadFloat()
@@ -57,11 +58,24 @@ if(SERVER) then
 			ply.pi_prevplmodel=newmodel
 		end
 	end 
+	net.Receive("ppm_request_fix",function(len,ply)
+		for k=1,net.ReadInt(16) do
+			local e = net.ReadEntity()
+			if PPM.isValidPony(e) and e.ponydata then
+				net.Start("ppm_data")
+				net.WriteEntity(e)
+				net.WriteTable(e.ponydata)
+				net.Send(ply)
+			else
+				MsgN("invalid pony fix requested ",e, " by ",ply)
+			end
+		end
+	end)
 	function SendPonies(ply)
 		for name, ent in pairs(ents.GetAll()) do
 			if PPM.isValidPony(ent) and ent.ponydata then
 				PPM.setupMaterials(ent)
-				--MsgN("send ",ent)
+				MsgN("pony sent ",ent)
 				net.Start("ppm_data")
 				net.WriteEntity(ent)
 				net.WriteTable(ent.ponydata)
@@ -103,7 +117,7 @@ if(SERVER) then
 	hook.Add("PlayerSwitchWeapon", "pony_weapons_autohide", HOOK_PlayerSwitchWeapon)
 	hook.Add("PlayerLeaveVehicle", "pony_fixclothes", HOOK_PlayerLeaveVehicle) 
 	
-    hook.Add( "PlayerInitialSpawn", "FullLoadSetup", function( ply )
+    hook.Add( "PlayerInitialSpawn", "ppm_FullLoadSetup", function( ply )
         hook.Add( "SetupMove", ply, function( self, ply, _, cmd )
             if self == ply and not cmd:IsForced() then
                 hook.Run( "PlayerFullLoad", self )
@@ -112,7 +126,27 @@ if(SERVER) then
         end )
     end )
 	hook.Add("PlayerFullLoad", "ppm_sendall", function(ply) 
+		MsgN("SEND PONIES TO ",ply)
         SendPonies(ply)
 	end)
 	concommand.Add("ppm_resend", function() SendPonies("all") end)
+	
+	function PPMSWAP(p1,p2)
+		if IsValid(p1) and IsValid(p2) and p1.ponydata and p2.ponydata then
+			local pda = p1.ponydata
+			local pdb = p2.ponydata
+			p1.ponydata = pdb
+			p2.ponydata = pda
+			PPM.setPonyValues(p1)
+			PPM.setPonyValues(p2)
+			PPM.setBodygroups(p1)
+			PPM.setBodygroups(p2)
+		end
+	end
+	concommand.Add("ppm_swap", function(ply,cmd,args)
+		local p1 = Player(tonumber(args[1]))
+		local p2 = Player(tonumber(args[2]))
+		PPMSWAP(p1,p2)
+	
+	end)
  end

@@ -281,6 +281,7 @@ if CLIENT then
 				--MsgN("Outdated texture at "..tostring(ent)..tostring(ent:GetModel())..tostring(ent:GetClass()))
 					--if texturespreframe>0 then
 					ent.ponydata_tex = ent.ponydata_tex or {}
+					ent.ponydata_tex.materials = ent.ponydata_tex.materials or {}
 					PPM.currt_ent = ent
 					PPM.currt_ponydata = pony 
 					PPM.currt_success = false
@@ -314,6 +315,11 @@ if CLIENT then
 						if k=="ccmarktex" then
 							m:SetInt("$translucent",1)
 						end
+						ent.ponydata_tex.materials[k] = {
+							material = m,
+							hash = "!"..tempPlayerHash,
+							id = matid,
+						} 
 						
 					
 						ent:SetSubMaterial(matid, "!"..tempPlayerHash)

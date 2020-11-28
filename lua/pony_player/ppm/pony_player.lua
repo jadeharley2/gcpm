@@ -67,6 +67,19 @@ function PPM.LOAD()
 end
 
 
+function PPM.Save_settings() 
+	PPM.Save("_current.txt",LocalPlayer().ponydata) 
+end
+function PPM.Load_settings() 
+	if(file.Exists("ppm/_current.txt", "DATA" )) then
+		PPM.mergePonyData(LocalPlayer().ponydata,PPM.Load("_current.txt"))
+		PPM.SendCharToServer(LocalPlayer(),true) 
+	else 
+		PPM.randomizePony(LocalPlayer())
+		PPM.SendCharToServer(LocalPlayer(),true) 
+		PPM.Save_settings() 
+	end
+end
 
 function PPM.setupPony(ent,fake)
 	 
@@ -259,6 +272,7 @@ if CLIENT then
 		local ent = net.ReadEntity()
 		ent.ponydata = net.ReadTable()
 
+		MsgN("pony received ",ent)
 		PPM.RequestUpdate(ent)
 	end)
 end
