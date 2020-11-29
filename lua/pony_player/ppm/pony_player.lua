@@ -182,6 +182,7 @@ function PPM.randomizePony(ent)
 end
 function PPM.copyLocalPonyTo(from,to)
 	to.ponydata = table.Copy(from.ponydata)
+	to.ponydata_cmark = from.ponydata_cmark
 end 
 function PPM.copyLocalTextureDataTo(from,to)
 	to.ponydata_tex = from.ponydata_tex
@@ -446,7 +447,7 @@ if SERVER then
 				
 				PPM.setBodygroups(ply)
 				PPM.setPonyValues(ply)
-				PPM.ccmakr_onplyinitspawn(ply)
+			--	PPM.ccmakr_onplyinitspawn(ply)
 			end)
 		elseif ply.ponydata~=nil then
 			PPM.cleanup(ply)

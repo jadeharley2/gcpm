@@ -88,6 +88,7 @@ if(SERVER) then
 				else
 					net.Send(ply)
 				end
+				PPM.EntCmarkSendTo(ent,ply) 
 			end
 		end 
 	end
@@ -127,7 +128,8 @@ if(SERVER) then
     end )
 	hook.Add("PlayerFullLoad", "ppm_sendall", function(ply) 
 		MsgN("SEND PONIES TO ",ply)
-        SendPonies(ply)
+		SendPonies(ply)
+		
 	end)
 	concommand.Add("ppm_resend", function() SendPonies("all") end)
 	

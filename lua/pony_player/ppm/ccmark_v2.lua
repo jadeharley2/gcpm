@@ -50,7 +50,7 @@ end
  
 if SERVER then
 	local ppm_cmark_allow_custom = CreateConVar("ppm_cmark_allow_custom", "1", 0, "Allow custom cutie mark upload")
-    local ppm_cmark_maxfilesize = CreateConVar("ppm_cmark_maxfilesize", "10000", 0, "Maximum file size of uploaded cutie mark in bytes (hard limit is 64kb)")
+    local ppm_cmark_maxfilesize = CreateConVar("ppm_cmark_maxfilesize", "32000", 0, "Maximum file size of uploaded cutie mark in bytes (hard limit is 64kb)")
 
 	util.AddNetworkString("ppm_cmark_upload")
 	util.AddNetworkString("ppm_cmark_setup")
@@ -67,6 +67,7 @@ if SERVER then
                     local userid = ply:UniqueID()
                     local path = "ppm/cmarks/"..userid..".png"
                     file.Delete(path)
+                    ply.ponydata_cmark = nil 
                 else
                     MsgN("lc ",lc)
                     data = net.ReadData(lc)
@@ -76,6 +77,7 @@ if SERVER then
                     local userid = ply:UniqueID()
                     local path = "ppm/cmarks/"..userid..".png"
                     file.Write(path, decompressed)
+                    ply.ponydata_cmark = path 
                 end
 
                 
@@ -94,8 +96,10 @@ if SERVER then
         end
     end) 
     function PPM.SetPonyCmark(ent,image_path)
-        if image_path then
-            if file.Exists(image_path, "GAME") then
+        if image_path then 
+            if file.Exists(image_path, "DATA") then
+                ent.ponydata_cmark = image_path 
+
                 local data = file.Read(image_path, "DATA")
                 local cdata = util.Compress(data)
                 local len = #cdata
@@ -113,4 +117,21 @@ if SERVER then
             net.Broadcast() 
         end
     end 
+    function PPM.EntCmarkSendTo(ent,to) 
+        local image_path = ent.ponydata_cmark 
+		if image_path and file.Exists(image_path, "DATA") then
+			local data = file.Read(image_path, "DATA")
+			local cdata = util.Compress(data)
+			local len = #cdata
+			net.Start("ppm_cmark_upload")
+			net.WriteInt(len,16)
+            net.WriteData(cdata,len)
+            if to=="all" then
+                net.Broadcast()
+            else
+                net.Send(to) 
+            end
+			MsgN("sent ",len)
+		end 
+    end
 end
