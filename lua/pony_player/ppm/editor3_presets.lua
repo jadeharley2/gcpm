@@ -170,21 +170,26 @@ function PPM_OpenCCmarkSelectorMenu(parent)
 	//IMAGE:SetImage( "gui/items/none.png" )
 	
 	
+	local header = vgui.Create("DButton",PANEL)
+	header:SetText("Avaliable images garrysmod/materials/ppm_custom") 
+	header:SetSize(256, 20)
+	header:SetPos( 512,0) 
+
 	local image_path = ""
 	local LIST = vgui.Create("DListView") 
 	LIST:SetParent(PANEL)  
-	LIST:SetSize(256, 256+128)
-	LIST:SetPos( 512,0) 
+	LIST:SetSize(256, 256+128-20)
+	LIST:SetPos( 512,20) 
 	LIST:SetMultiSelect(false)
 	//LIST:Dock( RIGHT )
-	LIST:AddColumn("Avaliable images garrysmod/materials/ppm_custom")
+	LIST:AddColumn("file name")
+	LIST:AddColumn("file size")
 	
 	LIST:Clear()
 	local files = file.Find("materials/ppm_custom/*.png","GAME" )
-	for k,v in pairs(files) do
-		//if(!string.match( v,"*/_*", 0 )) then
-			LIST:AddLine(v)   
-		//end
+	for k,v in pairs(files) do 
+		
+		LIST:AddLine(v,string.NiceSize(file.Size("materials/ppm_custom/"..v, "GAME")))    
 	end
 	LIST.OnClickLine = function(parent, line, isselected) 
 		image_path = "materials/ppm_custom/"..line:GetValue(1)
@@ -193,16 +198,14 @@ function PPM_OpenCCmarkSelectorMenu(parent)
 	
 	local CLOSEBUTTON = vgui.Create("DButton",PANEL)
 	local BUTTON = vgui.Create("DButton",PANEL)
-	BUTTON:SetText("Upload Image")
-	//BUTTON:Dock( RIGHT )
+	BUTTON:SetText("Upload Image (max size: "..string.NiceSize(PPM.CmarkMaxsize()).." )") 
 	BUTTON:SetPos( 512,256+128) 
 	BUTTON:SetSize(256, 20)
 	
 	BUTTON.DoClick = function() 
 		PPM.CmarkSend(image_path)
 	end 
-	CLOSEBUTTON:SetText("Close")
-	//BUTTON:Dock( RIGHT )
+	CLOSEBUTTON:SetText("Close") 
 	CLOSEBUTTON:SetPos( 512,256+128+20) 
 	CLOSEBUTTON:SetSize(256, 20)
 	CLOSEBUTTON.DoClick = function() 
@@ -286,34 +289,39 @@ PPM.Editor3_presets["select_custom_cmark"] =
 {
 	spawn = function( parent,variable)
 		 
-		
-		local CONTAINER = vgui.Create( "DPanel", parent ) 
-		CONTAINER:SetSize( 200, 60 ) 
-		CONTAINER:Dock( TOP )
-		  
-		local HEADER = vgui.Create( "DImageButton", CONTAINER ) 
-		HEADER:SetSize( 200, 20 ) 
-		HEADER:SetColor(Color(0,0,0,255))
-		HEADER:SetImage( "gui/editor/pictorect.png" )
-		HEADER:Dock( TOP )
-		
-		local HEADERLABEL = vgui.Create( "DLabel", HEADER )  
-		//HEADERLABEL:Dock( TOP )
-		HEADERLABEL:SetPos(80, 0) 
-		HEADERLABEL:SetText(variable.name)
-		   
-		
-		local BUTTON = vgui.Create("DButton",CONTAINER)
-		BUTTON:SetText("Select")
-		BUTTON:Dock( TOP )
-		BUTTON.DoClick = function() 
-			PPM_OpenCCmarkSelectorMenu(parent)
-		end
-		local CLEARBUTTON = vgui.Create("DButton",CONTAINER)
-		CLEARBUTTON:SetText("Clear custom cmark")
-		CLEARBUTTON:Dock( TOP )
-		CLEARBUTTON.DoClick = function() 
-			 PPM.CmarkClear()  
+		if PPM.CmarkAllowed() then
+			local CONTAINER = vgui.Create( "DPanel", parent ) 
+			CONTAINER:SetSize( 200, 60 ) 
+			CONTAINER:Dock( TOP )
+			
+			local HEADER = vgui.Create( "DImageButton", CONTAINER ) 
+			HEADER:SetSize( 200, 20 ) 
+			HEADER:SetColor(Color(0,0,0,255))
+			HEADER:SetImage( "gui/editor/pictorect.png" )
+			HEADER:Dock( TOP )
+			
+			local HEADERLABEL = vgui.Create( "DLabel", HEADER )  
+			//HEADERLABEL:Dock( TOP )
+			HEADERLABEL:SetPos(80, 0) 
+			HEADERLABEL:SetText(variable.name)
+			
+			
+			local BUTTON = vgui.Create("DButton",CONTAINER)
+			BUTTON:SetText("Select")
+			BUTTON:Dock( TOP )
+			BUTTON.DoClick = function() 
+				if PPM.CmarkAllowed() then
+					PPM_OpenCCmarkSelectorMenu(parent)
+				end
+			end
+			local CLEARBUTTON = vgui.Create("DButton",CONTAINER)
+			CLEARBUTTON:SetText("Clear custom cmark")
+			CLEARBUTTON:Dock( TOP )
+			CLEARBUTTON.DoClick = function() 
+				PPM.CmarkClear()  
+			end
+		else
+
 		end
 	end
 }

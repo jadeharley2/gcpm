@@ -1,5 +1,9 @@
 
+local ppm_cmark_allow_custom = CreateConVar("ppm_cmark_allow_custom", "1", bit.bor(FCVAR_ARCHIVE,FCVAR_REPLICATED), "Allow custom cutie mark upload")
+local ppm_cmark_maxfilesize = CreateConVar("ppm_cmark_maxfilesize", "32000", bit.bor(FCVAR_ARCHIVE,FCVAR_REPLICATED), "Maximum file size of uploaded cutie mark in bytes (hard limit is 64kb)")
+
 if CLIENT then
+
 	net.Receive( "ppm_cmark_setup", function(len)  
         local ent = net.ReadEntity()  
         local lc = net.ReadInt(16)
@@ -28,17 +32,33 @@ if CLIENT then
         end
         PPM.RequestUpdate(ent)
     end) 
+    net.Receive( "ppm_error_notify", function(len)
+        local text = net.ReadString()
+        local head = net.ReadString() 
+        Derma_Message(text, head, "OK")
+    end)
 
+    function PPM.CmarkAllowed()
+        return ppm_cmark_allow_custom:GetInt()==1
+    end
+    function PPM.CmarkMaxsize()
+        return ppm_cmark_maxfilesize:GetFloat()
+    end
     function PPM.CmarkSend(image_path) 
 		if file.Exists(image_path, "GAME") then
 			local data = file.Read(image_path, "GAME")
 			local cdata = util.Compress(data)
-			local len = #cdata
-			net.Start("ppm_cmark_upload")
-			net.WriteInt(len,16)
-			net.WriteData(cdata,len)
-			net.SendToServer() 
-			MsgN("sent ",len)
+            local len = #cdata
+            if len<64000 then
+                net.Start("ppm_cmark_upload")
+                net.WriteInt(len,16)
+                net.WriteData(cdata,len)
+                net.SendToServer() 
+                MsgN("sent ",len)
+                return true
+            else
+                return false
+            end
 		end 
     end
     function PPM.CmarkClear()  
@@ -47,14 +67,11 @@ if CLIENT then
         net.SendToServer()  
     end
 end
- 
-if SERVER then
-	local ppm_cmark_allow_custom = CreateConVar("ppm_cmark_allow_custom", "1", 0, "Allow custom cutie mark upload")
-    local ppm_cmark_maxfilesize = CreateConVar("ppm_cmark_maxfilesize", "32000", 0, "Maximum file size of uploaded cutie mark in bytes (hard limit is 64kb)")
 
+if SERVER then
 	util.AddNetworkString("ppm_cmark_upload")
-	util.AddNetworkString("ppm_cmark_setup")
-	
+    util.AddNetworkString("ppm_cmark_setup")
+    util.AddNetworkString("ppm_error_notify")
     net.Receive( "ppm_cmark_upload", function(len, ply)  
         if ppm_cmark_allow_custom:GetInt()==1 then
             MsgN("cmark data incoming ",len/8)  
@@ -92,7 +109,10 @@ if SERVER then
 
             else
                 Msg("received cmark from ",ply, " which is exceeding maximum file size limit! ",len/8," of ",maxsize," bytes")
+                PPM.ErrorNotify(ply,"Uploaded image exceeds maximum file size limit! "..tostring(len/8).." of "..tostring(maxsize).." bytes","Cutiemark upload error")
             end
+        else
+            PPM.ErrorNotify(ply,"Server has disabled custom cutie marks!","Cutiemark upload error") 
         end
     end) 
     function PPM.SetPonyCmark(ent,image_path)
@@ -117,6 +137,12 @@ if SERVER then
             net.Broadcast() 
         end
     end 
+    function PPM.ErrorNotify(ply,text,header)
+        net.Start("ppm_error_notify")
+        net.WriteString(text)
+        net.WriteString(header)
+        net.Send(ply)
+	end
     function PPM.EntCmarkSendTo(ent,to) 
         local image_path = ent.ponydata_cmark 
 		if image_path and file.Exists(image_path, "DATA") then

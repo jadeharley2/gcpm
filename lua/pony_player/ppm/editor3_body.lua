@@ -248,7 +248,7 @@ cutiemark =
 				type = "edit_cmark"
 			},
 			{
-				name = "Select custom cutiemark" ,
+				name = "Custom cutiemark" ,
 				type = "select_custom_cmark"
 			},
 			{
