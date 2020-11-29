@@ -14,6 +14,7 @@ AddCSLuaFile("editor.lua")
 AddCSLuaFile("editor3.lua")
 AddCSLuaFile("editor3_body.lua")
 
+AddCSLuaFile("ccmark_v2.lua")
 
 PPM = {} 
 PONYPM.PPM = PPM
@@ -24,6 +25,7 @@ include("pony_player.lua")
 include("resources.lua")
 include("net.lua")
 include("ccmark_sys.lua")
+include("ccmark_v2.lua")
 if CLIENT then  
  
     include("render_texture.lua")

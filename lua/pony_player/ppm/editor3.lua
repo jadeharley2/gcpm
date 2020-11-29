@@ -125,6 +125,7 @@ function PPM.Editor3Open()
 	mdl.Entity.ponydata = table.Copy(LocalPlayer().ponydata)--PPM.copyLocalPonyTo(LocalPlayer(),self.Entity) 
 	PPM.editor_ponydata = mdl.Entity.ponydata
 	PPM.editor3_pony = mdl.Entity
+	mdl.Entity.ponydata_cmark = LocalPlayer().ponydata_cmark
 	
 
 
@@ -133,11 +134,15 @@ function PPM.Editor3Open()
 		
 		PPM.editor3_pony = self.Entity
 		self.Entity.isEditorPony = true 
+
+		self.Entity.ponydata_cmark = LocalPlayer().ponydata_cmark
+
 		if mdl.model2 ==nil then
 		mdl.model2 =ClientsideModel( "models/mlp/player_default_clothes1.mdl" , RENDER_GROUP_OPAQUE_ENTITY ) 
 		mdl.model2:SetNoDraw( true )
 		mdl.model2:SetParent(self.Entity)
 		mdl.model2:AddEffects(EF_BONEMERGE) 
+
 		PPM.editor3_clothing = mdl.model2
 		end
 		if LocalPlayer().pi_wear[50]!=nil then

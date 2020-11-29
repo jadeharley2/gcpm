@@ -289,7 +289,12 @@ if CLIENT then
 					PPM.currt_success = false
 
 					if k=="ccmarktex" then
-						ent.ponydata_tex[k] = PPM.t_cmarks[pony.cmark]:GetTexture("$basetexture")
+						if ent.ponydata_cmark then
+							ent.ponydata_tex[k] = Material(ent.ponydata_cmark,"smooth"):GetTexture("$basetexture")
+							MsgN("cmark texture ",ent.ponydata_cmark )
+						else
+							ent.ponydata_tex[k] = PPM.t_cmarks[pony.cmark]:GetTexture("$basetexture")
+						end
 					else
 						ent.ponydata_tex[k] = PPM.CreateTexture(tostring(ent)..k, v) 
 					end
@@ -336,7 +341,7 @@ if CLIENT then
 				end
 			end
 			
-			MsgN("update ent ",ent)
+			--MsgN("update ent ",ent)
 		
 			local tph_horn= "ph2"..(ent:EntIndex()+10).."thorn"
 			local x_table = table.Copy(base_horn)

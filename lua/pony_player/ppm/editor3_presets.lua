@@ -26,12 +26,12 @@ PPM.Editor3_presets["view_cmark"] =
 		 
 		IMAGER.Think = function() 
 			//Mat:SetTexture("$basetexture",PPM.editor_ponydata_tex.eyeltex)
-			if PPM.editor_ponydata._cmark_loaded then
-			IMAGER:SetMaterial( PPM.m_cmark ) 
+			if PPM.editor3_pony.ponydata_cmark then
+				IMAGER:SetMaterial( PPM.editor3_pony.ponydata_cmark ) 
 			else
-			IMAGER:SetImage( "models/mlp/cmarks/"..PPM.m_cmarks[PPM.editor_ponydata.cmark][2] ) 
+				IMAGER:SetImage( "models/mlp/cmarks/"..PPM.m_cmarks[PPM.editor_ponydata.cmark][2] ) 
 			end
-			//IMAGER:FixVertexLitMaterial()
+			IMAGER:FixVertexLitMaterial()
 		end
 	end
 }
@@ -158,30 +158,26 @@ function PPM_OpenCCmarkSelectorMenu(parent)
 	PANEL:SetPos( uppercorner_x, uppercorner_y ) 
 	PANEL:SetSize( allw, 512 ) 
 	local BACKGROUND = vgui.Create( "DImage", PANEL)
-	BACKGROUND:SetSize( 512, 512 ) 
-	BACKGROUND:SetImage(  "color"  )
-	//BACKGROUND:SetColor( 255, 0,255,255 ) 
-	BACKGROUND.Paint = function() 
-			render.SetMaterial(Material("color"))  
-			render.DrawQuadEasy( Vector(uppercorner_x+256,uppercorner_y+256,0),    --position of the rect
-				Vector(0,0,-1),        --direction to face in
-				512,512,              --size of the rect
-				Color( 255, 0, 255, 255 ),  --color
-				-90                     --rotate 90 degrees
-				)    
-		end
+	BACKGROUND:SetSize( 512, 512 )  
+	BACKGROUND:SetImage("gui/cmark_centering.png")
+	--BACKGROUND.Paint = function(s,w,h) 
+	--		--render.SetMaterial(Material("color"))  
+	--		--surface.SetDrawColor(0,0,0)
+	--		--surface.DrawRect(0,0,w,h ) 
+	--	end
 	local IMAGE = vgui.Create( "DImage", PANEL)
 	IMAGE:SetSize( 512, 512 ) 
 	//IMAGE:SetImage( "gui/items/none.png" )
 	
 	
+	local image_path = ""
 	local LIST = vgui.Create("DListView") 
 	LIST:SetParent(PANEL)  
 	LIST:SetSize(256, 256+128)
 	LIST:SetPos( 512,0) 
 	LIST:SetMultiSelect(false)
 	//LIST:Dock( RIGHT )
-	LIST:AddColumn("Avaliable images")
+	LIST:AddColumn("Avaliable images garrysmod/materials/ppm_custom")
 	
 	LIST:Clear()
 	local files = file.Find("materials/ppm_custom/*.png","GAME" )
@@ -191,73 +187,20 @@ function PPM_OpenCCmarkSelectorMenu(parent)
 		//end
 	end
 	LIST.OnClickLine = function(parent, line, isselected) 
-		IMAGE:SetImage( "materials/ppm_custom/"..line:GetValue(1) )
+		image_path = "materials/ppm_custom/"..line:GetValue(1)
+		IMAGE:SetImage( image_path )
 	end
 	
 	local CLOSEBUTTON = vgui.Create("DButton",PANEL)
 	local BUTTON = vgui.Create("DButton",PANEL)
-	BUTTON:SetText("Scan Image")
+	BUTTON:SetText("Upload Image")
 	//BUTTON:Dock( RIGHT )
 	BUTTON:SetPos( 512,256+128) 
 	BUTTON:SetSize(256, 20)
-	local scan_process_activated =false
-	local x = 0
-			local data = ""
+	
 	BUTTON.DoClick = function() 
-		if !scan_process_activated then
-			usedcolors = {}
-			last = 1
-			render.CapturePixels( )
-			data = ""
-			local bytecount = 0
-			BUTTON:SetText("SCANNING...")
-			CLOSEBUTTON:SetText("SCANNING...")
-			x = 0
-			scan_process_activated=true
-		end
-	end
-	BUTTON.Think = function() 
-		if scan_process_activated then
-			
-			local localdata = ""
-			for i=0,16 do
-				
-				for y=0, 512, 2 do  
-				local r, g, b = render.ReadPixel( uppercorner_x+x, uppercorner_y+y )
-					//bytecount =bytecount+3
-					//print( r,"\t\t",g,"\t\t",b)
-					localdata =localdata..PPM_rgbtoHex(r,g,b)
-				end
-				if x >=511 then 
-					//print(string.len(data))
-					//print(data)
-					PPM.cmarksys_beginsend(data)
-					scan_process_activated =false
-					BUTTON:SetText("Scan Image")
-					CLOSEBUTTON:SetText("Close")
-					x = 0
-					if true then return end
-				end
-				x = x + 2
-			end
-			/*
-				if x >=511 then 
-					print(string.len(data))
-					//print(data)
-					PPM.cmarksys_beginsend(data)
-					scan_process_activated =false
-					BUTTON:SetText("Scan Image")
-					CLOSEBUTTON:SetText("Close")
-					x = 0
-				end
-				x = x + 1
-				*/
-			BUTTON:SetText("SCANNING("..math.Round(x/512*100).."%)")
-			
-			data = data .. localdata
-			//x = x + 1
-		end
-	end
+		PPM.CmarkSend(image_path)
+	end 
 	CLOSEBUTTON:SetText("Close")
 	//BUTTON:Dock( RIGHT )
 	CLOSEBUTTON:SetPos( 512,256+128+20) 
@@ -367,10 +310,10 @@ PPM.Editor3_presets["select_custom_cmark"] =
 			PPM_OpenCCmarkSelectorMenu(parent)
 		end
 		local CLEARBUTTON = vgui.Create("DButton",CONTAINER)
-		CLEARBUTTON:SetText("Clean custom cmark")
+		CLEARBUTTON:SetText("Clear custom cmark")
 		CLEARBUTTON:Dock( TOP )
 		CLEARBUTTON.DoClick = function() 
-			 PPM.cmarksys_clearcmark()
+			 PPM.CmarkClear()  
 		end
 	end
 }

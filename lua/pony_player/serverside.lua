@@ -3,7 +3,7 @@ if(SERVER) then
 	util.AddNetworkString( "player_pony_cm_send" )
 	//util.AddNetworkString( "player_pony_set_charpars" )
 	util.AddNetworkString( "ppm_request_fix" )
-	
+
 	net.Receive( "player_equip_item", function(len, ply)    
 		local id =net.ReadFloat()
 		local item =PONYPM:pi_GetItemById(id)
