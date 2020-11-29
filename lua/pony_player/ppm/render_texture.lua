@@ -46,7 +46,9 @@ if CLIENT then
 		local rttex = nil 
 		
 		rttex = GetRenderTarget( tname, 512, 512, false ) 
-		
+		--GetRenderTargetEx(tname, 512, 512,RT_SIZE_NO_CHANGE,MATERIAL_RT_DEPTH_NONE, 0, 0, IMAGE_FORMAT_DEFAULT ))
+		--GetRenderTargetEx( string name, number width, number height, number sizeMode, 
+		--number depthMode, number textureFlags, number rtFlags, number imageFormat )
 		if data.predrawfunc !=nil then data.predrawfunc() end
 		 
 		render.PushRenderTarget( rttex )   
@@ -323,6 +325,12 @@ if CLIENT then
 						
 					
 						ent:SetSubMaterial(matid, "!"..tempPlayerHash)
+						if ent==LocalPlayer() and k=="bodytex" then
+							local hands = ent:GetHands()
+							if IsValid(hands) then
+								hands:SetMaterial("!"..tempPlayerHash) 
+							end
+						end
 					--	MsgN("set sub material ",ent,":",matid," = ", "!"..tempPlayerHash)
 					end
 				end
