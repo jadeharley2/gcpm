@@ -50,7 +50,7 @@ function PPM.UpdateBones(ent)
     if !PPM.isValidPonyLight(ent) then return end 
 
     local pony = PPM.getPonyValues(ent) 
-    if pony then
+    if pony then 
         local SCALEVAL0 =pony.bodyweight or 1--(1+math.sin(time)/4)  
         local SCALEVAL1 =pony.gender-1;
         --local SCALEVAL2 =PPM.test_buffness;
@@ -83,7 +83,7 @@ end
 
 function PPM:RescaleRIGPART(ent,part,scale)
 	for k , v in pairs(part) do 
-		ent:ManipulateBoneScale( v,scale )  
+        ent:ManipulateBoneScale( v,scale )   
 	end
 end
 function PPM:RescaleMRIGPART(ent,part,scale)

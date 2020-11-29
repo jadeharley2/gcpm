@@ -2,6 +2,10 @@
 local ppm_cmark_allow_custom = CreateConVar("ppm_cmark_allow_custom", "1", bit.bor(FCVAR_ARCHIVE,FCVAR_REPLICATED), "Allow custom cutie mark upload")
 local ppm_cmark_maxfilesize = CreateConVar("ppm_cmark_maxfilesize", "32000", bit.bor(FCVAR_ARCHIVE,FCVAR_REPLICATED), "Maximum file size of uploaded cutie mark in bytes (hard limit is 64kb)")
 
+file.CreateDir("ppm")
+file.CreateDir("ppm/cmarks")--serverside storage
+file.CreateDir("ppm/player_cmarks")--clientside storage
+file.CreateDir("ppm/entity_cmarks")--clientside storage
 if CLIENT then
 
 	net.Receive( "ppm_cmark_setup", function(len)  
@@ -18,12 +22,10 @@ if CLIENT then
             local path = ""
             if ent:IsPlayer() then
                 local userid = ent:UniqueID()
-                path = "ppm/client_cmarks/"..userid..".png"
-                file.CreateDir("ppm/client_cmarks/") 
+                path = "ppm/player_cmarks/"..userid..".png" 
             else
                 local entid = ent:EntIndex()
-                path = "ppm/entity_cmarks/"..entid..".png"
-                file.CreateDir("ppm/entity_cmarks/")
+                path = "ppm/entity_cmarks/"..entid..".png" 
             end
             file.Write(path, decompressed)
 
