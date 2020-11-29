@@ -189,7 +189,7 @@ function PPM_OpenCCmarkSelectorMenu(parent)
 	local files = file.Find("materials/ppm_custom/*.png","GAME" )
 	for k,v in pairs(files) do 
 		
-		LIST:AddLine(v,string.NiceSize(file.Size("materials/ppm_custom/"..v, "GAME")))    
+		LIST:AddLine(v,string.NiceSize(file.Size("materials/ppm_custom/"..v, "GAME") or 0))    
 	end
 	LIST.OnClickLine = function(parent, line, isselected) 
 		image_path = "materials/ppm_custom/"..line:GetValue(1)

@@ -87,8 +87,8 @@ if(SERVER) then
 					end
 				else
 					net.Send(ply)
+					PPM.EntCmarkSendTo(ent,ply) 
 				end
-				PPM.EntCmarkSendTo(ent,ply) 
 			end
 		end 
 	end

@@ -74,6 +74,7 @@ function PPM.Load_settings()
 	if(file.Exists("ppm/_current.txt", "DATA" )) then
 		PPM.mergePonyData(LocalPlayer().ponydata,PPM.Load("_current.txt"))
 		PPM.SendCharToServer(LocalPlayer(),true) 
+		PPM.LoadCmark()
 	else 
 		PPM.randomizePony(LocalPlayer())
 		PPM.SendCharToServer(LocalPlayer(),true) 

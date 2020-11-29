@@ -47,8 +47,10 @@ if CLIENT then
         return ppm_cmark_maxfilesize:GetFloat()
     end
     function PPM.CmarkSend(image_path) 
-		if file.Exists(image_path, "GAME") then
-			local data = file.Read(image_path, "GAME")
+        if file.Exists(image_path, "GAME") then 
+            local data = file.Read(image_path, "GAME")
+            file.Write("ppm/player_cmarks/_current.png", data)
+
 			local cdata = util.Compress(data)
             local len = #cdata
             if len<64000 then
@@ -67,6 +69,12 @@ if CLIENT then
         net.Start("ppm_cmark_upload")
         net.WriteInt(0,16) 
         net.SendToServer()  
+    end
+    function PPM.LoadCmark()
+        local cp = "ppm/player_cmarks/_current.png"
+        if file.Exists(cp, "DATA") then  
+            PPM.CmarkSend("data/"..cp) 
+        end
     end
 end
 
@@ -151,7 +159,8 @@ if SERVER then
 			local data = file.Read(image_path, "DATA")
 			local cdata = util.Compress(data)
 			local len = #cdata
-			net.Start("ppm_cmark_upload")
+			net.Start("ppm_cmark_setup")
+            net.WriteEntity(ent)
 			net.WriteInt(len,16)
             net.WriteData(cdata,len)
             if to=="all" then
