@@ -183,7 +183,7 @@ function PPM.randomizePony(ent)
 end
 function PPM.copyLocalPonyTo(from,to)
 	to.ponydata = table.Copy(from.ponydata)
-	to.ponydata_cmark = from.ponydata_cmark
+	to.ponydata_cmark = from.ponydata_cmark or to.ponydata_cmark
 end 
 function PPM.copyLocalTextureDataTo(from,to)
 	to.ponydata_tex = from.ponydata_tex
@@ -316,6 +316,12 @@ if SERVER then
 		ent:SetSubMaterial(4, "!"..tph_wings)  
 		ent:SetSubMaterial(submaterials.tailtex2, "!"..tph_tail2)
 		
+		if ent:IsPlayer() then
+			local hands = ent:GetHands()
+			if IsValid(hands) then
+				hands:SetMaterial("!ph2"..(ent:EntIndex()+10).."tbodytex") 
+			end
+		end
 	end
 end 
 function PPM.getPonyValues(ent, localvals) 

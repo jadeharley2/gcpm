@@ -95,6 +95,8 @@ if(SERVER) then
 	function HOOK_PlayerSwitchWeapon(ply,oldwep,newwep)
 		if(table.HasValue(ponyarray_temp ,ply:GetInfo( "cl_playermodel" ))) then 
 			newwep:SetMaterial("Models/effects/vol_light001") 
+			newwep:SetRenderMode(RENDERMODE_NONE)
+			newwep:SetNoDraw(true)
 		end
 	end
 	function HOOK_PlayerLeaveVehicle(  ply,  ent )
