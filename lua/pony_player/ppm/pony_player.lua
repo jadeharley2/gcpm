@@ -20,9 +20,13 @@ PPM.pony_models["models/mlp/player_default_base.mdl"] = {
 	isPonyModel = true,
 	BgroupCount = 8
 }
-PPM.pony_models["models/mlp/player_default_base_nj.mdl"] = {
+PPM.pony_models["models/mlp/player_default_base_nj.mdl"] = false--[[{
 	isPonyModel = true,
 	BgroupCount = 8
+}]]
+PPM.pony_models["models/mlp/pony_default/player_default_base.mdl"] = {
+	isPonyModel = false,
+	BgroupCount = 1
 }
 PPM.pony_models["models/mlp/player_default_base_ragdoll.mdl"] = {
 	isPonyModel = true,
