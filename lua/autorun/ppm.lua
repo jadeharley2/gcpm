@@ -46,3 +46,7 @@ end
 
 include("pony_player/init.lua")   
 include("pony_player/ppm/render_v2.lua")
+
+
+
+include("gcpm/init.lua")  
