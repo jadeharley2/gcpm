@@ -49,15 +49,24 @@ function LoadSpecies()
     RecuInclude("gcpm/species/")
 end
 
-
+function GetSpecies(k)
+    if k then
+        return species[k] 
+    end
+end
+function GetSpeciesList()
+    return species
+end
 LoadSpecies()
 
 
+AddCSLuaFile("gcpm/client/ximagebutton.lua")
 AddCSLuaFile("gcpm/client/editor.lua")
 AddCSLuaFile("gcpm/client/background.lua")
 AddCSLuaFile("gcpm/client/panels.lua")
 
 if CLIENT then
+    include("gcpm/client/ximagebutton.lua")
     include("gcpm/client/panels.lua")
     include("gcpm/client/background.lua")
     include("gcpm/client/editor.lua")

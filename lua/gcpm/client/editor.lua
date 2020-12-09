@@ -24,6 +24,7 @@ end)
 Window = Window or false
 Character = Character or false
 Background = Background or false
+Data = {species="pony",race="earth"}
 
 local FOV = 90
 local CameraPos = Vector(0,0,0)
@@ -51,16 +52,23 @@ end
 parts = parts or {}
 function SetupBodyPart(id,path) 
 	local model2 = parts[id]
-	if model2 then
+	if model2 then 
 		model2:SetModel(path)
 	else 
-		local model2 = ClientsideModel( path , RENDER_GROUP_OPAQUE_ENTITY )  
+		model2 = ClientsideModel( path , RENDER_GROUP_OPAQUE_ENTITY )  
 		parts[id] = model2
 	end 
 	model2:SetParent(Character)
 	model2:AddEffects(EF_BONEMERGE)
 end
+function ClearBodyParts()
+	for k,v in pairs(parts) do
+		v:Remove()
+	end
+	parts = {}
+end
 function BuildWindow()
+	Tabs = {}
 	Window = vgui.Create("DFrame") 
 	Window:ShowCloseButton( true )
 	Window:SetSize(ScrW(), ScrH()) 
@@ -100,9 +108,17 @@ function BuildWindow()
 	APPLY:SetColor(Color(255,255,255,255)) 
 	APPLY.DoClick = Apply 
 
-	SetupBodyPart("ears","models/mlp/pony_default/parts/chang_ears.mdl")
-
-	Select(Window,gcpm.species.pony.Subspecies.default.Parts.body)
+	LoadTabs({
+		species = {
+			name = "Species",
+			Action = function()
+				SpeciesSelector(Window) 
+			end
+		}
+	})
+--	SetupBodyPart("ears","models/mlp/pony_default/parts/chang_ears.mdl")
+	SelectSpecies(Data.species,Data.race)
+	--Select(Window,gcpm.species.pony.default.Parts.body)
 end
 function Apply()  
 	local cm = LocalPlayer():GetInfo( "cl_playermodel" )
@@ -118,7 +134,15 @@ end
 function Think(self)
 	UpdateCamera(self)
 end
+TargetViewPos = Vector(0,0,20)
+TargetViewFOV = 75
 function UpdateCamera(self)
+
+	--TargetViewPos =  Vector(0,math.cos(CurTime())*10,math.sin(CurTime())*20)
+	self.vLookatPos = self.vLookatPos + (TargetViewPos-self.vLookatPos)*0.1
+	self.fFOV = self.fFOV + (TargetViewFOV-self.fFOV)*0.1--
+
+
 	if self.ismousepressed then 
 		local x, y =self:CursorPos(); 
 		self.camangadd =Angle(math.Clamp(self.camang.p-y+self.mdy,-89,13)-self.camang.p, -x+self.mdx, 0)
@@ -127,6 +151,10 @@ function UpdateCamera(self)
 	camvec:Rotate(self.camang+self.camangadd) 
 	self:SetCamPos(self.vLookatPos+camvec) 
 	self.camvec = camvec
+end
+function SetLook(pos,fov)
+	TargetViewPos = pos or TargetViewPos
+	TargetViewFOV = fov or TargetViewFOV
 end
 function OnMousePressed(self,key)
 	if key == MOUSE_RIGHT then
@@ -180,21 +208,83 @@ function Paint(self)
 
 	DrawBackground(Background)
 	  
+	Character:SetupBones()
 	Character:DrawModel()
 	for k,v in pairs(parts) do 
 		v:DrawModel()
 	end
 
 
+
 	render.SuppressEngineLighting( false )
 	
-
+	UpdateSelectors(self)
 	cam.End3D()
+	DrawSelectors(self,ang)
 end
+SelectorPositions = {}
+function UpdateSelectors(self)
+	if SelectedNode then 
+		for k,v in pairs(SelectedNode) do
+			if v.pos then
+				SelectorPositions[k] = (Character:GetPos()+ v.pos):ToScreen()
+			end
+		end
+	end
+end
+mat_lid_ind = Material("gui/editor/lid_ind.png")
+SelectedPoint = false
+function DrawSelectors(self,ang)
+	if SelectedNode then
+		local w, h = self:GetSize()
+		for k,v in pairs(SelectedNode) do
+			if v.pos then
+				local locpos = ((Character:GetPos()+ v.pos)- self.camvec-self.vLookatPos):GetNormal( )
+				
+				--local tbl =(( v.pos)+LocalPlayer():GetPos()+ self.vCamPos   ):ToScreen() 
+				
+				local ud = SelectorPositions[k]  
+				if ud then
+					local x,y, viz = ud.x, ud.y, ud.visible -- VectorToLPCameraScreen(locpos, w, h, ang,math.rad( self.fFOV))
 
-function Select(Window,node)
-	MsgN("WHAT?")
-	--cleanValueEditors()
+					
+					local r3 =25
+					local ss =math.sin(CurTime())+1
+
+					local text_lowerer = 0
+					
+					local tt =50
+					local tvpos =Vector(x,y,0)
+					local mousepos =Vector( self:CursorPos())--input.GetCursorPos( ))
+					local dist = tvpos:Distance(mousepos)/40
+					
+					if SelectedPoint==k then
+						surface.SetDrawColor( 0, 255, 0, 80 ) 
+						surface.SetMaterial(mat_lid_ind )
+						surface.DrawTexturedRectRotated( x,y, r3*2,r3*2 ,CurTime()*200)
+						text_lowerer = 20
+					elseif dist < 0.8 then
+						surface.SetDrawColor( 0, 0, 255, 80 ) 
+						surface.SetMaterial(mat_lid_ind ) 
+						surface.DrawTexturedRectRotated( x,y, r3*2,r3*2 ,CurTime()*200) 
+						if input.IsButtonDown(MOUSE_LEFT) then 
+							if k~=SelectedPoint then
+								SelectedPoint = k 
+								Select(self,v)
+							end
+						end
+						text_lowerer = 20
+					end
+					draw.SimpleTextOutlined(v.name, "TAHDS", x, y+text_lowerer,  Color( 255, 255, 255,  255/dist ), 
+						TEXT_ALIGN_CENTER, TEXT_ALIGN_TOP, 2,  Color( 0,0,0, 255/dist ) )
+					 
+
+				end
+			end
+		end
+	end
+end 
+function GetPanel(window)
 	local sspanel = Window.sspanel 
 	if not sspanel then 
 		local smpanel = vgui.Create("DPanel",Window) 
@@ -210,23 +300,136 @@ function Select(Window,node)
 		sspanel:Dock(FILL)
 		Window.sspanel = sspanel
 	end
+	return sspanel
+end
+function NewPanel(v,parent)
+	local tp = panels[v.type] 
+	if tp then 
+		local header = vgui.Create( "DCollapsibleCategory", parent )	 
+		header:SetLabel( v.name )					 
+		header:SetPos( 25, 50 )		 
+		header:SetSize( 250, 100 )	  
+		header:Dock(TOP)
+		local content = vgui.Create( "DPanelList",parent  ) 
+		content:SetSpacing( 5 )							 
+		content:EnableHorizontal( false )				  
+		header:SetContents( content )		 
+		 
+		tp.spawn(content,v) 
+	end
+end
+function SpeciesSelector(Window) 
+	local sspanel = GetPanel(window)
+	NewPanel({type="select_species",name = "Species"},sspanel)
+end
+function Select(Window,node) 
+	local sspanel = GetPanel(window)
+	--cleanValueEditors()
 	sspanel:Clear()
 
   
 	for k,v in pairs(node.params) do  
-		local tp = panels[v.type] 
-		if tp then 
-			local header = vgui.Create( "DCollapsibleCategory", sspanel )	 
-			header:SetLabel( v.name )					 
-			header:SetPos( 25, 50 )		 
-			header:SetSize( 250, 100 )	  
-			header:Dock(TOP)
-			local content = vgui.Create( "DPanelList", sspanel ) 
-			content:SetSpacing( 5 )							 
-			content:EnableHorizontal( false )				  
-			header:SetContents( content )		 
-			 
-			tp.spawn(content,v)
-		end
+		NewPanel(v,sspanel)
 	end 
 end 
+
+function SelectSpecies(species,race)
+	local data = gcpm.GetSpecies(species)
+	if data then
+		local model = data.Models[1]
+		Character:SetModel(data.Directory.."/"..model.File)
+		Character:SetSequence(ACT_IDLE)
+		if model.Bodygroups then
+			for k,v in pairs(model.Bodygroups) do
+				local bg = Character:FindBodygroupByName(k)
+				Character:SetBodygroup(bg, v)
+			end
+		end
+		if model.Flexes then
+			for k,v in pairs(model.Flexes) do
+				local id = Character:GetFlexIDByName(k)
+				Character:SetFlexWeight(id, v)
+				Character:SetFlexScale(1)
+			end
+		end
+		Character:SetSkin(model.Skin or 0) 
+
+		local racetbl = data.Races[race]
+		ClearBodyParts()
+		for k,v in pairs(racetbl.Parts) do
+			MsgN("FFF ",k)
+			SetupBodyPart(k,data.PartsDirectory.."/"..v.model)
+		end
+
+		LoadTabs(data.Editor,60) 
+	end
+end
+
+
+Tabs = {}
+SelectedTab = SelectedTab or nil
+SelectedNode = SelectedNode or nil
+
+function LoadTabs(data,off)
+	for k,v in pairs(Tabs) do
+		if k~="species" then
+			v:Remove()
+			Tabs[k] = nil
+		end
+	end 
+
+	local taboffcet= table.Count(Tabs)*128 + (off or 0)
+	for k,v in pairs(data) do	
+		local TABBUTTON = Tabs[k] or vgui.Create( "X_ImageButton", Window ) 
+		TABBUTTON.node = v
+		TABBUTTON:SetSize( 128, 64 ) 
+		TABBUTTON:SetPos( 100+taboffcet, -20 )  
+		TABBUTTON:SetImage( "gui/editor/gui_tab.png" ) 
+		TABBUTTON:SetText(v.name)
+		TABBUTTON:SetColor(Color(0,0,0)) 
+		TABBUTTON.OnCursorEntered = function() 
+			if SelectedTab ~= TABBUTTON then
+				local px,py =TABBUTTON:GetPos()
+				TABBUTTON:SetPos( px, -10 )  
+			end
+		end 
+		TABBUTTON.OnCursorExited = function() 
+			if SelectedTab ~= TABBUTTON then
+				local px,py =TABBUTTON:GetPos()
+				TABBUTTON:SetPos( px, -20 )  
+			end
+		end 
+		TABBUTTON.DoClick = function() 
+			if SelectedTab ~= TABBUTTON then
+				if(IsValid(SelectedTab)) then
+					local px,py =SelectedTab:GetPos()
+					SelectedTab:SetPos( px, -20 )  
+				end 
+				
+				local px,py =TABBUTTON:GetPos()
+				TABBUTTON:SetPos( px, 0 )  
+				
+				SelectedTab = TABBUTTON
+				
+			end
+			local sspanel = GetPanel(window)
+			sspanel:Clear()
+			SelectedPoint = false
+			if v.Action then
+				v.Action(v)
+			else 
+				LoadNode(v)  
+			end
+		end
+		 
+		
+		
+		taboffcet = taboffcet + 128 
+		Tabs[k]=TABBUTTON 
+	end
+end
+
+function LoadNode(node)
+	SelectedNode = node.Parts
+	SetLook(node.pos,node.fov or 75)
+end

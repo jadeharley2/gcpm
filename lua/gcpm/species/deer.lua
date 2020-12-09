@@ -4,10 +4,9 @@
 
 
 ]]
-gcpm.AddSpecies("pony",{
-    PrintName = "Pony",
+gcpm.AddSpecies("deer",{
+    PrintName = "Deer",
     Directory = "models/mlp/pony_default",
-    pos = Vector(0,0,20),
     Parameters = {
         coatcolor  = {type="color",name="Coat color"},
         haircolor1 = {type="color",name="Color 1"},
@@ -193,14 +192,14 @@ gcpm.AddSpecies("pony",{
         {
             File = "player_default_base.mdl",
             Bodygroups = {
-                Body = 0
+                Body = 1,
+                Cmark = 1
             },
             Materials = { 
                 mouth = 0,
                 body = 1,
                 eyel = 2,
-                eyer = 3, 
-                cmark = 8, 
+                eyer = 3,  
             }
         } 
     },
@@ -226,149 +225,34 @@ gcpm.AddSpecies("pony",{
         uppermane = {
             basematerial = "uppermane",
             variants = {
-                none = {}, 
-                ["DERPY"]      = {
-                    model="uppermane_01",
-                    material = {mode = "color", params = "haircolor1"}
-                },
-                ["BON BON"]    = {
-                    model="uppermane_02",
-                    material = {mode = "color", params = {"haircolor1","haircolor2"}}
-                },
-                ["LYRA"]       = {
-                    model="uppermane_03",
-                    material = {mode = "color", params = {"haircolor1","haircolor2"}}
-                },
-                ["TRIXIE"]     = {
-                    model="uppermane_04",
-                    material = {mode = "color", params = {"haircolor1","haircolor2"}}
-                },
-                ["FLUTTERSHY"] = {
-                    model="uppermane_05",
-                    material = {mode = "layers", params =  {"haircolor1","haircolor2"}}
-                },
-                ["MANE6"]      = {
-                    model="uppermane_06",
-                    material = {mode = "layers", params =  {"haircolor1","haircolor2"}}
-                },
-                ["MANE7"]      = {
-                    model="uppermane_07",
-                    material = {mode = "color", params = "haircolor1"}
-                },
-                ["RAINBOW"]    = {
-                    model="uppermane_08",
-                    material = {mode = "layers", params =  {"haircolor1","haircolor2","haircolor3"}}
-                },
-                ["VINYL"]      = {
-                    model="uppermane_09",
-                    material = {mode = "layers", params =  {"haircolor1","haircolor2","haircolor3","haircolor4"}}
-                },
-                ["HOOVES"]     = {
-                    model="uppermane_10",
-                    material = {mode = "layers", params =  {"haircolor1","haircolor2"}}
-                },
-                ["TWILIGHT"]   = {
-                    model="uppermane_11",
-                    material = {mode = "layers", params =  {"haircolor1","haircolor2","haircolor3","haircolor4"}}
-                },
-                ["APPLEJACK"]  = {
-                    model="uppermane_12",
-                    material = {mode = "layers", params =  {"haircolor1","haircolor2"}}
-                },
-                ["PINKIE"]     = {
-                    model="uppermane_13",
-                    material = {mode = "layers", params =  {"haircolor1","haircolor2"}}
-                },
-                ["RARITY"]     = {
-                    model="uppermane_14",
-                    material = {mode = "layers", params =  {"haircolor1","haircolor2"}}
-                },
-                ["SPITFIRE"]   = {
-                    model="uppermane_15",
-                    material = {mode = "layers", params =  {"haircolor1","haircolor2"}}
-                }, 
+                none = {},  
             }
         },
         lowermane = {
             variants = {
-                none = {},
-                ["DERPY"]      =  {model="lowermane_01"},
-                ["BON BON"]    =  {model="lowermane_02"},
-                ["LYRA"]       =  {model="lowermane_03"},
-                ["TRIXIE"]     =  {model="lowermane_04"},
-                ["FLUTTERSHY"] =  {model="lowermane_05"},
-                ["MANE6"]      =  {model="lowermane_06"},
-                ["MANE7"]      =  {model="lowermane_07"},
-                ["RD SHORT"]   =  {model="lowermane_08"},
-                ["RAINBOW"]    =  {model="lowermane_09"},
-                ["TWILIGHT"]   =  {model="lowermane_10"},
-                ["APPLEJACK"]  =  {model="lowermane_11"},
-                ["RARITY"]     =  {model="lowermane_12"},
-                ["MANE13"]     =  {model="lowermane_13"},
-                ["MANE14"]     =  {model="lowermane_14"},
+                none = {}, 
             }
         },
         tail = {
             variants = {
-                none = {},
-                ["DERPY"]      = {model="lowermane_01"},
-                ["BON BON"]    = {model="lowermane_02"},
-                ["LYRA"]       = {model="lowermane_03"},
-                ["TRIXIE"]     = {model="lowermane_04"},
-                ["FLUTTERSHY"] = {model="lowermane_05"},
-                ["MANE6"]      = {model="lowermane_06"},
-                ["MANE7"]      = {model="lowermane_07"},
-                ["RAINBOW"]    = {model="lowermane_08"},
-                ["TAIL9"]      = {model="lowermane_09"},
-                ["TAIL10"]     = {model="lowermane_10"},
-                ["TWILIGHT"]   = {model="lowermane_11"},
-                ["APPLEJACK"]  = {model="lowermane_12"},
-                ["PINKIE"]     = {model="lowermane_13"},
-                ["RARITY"]     = {model="lowermane_14"},
+                none = {}, 
             }
         }, 
     },
     Races = {
-        earth = {
-            name = "Earth",
+        deer = {
+            name = "Generic deer",
             Parts = {
                 ears = {model="head_01_ears.mdl"},
+                horns = {model="deerhorns_01.mdl"},
+                tail = {model="deertail_01.mdl"},
             }
-        },
-        pegasus = {
-            name = "Pegasus",
-            Parts = {
-                ears = {model="head_01_ears.mdl"},
-                wings = {model="wings_01_folded.mdl"},
-            }
-        },
-        batpony = {
-            name = "Bat",
-            Parts = {
-                ears = {model="head_01_ears.mdl"},
-                wings = {model="wings_01_folded.mdl"},
-            }
-        },
-        unicorn = {
-            name = "Unicorn",
-            Parts = {
-                ears = {model="head_01_ears.mdl"},
-                horn = {model="horn_01.mdl"},
-            }
-        },
-        alicorn = {
-            name = "Alicorn",
-            Parts = {
-                ears = {model="head_01_ears.mdl"},
-                horn = {model="horn_01.mdl"},
-                wings = {model="wings_01_folded.mdl"},
-            }
-        }
+        }, 
     },
     Editor = {
         body = {
             name = "Body" ,
-            pos = Vector(0,0,28),
+            pos = Vector(10,0,20),
             params =
             {  
                 {
@@ -570,8 +454,7 @@ gcpm.AddSpecies("pony",{
         },
         head = {
             name = "Head" ,
-            pos = Vector(15,0,40),
-            fov = 30,
+            pos = Vector(15,-5,40),
             Parts = {
                 eyes = {
                     name = "Eyes" , 
@@ -642,8 +525,3 @@ gcpm.AddSpecies("pony",{
 
     } 
 })
-player_manager.AddValidModel( "ponytest", "models/mlp/pony_default/player_default_base.mdl" )   
-player_manager.AddValidHands("ponytest","models/mlp/v_hoofs.mdl", 0, "00000000") 
-if CLIENT then
-    list.Set( "PlayerOptionsModel", "ponytest", "models/mlp/pony_default/player_default_base.mdl" )
-end

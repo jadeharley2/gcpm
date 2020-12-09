@@ -2,7 +2,8 @@
 {
 	"$basetexture" "models\mlp\decoration\ab_b\wall" 
 
-	"$translucent" 1
+	"$alphatest" 1
+	"$alphatestreference" 0.5
 	"$phong" "1" 
 	"$phongexponent" "6"
 	"$phongboost" "0.05"

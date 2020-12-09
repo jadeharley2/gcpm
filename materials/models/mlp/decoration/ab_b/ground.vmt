@@ -1,8 +1,7 @@
 "VertexLitGeneric"
 {
 	"$basetexture" "models\mlp\decoration\ab_b\ground" 
-
-	"$translucent" 1
+ 
 	"$phong" "1" 
 	"$phongexponent" "6"
 	"$phongboost" "0.05"
