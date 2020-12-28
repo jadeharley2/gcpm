@@ -2,49 +2,49 @@ AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
 include("shared.lua")
  
+--[[
+	local schdChase = ai_schedule.New( "AIFighter Chase" ) 
  
-local schdChase = ai_schedule.New( "AIFighter Chase" ) //creates the schedule used for this npc
- 
- 
-	// Run away randomly (first objective in task)
+  
 	schdChase:EngTask( "TASK_GET_PATH_TO_RANDOM_NODE", 	128 )
 	schdChase:EngTask( "TASK_RUN_PATH", 				0 )
 	schdChase:EngTask( "TASK_WAIT_FOR_MOVEMENT", 	0 ) 
- 
-	// Find an enemy and run to it (second objectives in task)
+   
 	schdChase:AddTask( "FindEnemy", 		{ Class = "player", Radius = 2000 } )
 	schdChase:EngTask( "TASK_GET_PATH_TO_RANGE_ENEMY_LKP_LOS", 	0 )
 	schdChase:EngTask( "TASK_RUN_PATH", 				0 )
 	schdChase:EngTask( "TASK_WAIT_FOR_MOVEMENT", 	0 )
- 
-	// Shoot it (third objective in task)
+  
 	schdChase:EngTask( "TASK_STOP_MOVING", 			0 )
 	schdChase:EngTask( "TASK_FACE_ENEMY", 			0 )
-	schdChase:EngTask( "TASK_ANNOUNCE_ATTACK", 		0 ) 
-	//schedule is looped till you give it a different schedule
+	schdChase:EngTask( "TASK_ANNOUNCE_ATTACK", 		0 )  
  
- 
+]]
+
 function ENT:Initialize()
  
 	self:SetModel("models/mlp/player_default_base.mdl" )
- 
+  -- --[[
 	self:SetHullType( HULL_HUMAN );
 	self:SetHullSizeNormal();
  
 	self:SetSolid( SOLID_BBOX ) 
 	self:SetMoveType( MOVETYPE_STEP )
  
-	self:CapabilitiesAdd( CAP_MOVE_GROUND )
-	self:CapabilitiesAdd(CAP_OPEN_DOORS)
+	--self:CapabilitiesAdd( CAP_MOVE_GROUND )
+	--self:CapabilitiesAdd(CAP_OPEN_DOORS)
 	self:CapabilitiesAdd(CAP_TURN_HEAD) 
 	self:CapabilitiesAdd(CAP_ANIMATEDFACE) 
 	self:CapabilitiesAdd(CAP_TURN_HEAD) 
-	self:CapabilitiesAdd(CAP_USE_SHOT_REGULATOR) 
-	self:CapabilitiesAdd(CAP_AIM_GUN)  
+	--self:CapabilitiesAdd(CAP_USE_SHOT_REGULATOR) 
+	--self:CapabilitiesAdd(CAP_AIM_GUN)  
  
 	self:SetMaxYawSpeed( 5000 )
   
 	self:SetHealth(100) 
+--	]]--
+	MsgN('seq: ',self:SetSequence(0))
+
 	PPM.setupPony(self)
  
 end
@@ -63,10 +63,10 @@ function ENT:SpawnFunction( ply, tr )
 end
 
 function ENT:OnTakeDamage(dmg)
-	self:SetHealth(self:Health() - dmg:GetDamage())
-	if self:Health() <= 0 then  
-		self:SetSchedule( SCHED_FALL_TO_GROUND )  
-	end
+	--self:SetHealth(self:Health() - dmg:GetDamage())
+	--if self:Health() <= 0 then  
+	--	self:SetSchedule( SCHED_FALL_TO_GROUND )  
+	--end
 end 
  
  

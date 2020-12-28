@@ -117,12 +117,11 @@ function PPM.cleanup(ent)
 	if SERVER then
 		net.Start("ppm_cleanup")
 		net.WriteEntity(ent)
-		net.Broadcast()
-	else
-		local mcount = #ent:GetMaterials()
-		for k=0,mcount do 
-			ent:SetSubMaterial(k,nil)
-		end
+		net.Broadcast() 
+	end
+	local mcount = #ent:GetMaterials()
+	for k=0,mcount do 
+		ent:SetSubMaterial(k,nil)
 	end
 end
 function PPM.doRespawn(ply)
@@ -460,7 +459,7 @@ if SERVER then
 				PPM.setPonyValues(ply)
 			--	PPM.ccmakr_onplyinitspawn(ply)
 			end)
-		elseif ply.ponydata~=nil then
+		else--if ply.ponydata~=nil then
 			PPM.cleanup(ply)
 		end
 	end

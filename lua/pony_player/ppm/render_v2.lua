@@ -109,6 +109,7 @@ hook.Add("PostDrawOpaqueRenderables","test_Redraw",HOOK_PostDrawOpaqueRenderable
 
 timer.Create("ppm_matcheck", 1.5, 0, function()
 
+    --if true then return end
     for e,_ in pairs(PPM.pony_ents) do
         if e.ponydata_tex and e.ponydata_tex.materials then
             for k,v in pairs(e.ponydata_tex.materials) do 

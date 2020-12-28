@@ -1,30 +1,32 @@
 
 include('shared.lua')
  
-ENT.RenderGroup = RENDERGROUP_BOTH
+ENT.RenderGroup = RENDERGROUP_OPAQUE
  
-/*---------------------------------------------------------
-   Name: Draw
-   Desc: Draw it!
----------------------------------------------------------*/
+
 function ENT:Draw()
+   --self:SetupBones()
 	self:DrawModel()
 end
- 
-/*---------------------------------------------------------
-   Name: DrawTranslucent
-   Desc: Draw translucent
----------------------------------------------------------*/
+--ENT.Draw = nil
+function ENT:Think()
+  -- if SERVER then
+  --     self:NextThink(CurTime()+1)
+  -- else
+  --     self:SetNextClientThink(CurTime()+1)
+  -- end
+	--self:NextThink( CurTime() ) -- Set the next think to run as soon as possible, i.e. the next frame.
+	--return true -- Apply NextThink call
+end
+
 function ENT:DrawTranslucent()
   
-	self:Draw()
+	--self:Draw()
  
 end
+ENT.DrawTranslucent = nil
  
-/*---------------------------------------------------------
-   Name: BuildBonePositions
-   Desc: 
----------------------------------------------------------*/
+
 function ENT:BuildBonePositions( NumBones, NumPhysBones )
  
  
