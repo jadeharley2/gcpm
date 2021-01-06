@@ -31,6 +31,23 @@ if SERVER then
     end)
 end
 
+
+
+
+
+function Update(ent)
+    local data = ent.gcpmdata
+    if data then
+        local species = GetSpecies(data.species)
+        if species then
+            hook.Run("GCPMUpdate",ent,data,species)
+        end
+    end
+end
+
+
+--[[ SPECIES ]]
+
 function AddSpecies(id,data)
     species[id] = data 
 end
@@ -57,19 +74,42 @@ end
 function GetSpeciesList()
     return species
 end
+function GetParts(data,ptype)
+    local species = GetSpecies(data.species)
+    if species then
+        local parts = species.Parts[ptype]
+        if parts then
+            return parts.variants or {}
+        end
+    end
+    return {}
+end
+function GetPart(data,ptype,pvalue)
+    local parts = GetParts(data,ptype)
+    if parts then
+        return parts[pvalue] 
+    end
+    return nil
+end
 LoadSpecies()
 
-
+--[[ INIT ]]
+ 
 AddCSLuaFile("gcpm/client/ximagebutton.lua")
 AddCSLuaFile("gcpm/client/editor.lua")
 AddCSLuaFile("gcpm/client/background.lua")
 AddCSLuaFile("gcpm/client/panels.lua")
 
+AddCSLuaFile("gcpm/processors/part.lua")
+AddCSLuaFile("gcpm/processors/texture.lua")
 if CLIENT then
     include("gcpm/client/ximagebutton.lua")
     include("gcpm/client/panels.lua")
     include("gcpm/client/background.lua")
     include("gcpm/client/editor.lua")
+    
+    include("gcpm/processors/part.lua")
+    include("gcpm/processors/texture.lua")
 end
 
 

@@ -67,7 +67,7 @@ if(SERVER) then
 				net.WriteTable(e.ponydata)
 				net.Send(ply)
 			else
-				MsgN("invalid pony fix requested ",e, " by ",ply)
+				--MsgN("invalid pony fix requested ",e, " by ",ply)
 			end
 		end
 	end)

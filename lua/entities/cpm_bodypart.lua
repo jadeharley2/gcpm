@@ -14,8 +14,23 @@ function ENT:Set(ent,model,color,material,bodygroups)
     self:AddEffects(EF_BONEMERGE)
     self:AddEffects(EF_BONEMERGE_FASTCULL) 
     self:DrawShadow(true)
-    if color then self:SetColor(color) end
-    if material then self:SetMaterial(material) end
+    --MsgN("huh? ",self,self:GetModel()," << ",model)
+    if color then self:SetColor(color)  end
+    if material then 
+        if istable(material) then
+            self:SetMaterial(nil) 
+            for k,v in pairs(material) do 
+                self:SetSubMaterial(k-1, v) 
+            end
+        else
+            self:SetMaterial(material)  
+            for k=1,8 do 
+                self:SetSubMaterial(k-1, nil) 
+            end
+        end
+    else
+        self:SetMaterial(nil) 
+    end
     if bodygroups then
         for k,v in pairs(bodygroups) do
             self:SetBodygroup(k, v)

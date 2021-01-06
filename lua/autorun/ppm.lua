@@ -50,3 +50,10 @@ include("pony_player/ppm/render_v2.lua")
 
 
 include("gcpm/init.lua")  
+
+
+for k,v in pairs(player.GetAll()) do
+	for kk=0,20 do
+		v:SetSubMaterial(kk,nil)
+	end
+end

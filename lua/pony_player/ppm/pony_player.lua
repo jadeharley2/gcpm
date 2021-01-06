@@ -114,14 +114,16 @@ function PPM.setupPony(ent,fake)
 end
 
 function PPM.cleanup(ent)
-	if SERVER then
-		net.Start("ppm_cleanup")
-		net.WriteEntity(ent)
-		net.Broadcast() 
-	end
-	local mcount = #ent:GetMaterials()
-	for k=0,mcount do 
-		ent:SetSubMaterial(k,nil)
+	if IsValid(ent) then
+		if SERVER then
+			net.Start("ppm_cleanup")
+			net.WriteEntity(ent)
+			net.Broadcast() 
+		end
+		local mcount = #ent:GetMaterials()
+		for k=0,mcount do 
+			ent:SetSubMaterial(k,nil)
+		end
 	end
 end
 function PPM.doRespawn(ply)

@@ -51,15 +51,15 @@ function Close()
 end
 parts = parts or {}
 function SetupBodyPart(id,path) 
-	local model2 = parts[id]
-	if model2 then 
-		model2:SetModel(path)
-	else 
-		model2 = ClientsideModel( path , RENDER_GROUP_OPAQUE_ENTITY )  
-		parts[id] = model2
-	end 
-	model2:SetParent(Character)
-	model2:AddEffects(EF_BONEMERGE)
+--	local model2 = parts[id]
+--	if model2 then 
+--		model2:SetModel(path)
+--	else 
+--		model2 = ClientsideModel( path , RENDER_GROUP_OPAQUE_ENTITY )  
+--		parts[id] = model2
+--	end 
+--	model2:SetParent(Character)
+--	model2:AddEffects(EF_BONEMERGE)
 end
 function ClearBodyParts()
 	for k,v in pairs(parts) do
@@ -90,7 +90,11 @@ function BuildWindow()
 	mdl:Dock( FILL )
 	mdl:SetFOV(90)
 	mdl:SetModel( "models/mlp/pony_default/player_default_base.mdl" )
+	
 	Character = mdl.Entity
+	Character.gcpmdata = Data
+ 
+
 	mdl.camang =Angle(0,70,0)
 	mdl.camangadd=Angle(0,0,0)
 	mdl.Think = Think
@@ -116,6 +120,8 @@ function BuildWindow()
 			end
 		}
 	})
+
+	gcpm.Update(Character)
 --	SetupBodyPart("ears","models/mlp/pony_default/parts/chang_ears.mdl")
 	SelectSpecies(Data.species,Data.race)
 	--Select(Window,gcpm.species.pony.default.Parts.body)
@@ -210,7 +216,10 @@ function Paint(self)
 	  
 	Character:SetupBones()
 	Character:DrawModel()
-	for k,v in pairs(parts) do 
+	for k,v in pairs(Character:GetChildren()) do 
+		local c = v:GetColor()
+		--MsgN("c>",c.r," ",c.g," ",c.b)
+		render.SetColorModulation( c.r/255, c.g/255, c.b/255 )
 		v:DrawModel()
 	end
 
@@ -354,15 +363,16 @@ function SelectSpecies(species,race)
 		end
 		Character:SetSkin(model.Skin or 0) 
 
-		local racetbl = data.Races[race]
-		ClearBodyParts()
-		for k,v in pairs(racetbl.Parts) do
-			MsgN("FFF ",k)
-			SetupBodyPart(k,data.PartsDirectory.."/"..v.model)
-		end
+		---local racetbl = data.Races[race]
+		---ClearBodyParts()
+		---for k,v in pairs(racetbl.Parts) do
+		---	MsgN("FFF ",k)
+		---	SetupBodyPart(k,data.PartsDirectory.."/"..v.model)
+		---end
 
 		LoadTabs(data.Editor,60) 
 	end
+	gcpm.Update(Character)
 end
 
 
@@ -432,4 +442,35 @@ end
 function LoadNode(node)
 	SelectedNode = node.Parts
 	SetLook(node.pos,node.fov or 75)
+end
+
+function SetPart(ptype,pname)
+	local bpdata = Character.gcpm_bpdata or {}
+	Character.gcpm_bpdata = bpdata
+
+	local bpent = bpdata[ptype]
+	--if IsValid(bpent) then
+	--	bpent:Remove()
+	--end
+
+	local pdata = gcpm.GetPart(Data,ptype,pname)
+	if pdata and pdata.model then
+		if not IsValid(bpent) then
+			bpent = ents.CreateClientside("cpm_bodypart")
+		end
+		local mpath = gcpm.GetSpecies(Data.species).PartsDirectory .. '/' .. pdata.model
+		if not string.EndsWith(mpath, ".mdl") then
+			mpath = mpath .. '.mdl'
+		end
+		bpent:Set(Character, mpath) 
+	else
+		if IsValid(bpent) then
+			bpent:Remove()
+			bpent = nil
+		end
+	end
+	
+	bpdata[ptype] = bpent
+	parts[ptype] = bpent
+
 end

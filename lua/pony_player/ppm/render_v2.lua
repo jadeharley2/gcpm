@@ -138,11 +138,11 @@ timer.Create("ppm_entcheck", 3.5, 0, function()
         end
     end 
     if #rtd>0 then
-        MsgN("rtd check ",#rtd)
+        --MsgN("rtd check ",#rtd)
         net.Start("ppm_request_fix")
         net.WriteInt(#rtd, 16)
         for k,v in ipairs(rtd) do
-            MsgN("request fix of ",v,v:EntIndex())
+            --MsgN("request fix of ",v,v:EntIndex())
             net.WriteEntity(v)
         end
         net.SendToServer()
