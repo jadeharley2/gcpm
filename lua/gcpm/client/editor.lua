@@ -31,7 +31,7 @@ local CameraPos = Vector(0,0,0)
 local CameraAngles = Angle(0,70,0)
 local CameraAnglesAdd = Angle(0,0,0)
 
-function Open()
+function Open() 
 	if Window then
 		Window:Remove()
 		Window = nil
@@ -90,9 +90,14 @@ function BuildWindow()
 	mdl:Dock( FILL )
 	mdl:SetFOV(90)
 	mdl:SetModel( "models/mlp/pony_default/player_default_base.mdl" )
+	mdl:SetAnimated( true )
 	
+	Data = LocalPlayer().gcpmdata or Data
+
 	Character = mdl.Entity
 	Character.gcpmdata = Data
+	Character.Editor = true
+	Character:SetSequence(0)
  
 
 	mdl.camang =Angle(0,70,0)
@@ -103,7 +108,7 @@ function BuildWindow()
 	mdl.OnMousePressed = OnMousePressed
 
 	Background = Background or LoadBackground("default")
-
+ 
 
 	local APPLY = vgui.Create( "DImageButton", Window ) 
 	APPLY:SetPos( ScrW()/2-64, ScrH()-64 ) 
@@ -128,14 +133,15 @@ function BuildWindow()
 end
 function Apply()  
 	local cm = LocalPlayer():GetInfo( "cl_playermodel" )
-	if(cm!= "pony" and cm!= "ponynj") then
-		RunConsoleCommand( "cl_playermodel", "ponynj" )
+	if cm != "ponytest" then
+		RunConsoleCommand( "cl_playermodel", "ponytest" )
 	end
 
-	LocalPlayer().ponydata = table.Copy(PPM.editor_ponydata)
-	PPM.SendCharToServer(LocalPlayer()) 
-	PPM.Save_settings()  
+	gcpm.SetData(LocalPlayer(),Character.gcpmdata) 
 	colorFlash(APPLY, 0.1, Color(0,200,0),Color(255,255,255)) 
+end
+function colorFlash()
+
 end
 function Think(self)
 	UpdateCamera(self)
@@ -181,6 +187,9 @@ local mat_group_circle = Material("gui/editor/group_circle.png")
 function Paint(self)
 	if not IsValid(Character) then return false end
 
+	--Character:SetSequence(0)
+	--Character:FrameAdvance( 0.1 )
+
 	local x, y = self:LocalToScreen( 0, 0 )
 	local w, h = self:GetSize()
 
@@ -190,9 +199,17 @@ function Paint(self)
 	end
 	cam.Start3D( self.vCamPos, ang, self.fFOV, x, y, w, h, 5, 4096 )
 	cam.IgnoreZ( false )
-	 
-
+	  
 	
+	local species = gcpm.GetSpecies(Data.species)
+	if species and species.Body and species.Body.flexes then
+		for k,v in pairs(species.Body.flexes) do
+			local fi = Character:GetFlexIDByName(k)
+			local val = gcpm.GetDataValue(species,Data,v)
+			Character:SetFlexWeight( fi, val )
+		end
+	end
+
 	render.SuppressEngineLighting( true )
 	render.SetLightingOrigin( Character:GetPos() )
 	render.ResetModelLighting( self.colAmbientLight.r/255, self.colAmbientLight.g/255, self.colAmbientLight.b/255 )
@@ -328,6 +345,7 @@ function NewPanel(v,parent)
 	end
 end
 function SpeciesSelector(Window) 
+	SelectedNode = nil
 	local sspanel = GetPanel(window)
 	NewPanel({type="select_species",name = "Species"},sspanel)
 end
@@ -348,29 +366,29 @@ function SelectSpecies(species,race)
 		local model = data.Models[1]
 		Character:SetModel(data.Directory.."/"..model.File)
 		Character:SetSequence(ACT_IDLE)
-		if model.Bodygroups then
-			for k,v in pairs(model.Bodygroups) do
-				local bg = Character:FindBodygroupByName(k)
-				Character:SetBodygroup(bg, v)
-			end
-		end
-		if model.Flexes then
-			for k,v in pairs(model.Flexes) do
-				local id = Character:GetFlexIDByName(k)
-				Character:SetFlexWeight(id, v)
-				Character:SetFlexScale(1)
-			end
-		end
+		gcpm.InitSpeciesParams(Character) 
+		--if model.Bodygroups then
+		--	for k,v in pairs(model.Bodygroups) do
+		--		local bg = Character:FindBodygroupByName(k)
+		--		Character:SetBodygroup(bg, v)
+		--	end
+		--end
+		--if model.Flexes then
+		--	for k,v in pairs(model.Flexes) do
+		--		local id = Character:GetFlexIDByName(k)
+		--		Character:SetFlexWeight(id, v)
+		--		Character:SetFlexScale(1)
+		--	end
+		--end
 		Character:SetSkin(model.Skin or 0) 
-
 		---local racetbl = data.Races[race]
 		---ClearBodyParts()
 		---for k,v in pairs(racetbl.Parts) do
 		---	MsgN("FFF ",k)
 		---	SetupBodyPart(k,data.PartsDirectory.."/"..v.model)
 		---end
-
-		LoadTabs(data.Editor,60) 
+		SelectedNode = nil
+		LoadTabs(data.Editor,60)  
 	end
 	gcpm.Update(Character)
 end

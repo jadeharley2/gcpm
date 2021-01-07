@@ -38,6 +38,14 @@ function ENT:Set(ent,model,color,material,bodygroups)
     end
 end
 
+function ENT:Draw()
+    local parent = self:GetParent()
+    if IsValid(parent) and (not parent:GetNoDraw() or parent.Editor) then
+        self:SetRenderOrigin( parent:GetPos() )--light origin fix
+        self:DrawModel()
+    end
+end
+
 local function IsBodyPart(ent)
     if not IsValid(ent) then return false end
     local c = ent:GetClass()

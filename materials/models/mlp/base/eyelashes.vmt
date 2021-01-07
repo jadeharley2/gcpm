@@ -1,6 +1,6 @@
 "VertexLitGeneric"
 {
-	"$basetexture" "models/mlp/base/eyelashes" 
+	"$basetexture" "models/mlp/base/wings" 
 
 	"$model" "1"
 	"$phong" "1"

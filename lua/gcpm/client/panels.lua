@@ -23,7 +23,7 @@ panels.edit_color =
         local SELECTOR = vgui.Create("DColorMixer",CONTAINER)
         SELECTOR:SetSize( 100, 100 ) 
         SELECTOR:SetPos( 20, 20 ) 
-        SELECTOR:SetAlphaBar(false)
+        SELECTOR:SetAlphaBar(true)
         
         SELECTOR:SetColor(VALUE)
         INDICATOR:SetColor(VALUE) 

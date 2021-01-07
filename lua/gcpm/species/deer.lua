@@ -8,13 +8,53 @@ gcpm.AddSpecies("deer",{
     PrintName = "Deer",
     Directory = "models/mlp/pony_default",
     Parameters = {
-        coatcolor  = {type="color",name="Coat color"},
-        haircolor1 = {type="color",name="Color 1"},
-        haircolor2 = {type="color",name="Color 2"},
-        haircolor3 = {type="color",name="Color 3"},
-        haircolor4 = {type="color",name="Color 4"},
-        haircolor5 = {type="color",name="Color 5"},
-        haircolor6 = {type="color",name="Color 6"},
+        coatcolor  = {type="color",name="Coat color",default = Color(255,255,255)},
+        hornscolor = {type="color",name="Horns color",default = Color(100,100,100)},
+        haircolor1 = {type="color",name="Color 1",default = Color(255,0,0)},
+        haircolor2 = {type="color",name="Color 2",default = Color(0,255,0)},
+        haircolor3 = {type="color",name="Color 3",default = Color(0,0,255)},
+        haircolor4 = {type="color",name="Color 4",default = Color(255,255,0)},
+        haircolor5 = {type="color",name="Color 5",default = Color(0,255,255)},
+        haircolor6 = {type="color",name="Color 6",default = Color(255,0,255)},
+        
+        eyecolor_bg = {type="color",default = Color(255,255,255)},
+        eyecolor_hole = {type="color",default = Color(0,0,0)},
+        eyecolor_iris = {type="color",default = Color(150,150,150)},
+        eyecolor_grad = {type="color",default = Color(255,150,150)},
+        eyecolor_line1 = {type="color",default = Color(150,255,150)}, 
+        eyecolor_line2 = {type="color",default = Color(150,150,255)},
+        eyeirissize = {type="number",default = 0.6},
+        eyehaslines = {type="bool",default = true}, 
+        eyeholesize = {type="number",default = 0.7},
+        eyejholerssize = {type="number",default = 1},
+ 
+        bodymask1   = {type="string",default="none"},
+        bodymask2   = {type="string",default="none"},
+        bodymask3   = {type="string",default="none"},
+        bodymask4   = {type="string",default="none"},
+        bodymask5   = {type="string",default="none"},
+        bodymask6   = {type="string",default="none"}, 
+        bodymask1_c = {type="color",name="Mask 1 Color",default = Color(255,0,0)},
+        bodymask2_c = {type="color",name="Mask 2 Color",default = Color(255,0,0)},
+        bodymask3_c = {type="color",name="Mask 3 Color",default = Color(255,0,0)},
+        bodymask4_c = {type="color",name="Mask 4 Color",default = Color(255,0,0)},
+        bodymask5_c = {type="color",name="Mask 5 Color",default = Color(255,0,0)},
+        bodymask6_c = {type="color",name="Mask 6 Color",default = Color(255,0,0)},
+    },
+    MaterialBase = { 
+        ["$bumpmap"] = "models/mlp/base/render/body_n",
+        ["$model"] = 1,
+        ["$phong"] = 1,
+        
+        ["$phongexponent"] = 0.6,
+        ["$phongboost"] = 0.5,
+        ["$phongalbedotint"] = 1,
+        ["$phongtint"] = Vector(1,0.95,0.95),
+        ["$phongfresnelranges"] =	Vector(0.5,6,10),
+        
+        ["$rimlight"] =                1,
+        ["$rimlightexponent"] =        2,
+        ["$rimlightboost"] =           1 ,
     },
     Materials = {
         mouth = {},
@@ -203,29 +243,355 @@ gcpm.AddSpecies("deer",{
             }
         } 
     },
+    Body = {
+        materials = {
+            {},
+            {--body
+                mode = "procedural",  
+                layers = {
+                    {
+                        texture = "models/mlp/base/body.png",
+                        color = "$coatcolor"
+                    },
+                    {
+                        texture = "@ 'models/mlp/body/'..(bodymask1 or 'none')..'.png'",
+                        color = "$bodymask1_c", 
+                    },
+                    {
+                        texture = "@ 'models/mlp/body/'..(bodymask2 or 'none')..'.png'",
+                        color = "$bodymask2_c", 
+                    },
+                    {
+                        texture = "@ 'models/mlp/body/'..(bodymask3 or 'none')..'.png'",
+                        color = "$bodymask3_c", 
+                    },
+                    {
+                        texture = "@ 'models/mlp/body/'..(bodymask4 or 'none')..'.png'",
+                        color = "$bodymask4_c", 
+                    },
+                    {
+                        texture = "@ 'models/mlp/body/'..(bodymask5 or 'none')..'.png'",
+                        color = "$bodymask5_c", 
+                    },
+                    {
+                        texture = "@ 'models/mlp/body/'..(bodymask6 or 'none')..'.png'",
+                        color = "$bodymask6_c", 
+                    },
+                } 
+            },
+            {--lefteye
+                mode = "procedural",  
+                shader = "eyes",
+                target = "iris",
+                clear = "$eyecolor_bg",
+                layers = {
+                    {
+                        texture = "models/mlp/partrender/eye_oval.png",
+                        color = "$eyecolor_iris",
+                        w = "$eyeirissize",
+                        h = "$eyeirissize",
+                    },
+                    {
+                        texture = "models/mlp/partrender/eye_grad.png",
+                        color = "$eyecolor_grad",
+                        w = "$eyeirissize",
+                        h = "$eyeirissize",
+                    },
+                    {
+                        enabled = "$eyehaslines",
+                        texture = "models/mlp/partrender/eye_line_l2.png",
+                        color = "$eyecolor_line2",
+                        w = "$eyeirissize",
+                        h = "$eyeirissize",
+                    },
+                    {
+                        enabled = "$eyehaslines",
+                        texture = "models/mlp/partrender/eye_line_l1.png",
+                        color = "$eyecolor_line1",
+                        w = "$eyeirissize",
+                        h = "$eyeirissize",
+                    },
+                    {
+                        texture = "models/mlp/partrender/eye_oval.png",
+                        color = "$eyecolor_hole",
+                        w = "@ eyeirissize * eyeholesize * eyejholerssize",
+                        h = "@ eyeirissize * eyeholesize",
+                    },
+                    {
+                        texture = "models/mlp/partrender/eye_effect.png",
+                        color = Color(255,255,255),
+                        w = "$eyeirissize",
+                        h = "$eyeirissize",
+                    },
+                    {
+                        texture = "models/mlp/partrender/eye_reflection.png",
+                        color = Color(255,255,255),
+                        w = "$eyeirissize",
+                        h = "$eyeirissize",
+                    },
+                } 
+            },
+            {--righteye
+                mode = "procedural",  
+                shader = "eyes",
+                target = "iris",
+                clear = "$eyecolor_bg",
+                layers = {
+                    {
+                        texture = "models/mlp/partrender/eye_oval.png",
+                        color = "$eyecolor_iris",
+                        w = "$eyeirissize",
+                        h = "$eyeirissize",
+                    },
+                    {
+                        texture = "models/mlp/partrender/eye_grad.png",
+                        color = "$eyecolor_grad",
+                        w = "$eyeirissize",
+                        h = "$eyeirissize",
+                    },
+                    {
+                        enabled = "$eyehaslines",
+                        texture = "models/mlp/partrender/eye_line_r2.png",
+                        color = "$eyecolor_line2",
+                        w = "$eyeirissize",
+                        h = "$eyeirissize",
+                    },
+                    {
+                        enabled = "$eyehaslines",
+                        texture = "models/mlp/partrender/eye_line_r1.png",
+                        color = "$eyecolor_line1",
+                        w = "$eyeirissize",
+                        h = "$eyeirissize",
+                    },
+                    {
+                        texture = "models/mlp/partrender/eye_oval.png",
+                        color = "$eyecolor_hole",
+                        w = "@ eyeirissize * eyeholesize * eyejholerssize",
+                        h = "@ eyeirissize * eyeholesize",
+                    },
+                    {
+                        texture = "models/mlp/partrender/eye_effect.png",
+                        color = Color(255,255,255),
+                        w = "$eyeirissize",
+                        h = "$eyeirissize",
+                    },
+                    {
+                        texture = "models/mlp/partrender/eye_reflection.png",
+                        color = Color(255,255,255),
+                        w = "$eyeirissize",
+                        h = "$eyeirissize",
+                    },
+                } 
+            }
+        }
+    },
     PartsDirectory = "models/mlp/pony_default/parts",
     Parts = {
         ears = {
             variants = {
-                head_01_ears={model="head_01_ears.mdl"}
+                head_01_ears={
+                    model="head_01_ears.mdl",
+                    material = {
+                        mode = "color",  
+                        texture = "models/mlp/base/body",
+                        params = "coatcolor"
+                    } 
+                }
             }
-        },
-        wings = {
+        }, 
+        horns = {
             variants = {
                 none = {},
-                head_01_ears={model="head_01_ears.mdl"}
+                horns_01={
+                    model="deerhorns_01.mdl",
+                    material = {
+                        mode = "color",   
+                        params = "hornscolor"
+                    }
+                }
             }
         },
-        horn = {
-            variants = {
-                none = {},
-                horn_01={model="horn_01.mdl"}
-            }
-        },
+       
         uppermane = {
-            basematerial = "uppermane",
+            basematerial = "uppermane", 
             variants = {
-                none = {},  
+                none = {}, 
+                ["DERPY"]      = {
+                    model="uppermane_01",
+                    material = {mode = "color", params = "haircolor1"}
+                },
+                ["BON BON"]    = {
+                    model="uppermane_02",
+                    material = {mode = "color", params = {"haircolor1","haircolor2"}}
+                },
+                ["LYRA"]       = {
+                    model="uppermane_03",
+                    material = {
+                        mode = "color", 
+                        params = {"haircolor1","haircolor2"}
+                    }
+                },
+                ["TRIXIE"]     = {
+                    model="uppermane_04",
+                    material = {
+                        mode = "color", 
+                        params = {"haircolor1","haircolor2"}
+                    }
+                },
+                ["FLUTTERSHY"] = {
+                    model="uppermane_05",
+                    material = {
+                        mode = "procedural", 
+                        clear = "$haircolor1",
+                        layers = {
+                            {
+                                texture = "models/mlp/partrender/upmane_5_mask0.png",
+                                color = "$haircolor2"
+                            }
+                        } 
+                    }
+                },
+                ["MANE6"]      = {
+                    model="uppermane_06",
+                    material = {
+                        mode = "procedural", 
+                        clear = "$haircolor1",
+                        layers = {
+                            {
+                                texture = "models/mlp/partrender/upmane_6_mask0.png",
+                                color = "$haircolor2"
+                            }
+                        } 
+                    } 
+                },
+                ["MANE7"]      = {
+                    model="uppermane_07",
+                    material = {mode = "color", params = "haircolor1"}
+                },
+                ["RAINBOW"]    = {
+                    model="uppermane_08",
+                    material = {
+                        mode = "procedural", 
+                        clear = "$haircolor1",
+                        layers = {
+                            {
+                                texture = "models/mlp/partrender/upmane_8_mask0.png",
+                                color = "$haircolor2"
+                            },
+                            {
+                                texture = "models/mlp/partrender/upmane_8_mask1.png",
+                                color = "$haircolor3"
+                            }
+                        } 
+                    }  
+                },
+                ["VINYL"]      = {
+                    model="uppermane_09",
+                    material = {
+                        mode = "procedural", 
+                        clear = "$haircolor1",
+                        layers = {
+                            {
+                                texture = "models/mlp/partrender/upmane_9_mask0.png",
+                                color = "$haircolor2"
+                            },
+                            {
+                                texture = "models/mlp/partrender/upmane_9_mask1.png",
+                                color = "$haircolor3"
+                            },
+                            {
+                                texture = "models/mlp/partrender/upmane_9_mask2.png",
+                                color = "$haircolor4"
+                            }
+                        } 
+                    }   
+                },
+                ["HOOVES"]     = {
+                    model="uppermane_10",
+                    material = {
+                        mode = "procedural", 
+                        clear = "$haircolor1",
+                        layers = {
+                            {
+                                texture = "models/mlp/partrender/upmane_10_mask0.png",
+                                color = "$haircolor2"
+                            }, 
+                        } 
+                    }   
+                },
+                ["TWILIGHT"]   = {
+                    model="uppermane_11",
+                    material = {
+                        mode = "procedural", 
+                        clear = "$haircolor1",
+                        layers = {
+                            {
+                                texture = "models/mlp/partrender/upmane_11_mask0.png",
+                                color = "$haircolor2"
+                            },
+                            {
+                                texture = "models/mlp/partrender/upmane_11_mask1.png",
+                                color = "$haircolor3"
+                            },
+                            {
+                                texture = "models/mlp/partrender/upmane_11_mask2.png",
+                                color = "$haircolor4"
+                            }
+                        } 
+                    }   
+                },
+                ["APPLEJACK"]  = {
+                    model="uppermane_12",
+                    material = {
+                        mode = "procedural", 
+                        clear = "$haircolor1",
+                        layers = {
+                            {
+                                texture = "models/mlp/partrender/upmane_12_mask0.png",
+                                color = "$haircolor2"
+                            }, 
+                        } 
+                    }   
+                },
+                ["PINKIE"]     = {
+                    model="uppermane_13",
+                    material = {
+                        mode = "procedural", 
+                        clear = "$haircolor1",
+                        layers = {
+                            {
+                                texture = "models/mlp/partrender/upmane_13_mask0.png",
+                                color = "$haircolor2"
+                            }, 
+                        } 
+                    }   
+                },
+                ["RARITY"]     = {
+                    model="uppermane_14",
+                    material = {
+                        mode = "procedural", 
+                        clear = "$haircolor1",
+                        layers = {
+                            {
+                                texture = "models/mlp/partrender/upmane_14_mask0.png",
+                                color = "$haircolor2"
+                            }, 
+                        } 
+                    }   
+                },
+                ["SPITFIRE"]   = {
+                    model="uppermane_15",
+                    material = {
+                        mode = "procedural", 
+                        clear = "$haircolor1",
+                        layers = {
+                            {
+                                texture = "models/mlp/partrender/upmane_15_mask0.png",
+                                color = "$haircolor2"
+                            }, 
+                        } 
+                    }   
+                }, 
             }
         },
         lowermane = {
@@ -236,6 +602,7 @@ gcpm.AddSpecies("deer",{
         tail = {
             variants = {
                 none = {}, 
+                deertail_01 = {model="deertail_01.mdl"},
             }
         }, 
     },
@@ -243,16 +610,16 @@ gcpm.AddSpecies("deer",{
         deer = {
             name = "Generic deer",
             Parts = {
-                ears = {model="head_01_ears.mdl"},
-                horns = {model="deerhorns_01.mdl"},
-                tail = {model="deertail_01.mdl"},
+                ears = { whitelist = {"head_01_ears"} }, 
+                horns = { whitelist = {"horns_01"} }, 
+                --tail = {model="deertail_01.mdl"},
             }
         }, 
     },
     Editor = {
         body = {
             name = "Body" ,
-            pos = Vector(10,0,20),
+            pos = Vector(0,0,28),
             params =
             {  
                 {
@@ -313,6 +680,23 @@ gcpm.AddSpecies("deer",{
                             type = "edit_color",
                             param = "haircolor6"
                         }
+                    } 
+                },
+                
+                horns = {
+                    name = "Horns" , 
+                    pos = Vector(0,0,55),
+                    params = { 
+                       -- {
+                       --     name = "Mane Upper" ,
+                       --     type = "edit_part",
+                       --     param = "uppermane", 
+                       -- }, 
+                        {
+                            name = "Color" ,
+                            type = "edit_color",
+                            param = "hornscolor"
+                        },  
                     } 
                 },
                 lowermane = {
@@ -453,8 +837,9 @@ gcpm.AddSpecies("deer",{
             }
         },
         head = {
-            name = "Head" ,
-            pos = Vector(15,-5,40),
+            name = "Face" ,
+            pos = Vector(15,0,40),
+            fov = 30,
             Parts = {
                 eyes = {
                     name = "Eyes" , 

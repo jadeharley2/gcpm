@@ -211,7 +211,7 @@ gcpm.AddSpecies("changelling",{
     Parts = {
         ears = {
             variants = {
-                head_01_ears={model="head_01_ears.mdl"}
+                chang_ears={model="chang_ears.mdl"}
             }
         },
         wings = {
@@ -223,23 +223,20 @@ gcpm.AddSpecies("changelling",{
         horn = {
             variants = {
                 none = {},
-                horn_01={model="horn_01.mdl"}
+                changhorn_01={model="changhorn_01.mdl"}
             }
         },
-        uppermane = {
+        mane = {
             basematerial = "uppermane",
             variants = {
                 none = {},  
+                changmane_01={model="changmane_01.mdl"}
             }
-        },
-        lowermane = {
-            variants = {
-                none = {}, 
-            }
-        },
+        }, 
         tail = {
             variants = {
                 none = {}, 
+                changtail_01={model="changtail_01.mdl"}
             }
         }, 
     },
@@ -247,10 +244,10 @@ gcpm.AddSpecies("changelling",{
         changelling = {
             name = "Generic changelling",
             Parts = {
-                ears = {model="chang_ears.mdl"},
-                horn = {model="changhorn_01.mdl"},
-                mane = {model="changmane_01.mdl"},
-                tail = {model="changtail_01.mdl"},
+                ears = {whitelist={"chang_ears"}},
+                horn = {whitelist={"changhorn_01"}},
+                mane = {whitelist={"changmane_01"}},
+                tail = {whitelist={"changtail_01"}},
             }
         }, 
     },

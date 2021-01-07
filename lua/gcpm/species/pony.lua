@@ -18,6 +18,13 @@ gcpm.AddSpecies("pony",{
         haircolor5 = {type="color",name="Color 5",default = Color(0,255,255)},
         haircolor6 = {type="color",name="Color 6",default = Color(255,0,255)},
         
+        horncolor =  {type="color",name="Horn Color",default = Color(150,150,150)},
+
+        bodyweight  = {type="number",default = 1,min=0.8,max=1.2},
+        tailsize    = {type="number",default = 1,min=0.5,max=1.5},
+        lmanesize   = {type="number",default = 1,min=0.5,max=1.5},
+        umanesize   = {type="number",default = 1,min=0.5,max=1.5},
+        
         eyecolor_bg = {type="color",default = Color(255,255,255)},
         eyecolor_hole = {type="color",default = Color(0,0,0)},
         eyecolor_iris = {type="color",default = Color(150,150,150)},
@@ -28,6 +35,17 @@ gcpm.AddSpecies("pony",{
         eyehaslines = {type="bool",default = true}, 
         eyeholesize = {type="number",default = 0.7},
         eyejholerssize = {type="number",default = 1},
+
+        eyelashes_type = {type="number",default = 0},
+        eyelashes_color = {type="color",name="Horn Color",default = Color(10,10,10)},
+
+        eyeshadow =  {type="color",default = Color(150,150,255)},
+        eyeliner =   {type="color",default = Color(150,150,255)},
+        lips    =   {type="color",default = Color(150,150,255)},
+        
+        head_form_0 = {type="number",default = 0,min=0,max=1},
+        eye_form = {type="number",default = 0,min=0,max=1},
+        eyelash_form = {type="number",default = 0,min=0,max=1},
  
         bodymask1   = {type="string",default="none"},
         bodymask2   = {type="string",default="none"},
@@ -36,14 +54,29 @@ gcpm.AddSpecies("pony",{
         bodymask5   = {type="string",default="none"},
         bodymask6   = {type="string",default="none"}, 
         bodymask1_c = {type="color",name="Mask 1 Color",default = Color(255,0,0)},
-        bodymask2_c = {type="color",name="Mask 1 Color",default = Color(255,0,0)},
-        bodymask3_c = {type="color",name="Mask 1 Color",default = Color(255,0,0)},
-        bodymask4_c = {type="color",name="Mask 1 Color",default = Color(255,0,0)},
-        bodymask5_c = {type="color",name="Mask 1 Color",default = Color(255,0,0)},
-        bodymask6_c = {type="color",name="Mask 1 Color",default = Color(255,0,0)},
+        bodymask2_c = {type="color",name="Mask 2 Color",default = Color(255,0,0)},
+        bodymask3_c = {type="color",name="Mask 3 Color",default = Color(255,0,0)},
+        bodymask4_c = {type="color",name="Mask 4 Color",default = Color(255,0,0)},
+        bodymask5_c = {type="color",name="Mask 5 Color",default = Color(255,0,0)},
+        bodymask6_c = {type="color",name="Mask 6 Color",default = Color(255,0,0)},
+    },
+    MaterialBase = { 
+        ["$bumpmap"] = "models/mlp/base/render/body_n",
+        ["$model"] = 1,
+        ["$phong"] = 1,
+        
+        ["$phongexponent"] = 0.6,
+        ["$phongboost"] = 0.5,
+        ["$phongalbedotint"] = 1,
+        ["$phongtint"] = Vector(1,0.95,0.95),
+        ["$phongfresnelranges"] =	Vector(0.5,6,10),
+        
+        ["$rimlight"] =                1,
+        ["$rimlightexponent"] =        2,
+        ["$rimlightboost"] =           1 ,
     },
     Materials = {
-        mouth = {},
+        mouth = {}, 
         body = {
             params = {
                 ["$basetexture"] = "models/mlp/base/body",
@@ -238,6 +271,7 @@ gcpm.AddSpecies("pony",{
     },
     PartsDirectory = "models/mlp/pony_default/parts",
     Body = {
+        skin = "eyelashes_type",
         materials = {
             {},
             {--body
@@ -271,49 +305,22 @@ gcpm.AddSpecies("pony",{
                         texture = "@ 'models/mlp/body/'..(bodymask6 or 'none')..'.png'",
                         color = "$bodymask6_c", 
                     },
+                    
+                    {
+                        texture = "@ 'models/mlp/parts/eyeshadow.png'",
+                        color = "$eyeshadow", 
+                    },
+                    {
+                        texture = "@ 'models/mlp/parts/eyeline.png'",
+                        color = "$eyeliner", 
+                    },
+                    {
+                        texture = "@ 'models/mlp/parts/lips.png'",
+                        color = "$lips", 
+                    },
                 } 
             },
             {--lefteye
-                mode = "procedural",  
-                shader = "eyes",
-                target = "iris",
-                clear = "$eyecolor_bg",
-                layers = {
-                    {
-                        texture = "models/mlp/partrender/eye_oval.png",
-                        color = "$eyecolor_iris",
-                        w = "$eyeirissize",
-                        h = "$eyeirissize",
-                    },
-                    {
-                        texture = "models/mlp/partrender/eye_grad.png",
-                        color = "$eyecolor_grad",
-                        w = "$eyeirissize",
-                        h = "$eyeirissize",
-                    },
-                    {
-                        enabled = "$eyehaslines",
-                        texture = "models/mlp/partrender/eye_line_l2.png",
-                        color = "$eyecolor_line2",
-                        w = "$eyeirissize",
-                        h = "$eyeirissize",
-                    },
-                    {
-                        enabled = "$eyehaslines",
-                        texture = "models/mlp/partrender/eye_line_l1.png",
-                        color = "$eyecolor_line1",
-                        w = "$eyeirissize",
-                        h = "$eyeirissize",
-                    },
-                    {
-                        texture = "models/mlp/partrender/eye_oval.png",
-                        color = "$eyecolor_hole",
-                        w = "@ eyeirissize * eyeholesize * eyejholerssize",
-                        h = "@ eyeirissize * eyeholesize",
-                    },
-                } 
-            },
-            {--righteye
                 mode = "procedural",  
                 shader = "eyes",
                 target = "iris",
@@ -351,32 +358,157 @@ gcpm.AddSpecies("pony",{
                         w = "@ eyeirissize * eyeholesize * eyejholerssize",
                         h = "@ eyeirissize * eyeholesize",
                     },
+                    {
+                        texture = "models/mlp/partrender/eye_effect.png",
+                        color = Color(255,255,255),
+                        w = "$eyeirissize",
+                        h = "$eyeirissize",
+                    },
+                    {
+                        texture = "models/mlp/partrender/eye_reflection.png",
+                        color = Color(255,255,255),
+                        w = "$eyeirissize",
+                        h = "$eyeirissize",
+                    },
                 } 
+            },
+            {--righteye
+                mode = "procedural",  
+                shader = "eyes",
+                target = "iris",
+                clear = "$eyecolor_bg",
+                layers = {
+                    {
+                        texture = "models/mlp/partrender/eye_oval.png",
+                        color = "$eyecolor_iris",
+                        w = "$eyeirissize",
+                        h = "$eyeirissize",
+                    },
+                    {
+                        texture = "models/mlp/partrender/eye_grad.png",
+                        color = "$eyecolor_grad",
+                        w = "$eyeirissize",
+                        h = "$eyeirissize",
+                    },
+                    {
+                        enabled = "$eyehaslines",
+                        texture = "models/mlp/partrender/eye_line_l2.png",
+                        color = "$eyecolor_line2",
+                        w = "$eyeirissize",
+                        h = "$eyeirissize",
+                    },
+                    {
+                        enabled = "$eyehaslines",
+                        texture = "models/mlp/partrender/eye_line_l1.png",
+                        color = "$eyecolor_line1",
+                        w = "$eyeirissize",
+                        h = "$eyeirissize",
+                    },
+                    {
+                        texture = "models/mlp/partrender/eye_oval.png",
+                        color = "$eyecolor_hole",
+                        w = "@ eyeirissize * eyeholesize * eyejholerssize",
+                        h = "@ eyeirissize * eyeholesize",
+                    },
+                    {
+                        texture = "models/mlp/partrender/eye_effect.png",
+                        color = Color(255,255,255),
+                        w = "$eyeirissize",
+                        h = "$eyeirissize",
+                    },
+                    {
+                        texture = "models/mlp/partrender/eye_reflection.png",
+                        color = Color(255,255,255),
+                        w = "$eyeirissize",
+                        h = "$eyeirissize",
+                    },
+                } 
+            },  
+            {
+                mode = "color", 
+                params = "eyelashes_color"
+            },   
+            {
+                mode = "color", 
+                texture = "models/mlp/base/l0",
+                params = "eyelashes_color",
+                matdata = {
+                    ["$alphatest"] = 1
+                },
+            },   
+            {
+                mode = "color", 
+                texture = "models/mlp/base/l1",
+                params = "eyelashes_color",
+                matdata = {
+                    ["$alphatest"] = 1
+                },
+            },  
+        },
+        flexes = {
+            m01 = "head_form_0",
+            e01 = "eye_form",
+            eyelashesturn = "eyelash_form"
+        },
+        bones = {
+            groups = {
+                leg_bl = {"Lrig_LEG_BL_Femur","Lrig_LEG_BL_Tibia",
+                "Lrig_LEG_BL_LargeCannon","Lrig_LEG_BL_PhalanxPrima","Lrig_LEG_BL_RearHoof"},
+                leg_br = {"Lrig_LEG_BR_Femur","Lrig_LEG_BR_Tibia",
+                "Lrig_LEG_BR_LargeCannon","Lrig_LEG_BR_PhalanxPrima","Lrig_LEG_BR_RearHoof"}, 
+                leg_fl = {"Lrig_LEG_FL_Scapula","Lrig_LEG_FL_Humerus","Lrig_LEG_FL_Radius",
+                "Lrig_LEG_FL_Metacarpus","Lrig_LEG_FL_PhalangesManus","Lrig_LEG_FL_FrontHoof"},
+                leg_fr = {"Lrig_LEG_FR_Scapula","Lrig_LEG_FR_Humerus","Lrig_LEG_FR_Radius",
+                "Lrig_LEG_FR_Metacarpus","Lrig_LEG_FR_PhalangesManus","Lrig_LEG_FR_FrontHoof"},
+                neck = {"LrigNeck1","LrigNeck2","LrigNeck3"},
+                ribcage = {"LrigSpine1","LrigSpine2","LrigRibcage"},
+                rear = {"LrigPelvis"},
+                tail = {"Tail01","Tail02","Tail03"},--,"LrigTail4","LrigTail5","LrigTail6"},
+                uppermane = {"Mane01","Mane04","Mane05","Mane06","Mane07"},
+                lowermane = {"Mane02","Mane03","Mane03_tip"},
+            },
+            modifiers = {
+
             }
         }
     },
     Parts = {
-        ears = {
-            tint = "coatcolor",
+        ears = { 
             material = "body",
             variants = {
-                head_01_ears={model="head_01_ears.mdl"}
+                head_01_ears={
+                    model="head_01_ears.mdl",
+                    material = {mode = "color", texture = "models/mlp/base/body", params = "coatcolor"}
+                }
             }
         },
-        wings = {
-            tint = "coatcolor",
+        wings = { 
             material = "wings",
             variants = {
                 none = {},
-                head_01_ears={model="head_01_ears.mdl"}
+                wings_01={
+                    model="wings_01_folded.mdl",
+                    material = {mode = "color", params = "coatcolor"}
+                }
             }
         },
-        horn = {
-            tint = "coatcolor",
+        horn = { 
             material = "horn",
             variants = {
                 none = {},
-                horn_01={model="horn_01.mdl"}
+                horn_01={
+                    model="horn_01.mdl", 
+                    material = {
+                        mode = "procedural", 
+                        clear = "$coatcolor",
+                        layers = {
+                            {
+                                texture = "models/mlp/parts/horn.png",
+                                color = "$horncolor"
+                            }
+                        } 
+                    }
+                }
             }
         },
         uppermane = {
@@ -839,36 +971,36 @@ gcpm.AddSpecies("pony",{
         earth = {
             name = "Earth",
             Parts = {
-                ears = {model="head_01_ears.mdl"},
+                ears = { whitelist = {"head_01_ears"} },
             }
         },
         pegasus = {
             name = "Pegasus",
-            Parts = {
-                ears = {model="head_01_ears.mdl"},
-                wings = {model="wings_01_folded.mdl"},
+            Parts = { 
+                ears = { whitelist = {"head_01_ears"} },
+                wings = { whitelist = {"wings_01"} }
             }
         },
         batpony = {
             name = "Bat",
             Parts = {
-                ears = {model="head_01_ears.mdl"},
-                wings = {model="wings_01_folded.mdl"},
+                ears = { whitelist = {"head_01_ears"} },
+                wings = { whitelist = {"wings_01"} }
             }
         },
         unicorn = {
             name = "Unicorn",
             Parts = {
-                ears = {model="head_01_ears.mdl"},
-                horn = {model="horn_01.mdl"},
+                ears = { whitelist = {"head_01_ears"} },
+                horn = { whitelist = {"horn_01"} },
             }
         },
         alicorn = {
             name = "Alicorn",
             Parts = {
-                ears = {model="head_01_ears.mdl"},
-                horn = {model="horn_01.mdl"},
-                wings = {model="wings_01_folded.mdl"},
+                ears = { whitelist = {"head_01_ears"} },
+                horn = { whitelist = {"horn_01"} },
+                wings = { whitelist = {"wings_01"} }
             }
         }
     },
@@ -896,14 +1028,38 @@ gcpm.AddSpecies("pony",{
                         }
                     },
                 },
+                
+                horn = {
+                    name = "Horn" , 
+                    pos = Vector(18,0,55),
+                    params = { 
+                       -- {
+                       --     name = "Mane Upper" ,
+                       --     type = "edit_part",
+                       --     param = "uppermane", 
+                       -- }, 
+                        {
+                            name = "Color" ,
+                            type = "edit_color",
+                            param = "horncolor"
+                        },  
+                    } 
+                },
                 uppermane = {
                     name = "Uppermane" , 
-                    pos = Vector(18,0,55),
+                    pos = Vector(7,0,55),
                     params = { 
                         {
                             name = "Mane Upper" ,
                             type = "edit_part",
                             param = "uppermane", 
+                        }, 
+                        {
+                            name = "Size" ,
+                            type = "edit_number", 
+                            param = "umanesize",
+                            min = 0.5,
+                            max = 1.5
                         }, 
                         {
                             name = "Color 1" ,
@@ -942,9 +1098,16 @@ gcpm.AddSpecies("pony",{
                     pos = Vector(5,0,40),
                     params = {
                         {
-                            name = "Tail" ,
+                            name = "Lower mane" ,
                             type = "edit_part",
                             param = "lowermane", 
+                        }, 
+                        {
+                            name = "Size" ,
+                            type = "edit_number", 
+                            param = "lmanesize",
+                            min = 0.5,
+                            max = 1.5
                         }, 
                         {
                             name = "Color 1" ,
@@ -986,12 +1149,13 @@ gcpm.AddSpecies("pony",{
                             name = "Tail" ,
                             type = "edit_part",
                             param = "tail", 
-                        }, 
-                        tailsize = {
-                            name = "Tail size" ,
-                            type = "number", 
-                            min = 0.8,
-                            max = 1.1
+                        },  
+                        {
+                            name = "Size" ,
+                            type = "edit_number", 
+                            param = "tailsize",
+                            min = 0.5,
+                            max = 1.5
                         }, 
                         {
                             name = "Color 1" ,
@@ -1075,7 +1239,7 @@ gcpm.AddSpecies("pony",{
             }
         },
         head = {
-            name = "Head" ,
+            name = "Face" ,
             pos = Vector(15,0,40),
             fov = 30,
             Parts = {
@@ -1083,6 +1247,13 @@ gcpm.AddSpecies("pony",{
                     name = "Eyes" , 
                     pos = Vector(15,-5,40),
                     params = {
+                        {
+                            name = "Form" ,
+                            type = "edit_number",
+                            param = "eye_form",
+                            min = 0,
+                            max = 1
+                        }, 
                         {
                             name = "Back color" ,
                             type = "edit_color",
@@ -1149,7 +1320,7 @@ gcpm.AddSpecies("pony",{
                     pos = Vector(12,7,45), 
                     params = {
                         { 
-                            name = "Ty2pe" ,
+                            name = "Type" ,
                             type = "edit_skin",
                             param = "eyelashes_type",
                             choices = {
@@ -1160,10 +1331,46 @@ gcpm.AddSpecies("pony",{
                             }
                         },  
                         {
+                            name = "Rotation" ,
+                            type = "edit_number",
+                            param = "eyelash_form",
+                            min = 0,
+                            max = 1
+                        }, 
+                        {
                             name = "Color" ,
                             type = "edit_color",
                             param = "eyelashes_color"
                         },  
+                        {
+                            name = "Eyeliner" ,
+                            type = "edit_color",
+                            param = "eyeliner"
+                        },  
+                        {
+                            name = "Eyeshadow" ,
+                            type = "edit_color",
+                            param = "eyeshadow"
+                        },   
+                    }
+                },
+                
+                mouth = {
+                    name = "Mouth" , 
+                    pos = Vector(20,0,38),
+                    params = { 
+                        {
+                            name = "Form" ,
+                            type = "edit_number",
+                            param = "head_form_0",
+                            min = 0,
+                            max = 1
+                        }, 
+                        {
+                            name = "Lips" ,
+                            type = "edit_color",
+                            param = "lips"
+                        }, 
                     }
                 }
             }
