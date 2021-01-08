@@ -142,6 +142,12 @@ function GetSpecies(k)
         return species[k] 
     end
 end
+function GetRace(data)
+    local spc = GetSpecies(data.species)
+    if spc then
+        return spc.Races[data.race], spc
+    end
+end
 function GetSpeciesList()
     return species
 end
@@ -155,8 +161,25 @@ function GetParts(data,ptype)
     end
     return {}
 end
+function GetTexParts(data,ptype)
+    local species = GetSpecies(data.species)
+    if species then
+        local parts = species.TexParts[ptype]
+        if parts then
+            return parts.variants or {}
+        end
+    end
+    return {}
+end
 function GetPart(data,ptype,pvalue)
     local parts = GetParts(data,ptype)
+    if parts then
+        return parts[pvalue] 
+    end
+    return nil
+end
+function GetTexPart(data,ptype,pvalue)
+    local parts = GetTexParts(data,ptype) 
     if parts then
         return parts[pvalue] 
     end
@@ -187,3 +210,69 @@ include("gcpm/processors/bodygroup.lua")
 
 
 MsgN("gcpm init finished")
+
+
+
+
+--temp blink timer
+if CLIENT then
+
+    local function Blink(ent)
+        if IsValid(ent) then
+            ent.blinktarget = 1
+            timer.Create("unblink", 0.1, 1, function()
+                ent.blinktarget = 0 
+            end)
+        end
+        timer.Create("gcpm_blink", math.Rand(4.6, 7), 1, function()  
+            Blink(ent)
+        end)
+    end
+
+    timer.Create("gcpm_blink", 2, 1, function() 
+        local lp = LocalPlayer()
+        Blink(lp)
+    end)
+    hook.Add("PrePlayerDraw", "gcpm_blink", function(ply, flags)
+        local bt = ply.blinktarget
+        if bt then 
+            local bts = ply.blinktargetsmooth or 0
+            bts = bts + (bt - bts) * 0.1
+            ply.blinktargetsmooth = bts 
+
+            local bl = ply:GetFlexIDByName("blink")
+            ply:SetFlexWeight(bl, bts)
+        end
+    end)
+
+end
+
+--temp noclip flight anim
+if SERVER then
+    util.AddNetworkString("gcpm_event")
+    hook.Add("PlayerNoClip", "gcpm_flight", function(ply,state)
+        net.Start("gcpm_event")
+        net.WriteUInt(1, 8)
+        net.WriteEntity(ply)
+        net.WriteBit(state)
+        net.Broadcast()
+
+        MsgN("NOCLIPPP ",ply," = ",state)
+    end)
+else
+    net.Receive("gcpm_event", function() 
+        local eid = net.ReadUInt(8)
+        local ply= net.ReadEntity()
+        local state = net.ReadBit()
+
+        if state == 1 then
+            ply:GetCPPart("wings"):SetState("open")
+            --ply:SetLayerSequence(21,seq)
+        else --if ply.flight_layer then
+            MsgN("?????")
+            ply:GetCPPart("wings"):SetState("close")
+           -- ply:SetLayerSequence(ply.flight_layer,0)
+            --ply.flight_layer
+        end
+    end)
+end

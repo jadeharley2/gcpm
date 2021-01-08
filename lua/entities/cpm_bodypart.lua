@@ -4,10 +4,46 @@ DEFINE_BASECLASS( "base_anim" )
 
 function ENT:Initialize()
  
-	if ( CLIENT ) then return end
+    self.state = false
+    if ( CLIENT ) then return end
+     
 end
+function ENT:SetBasePath(basepath)
+    self.basepath = basepath
+end
+function ENT:SetStates(states)
+    self.states = states 
+end
+function ENT:SetState(stateid)
+    self.state = self.states[stateid] 
+    self.stateid = stateid
+
+    local nstate = self.state
+    if nstate.model then
+        self:SetModel(self.basepath  ..'/'.. nstate.model)  
+    end
+    if nstate.sequence then
+        local sid = self:LookupSequence(nstate.sequence)
+        self:ResetSequence(sid)
+        if nstate.next then
+            local delay = self:SequenceDuration(sid)
+            --MsgN("DELAY ",delay," < ",nstate.sequence)
+            timer.Simple(delay, function()
+                self:SetState(nstate.next)
+            end)
+        end
+    else
+        if nstate.next and nstate.next~=stateid then 
+            self:SetState(nstate.next)
+        end
+    end
+end
+function ENT:GetState() 
+    return self.stateid
+end
+
 function ENT:Set(ent,model,color,material,bodygroups)
-    self:SetModel(model) 
+    self:SetModel(model)  
     self:SetPos(ent:GetPos())
     self:SetAngles(ent:GetAngles())
     self:SetParent(ent)
@@ -42,6 +78,7 @@ function ENT:Draw()
     local parent = self:GetParent()
     if IsValid(parent) and (not parent:GetNoDraw() or parent.Editor) then
         self:SetRenderOrigin( parent:GetPos() )--light origin fix
+        self:FrameAdvance()
         self:DrawModel()
     end
 end

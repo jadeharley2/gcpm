@@ -63,34 +63,32 @@ hook.Add("GCPMUpdate", "body", function(ent,data,species)
     if species.Body and CLIENT then 
         local b = species.Body.bones
         if b then
-            local bodyweight = GetDataValue(species,data,'bodyweight')
-
-            RescaleRIGPART(ent, b.groups.leg_bl ,Vector( 1,1,1 )*bodyweight)
-            RescaleRIGPART(ent, b.groups.leg_br ,Vector( 1,1,1 )*bodyweight)
-            RescaleRIGPART(ent, b.groups.leg_fl ,Vector( 1,1,1 )*bodyweight)
-            RescaleRIGPART(ent, b.groups.leg_fr ,Vector( 1,1,1 )*bodyweight)
-            RescaleRIGPART(ent, b.groups.neck ,Vector( 1,1,1 )*bodyweight)
-            RescaleRIGPART(ent, b.groups.rear ,Vector( 1,1,1 )*bodyweight)
-
-            local tail = ent:GetCPPart("tail") 
-            if IsValid(tail) then
-                local val = GetDataValue(species,data,'tailsize')
-                RescaleRIGPART(tail, b.groups.tail ,Vector( 1,1,1 )*val) 
-            end
-            
-            local lowermane = ent:GetCPPart("lowermane") 
-            if IsValid(lowermane) then
-                local val = GetDataValue(species,data,'lmanesize')
-                RescaleRIGPART(lowermane, b.groups.lowermane ,Vector( 1,1,1 )*val) 
-            end
-
-            local uppermane = ent:GetCPPart("uppermane") 
-            if IsValid(uppermane) then
-                local val = GetDataValue(species,data,'umanesize')
-                RescaleRIGPART(uppermane, b.groups.uppermane ,Vector( 1,1,1 )*val) 
-            end
+            if b.modifiers.rescale then
+                for k,v in pairs(b.modifiers.rescale) do
+                    local val = GetProcDataValue(species,data,v)
+                    
+                    local left,right = unpack(string.Split(k, ':'))
+                    if right then
+                        local part = ent:GetCPPart(left) 
+                        if IsValid(part) then
+                            RescaleRIGPART(part, b.groups[right] ,Vector( 1,1,1 )*val)
+                        end
+                    else 
+                        RescaleRIGPART(ent, b.groups[k] ,Vector( 1,1,1 )*val)
+                    end
+                end
+            end  
         end
+        local pp = species.Body.poseparams
+        if pp then
+            for k,v in pairs(pp) do
+                local val = GetProcDataValue(species,data,v)
+                ent:SetPoseParameter( k, val)
+            end
+        end 
     else
         ent:SetMaterial(nil)
     end
+
+
 end)

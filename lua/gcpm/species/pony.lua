@@ -18,12 +18,15 @@ gcpm.AddSpecies("pony",{
         haircolor5 = {type="color",name="Color 5",default = Color(0,255,255)},
         haircolor6 = {type="color",name="Color 6",default = Color(255,0,255)},
         
-        horncolor =  {type="color",name="Horn Color",default = Color(150,150,150)},
+        horncolor =  {type="color",name="Horn Color",default = Color(150,150,150,100)},
 
         bodyweight  = {type="number",default = 1,min=0.8,max=1.2},
+        wingssize   = {type="number",default = 1,min=0.8,max=1.2},
         tailsize    = {type="number",default = 1,min=0.5,max=1.5},
         lmanesize   = {type="number",default = 1,min=0.5,max=1.5},
         umanesize   = {type="number",default = 1,min=0.5,max=1.5},
+
+        height      = {type="number",default = 0,min=-0.5,max=0.2},
         
         eyecolor_bg = {type="color",default = Color(255,255,255)},
         eyecolor_hole = {type="color",default = Color(0,0,0)},
@@ -39,13 +42,15 @@ gcpm.AddSpecies("pony",{
         eyelashes_type = {type="number",default = 0},
         eyelashes_color = {type="color",name="Horn Color",default = Color(10,10,10)},
 
-        eyeshadow =  {type="color",default = Color(150,150,255)},
-        eyeliner =   {type="color",default = Color(150,150,255)},
-        lips    =   {type="color",default = Color(150,150,255)},
+        cmark_color = {type="color",name="Cmark Color",default = Color(255,255,255)},
+
+        eyeshadow =  {type="color",default = Color(150,150,255,0)},
+        eyeliner =   {type="color",default = Color(0,0,0,100)},
+        lips    =   {type="color",default = Color(150,150,255,0)},
         
-        head_form_0 = {type="number",default = 0,min=0,max=1},
-        eye_form = {type="number",default = 0,min=0,max=1},
-        eyelash_form = {type="number",default = 0,min=0,max=1},
+        head_form_0  = {type="number",default = 0,min=0,max=1},
+        eye_form     = {type="number",default = 0,min=0,max=1},
+        eyelash_form = {type="number",default = 1,min=0,max=1},
  
         bodymask1   = {type="string",default="none"},
         bodymask2   = {type="string",default="none"},
@@ -444,6 +449,15 @@ gcpm.AddSpecies("pony",{
                     ["$alphatest"] = 1
                 },
             },  
+            {},
+            {
+                mode = "color",
+                texture = "@texture('cmark',cmark)",
+                params = "cmark_color",
+                matdata = {
+                    ["$alphatest"] = 1
+                },
+            }
         },
         flexes = {
             m01 = "head_form_0",
@@ -466,10 +480,24 @@ gcpm.AddSpecies("pony",{
                 tail = {"Tail01","Tail02","Tail03"},--,"LrigTail4","LrigTail5","LrigTail6"},
                 uppermane = {"Mane01","Mane04","Mane05","Mane06","Mane07"},
                 lowermane = {"Mane02","Mane03","Mane03_tip"},
+                --wings = {"WingRight0.R","WingRight0.L","LrigRibcage"},
             },
             modifiers = {
-
+                rescale = {
+                    leg_bl = "$bodyweight",
+                    leg_br = "$bodyweight",
+                    leg_fl = "$bodyweight",
+                    leg_fr = "$bodyweight",
+                    neck = "$bodyweight",
+                    rear = "$bodyweight",
+                    ["tail:tail"] = "$tailsize",
+                    ["lowermane:lowermane"] = "$lmanesize",
+                    ["uppermane:uppermane"] = "$umanesize",
+                }
             }
+        },
+        poseparams = {
+            height_test = "$height"
         }
     },
     Parts = {
@@ -487,7 +515,26 @@ gcpm.AddSpecies("pony",{
             variants = {
                 none = {},
                 wings_01={
+                    states = {
+                        opened = {
+                            sequence = "fly",
+                        },
+                        closed = {
+                            model="wings_01_folded.mdl",
+                        },
+
+                        open = {
+                            model="wings_01.mdl",
+                            --sequence = "draw",
+                            next = "opened",
+                        },
+                        close = {
+                            sequence = "hide",
+                            next = "closed",
+                        }
+                    },
                     model="wings_01_folded.mdl",
+                    state = "closed", 
                     material = {mode = "color", params = "coatcolor"}
                 }
             }
@@ -967,6 +1014,45 @@ gcpm.AddSpecies("pony",{
             }
         }, 
     },
+    TexParts = {
+        cmark = { 
+            variants = {
+                bon_bon         = { material = "models/mlp/cmarks/bon_bon" }, 
+                lyra            = { material = "models/mlp/cmarks/lyra" }, 
+                fluttershy      = { material = "models/mlp/cmarks/fluttershy" },
+                trixie          = { material = "models/mlp/cmarks/trixie" }, 
+                celestia        = { material = "models/mlp/cmarks/celestia" }, 
+                applej          = { material = "models/mlp/cmarks/applej" },
+                derpy           = { material = "models/mlp/cmarks/derpy" },
+                drops           = { material = "models/mlp/cmarks/waters" },
+                cloudy          = { material = "models/mlp/cmarks/cloudy" },
+                time            = { material = "models/mlp/cmarks/time" },
+                sflowers        = { material = "models/mlp/cmarks/sflowers" },
+                twilight        = { material = "models/mlp/cmarks/twilight" },
+                rosen           = { material = "models/mlp/cmarks/rosen" },
+                zecora          = { material = "models/mlp/cmarks/zecora" },
+                mine            = { material = "models/mlp/cmarks/mine" },
+                island          = { material = "models/mlp/cmarks/island" },
+                firezap         = { material = "models/mlp/cmarks/firezap" },
+                applem          = { material = "models/mlp/cmarks/applem" },
+                pankk           = { material = "models/mlp/cmarks/pankk" },
+                storm           = { material = "models/mlp/cmarks/storm" },
+                fan             = { material = "models/mlp/cmarks/weer" },
+                rainbow_dash    = { material = "models/mlp/cmarks/rainbow_dash" },
+                time2           = { material = "models/mlp/cmarks/time2" },
+                carrots         = { material = "models/mlp/cmarks/carrots" },
+                fruits          = { material = "models/mlp/cmarks/fruits" },
+                note            = { material = "models/mlp/cmarks/note" },
+                pinkie_pie      = { material = "models/mlp/cmarks/pinkie_pie" },
+                rarity          = { material = "models/mlp/cmarks/rarity" },
+                octavia         = { material = "models/mlp/cmarks/octavia" },
+                custom01        = { material = "models/mlp/cmarks/custom01" },
+                custom02        = { material = "models/mlp/cmarks/custom02" } 
+            }
+        }
+    },
+
+
     Races = {
         earth = {
             name = "Earth",
@@ -1022,6 +1108,13 @@ gcpm.AddSpecies("pony",{
                             max = 1.2
                         },
                         {
+                            name = "Height" ,
+                            type = "edit_number",
+                            param = "height",
+                            min = -0.5,
+                            max = 0.2
+                        },
+                        {
                             name = "Coat color" ,
                             type = "edit_color",
                             param = "coatcolor"
@@ -1031,7 +1124,9 @@ gcpm.AddSpecies("pony",{
                 
                 horn = {
                     name = "Horn" , 
-                    pos = Vector(18,0,55),
+                    bone = "LrigScull",
+                    pos = Vector(6,0,12),--Vector(18,0,55),
+                    racial = true,
                     params = { 
                        -- {
                        --     name = "Mane Upper" ,
@@ -1045,9 +1140,28 @@ gcpm.AddSpecies("pony",{
                         },  
                     } 
                 },
+                --wings = {
+                --    name = "Wings" , 
+                --    pos =  Vector(0,-6,27),
+                --    params = {  
+                --        {
+                --            name = "Size" ,
+                --            type = "edit_number",
+                --            param = "wingssize",
+                --            min = 0.8,
+                --            max = 1.2
+                --        },
+                --        {
+                --            name = "Color" ,
+                --            type = "edit_color",
+                --            param = "horncolor"
+                --        },  
+                --    } 
+                --},
                 uppermane = {
                     name = "Uppermane" , 
-                    pos = Vector(7,0,55),
+                    bone = "LrigScull", 
+                    pos = Vector(7,0,55)-Vector(12,0,43),
                     params = { 
                         {
                             name = "Mane Upper" ,
@@ -1095,7 +1209,8 @@ gcpm.AddSpecies("pony",{
                 },
                 lowermane = {
                     name = "Lowermane" ,
-                    pos = Vector(5,0,40),
+                    bone = "LrigScull", 
+                    pos = Vector(5,0,40)-Vector(12,0,43),
                     params = {
                         {
                             name = "Lower mane" ,
@@ -1214,22 +1329,13 @@ gcpm.AddSpecies("pony",{
                         },
                         {
                             name = "Cutiemark",
-                            type = "edit_type",
-                            param = "cmark",
-                            choices =
-                            {
-                                    "bon bon", "lyra", "fluttershy",
-                                    "trixie", "celestia", "applej"
-                                    ,"derpy" ,"drops" ,"cloudy"
-                                    ,"time" ,"sflowers" ,"twilight"
-                                    ,"rosen" ,"zecora" ,"mine"
-                                    ,"island" ,"firezap" ,"applem"
-                                    ,"pankk" ,"storm" ,"fan"
-                                    ,"rainbow dash" ,"time2" ,"carrots"
-                                    ,"fruits" ,"note" ,"pinkie_pie"
-                                    ,"rarity" ,"octavia" ,"custom01" 
-                                    ,"custom02" 
-                            }
+                            type = "edit_texpart",
+                            param = "cmark", 
+                        },
+                        {
+                            name = "Color" ,
+                            type = "edit_color",
+                            param = "cmark_color"
                         }
                     }
                 },
@@ -1240,12 +1346,14 @@ gcpm.AddSpecies("pony",{
         },
         head = {
             name = "Face" ,
-            pos = Vector(15,0,40),
+            bone = "LrigScull",
+            pos = Vector(15,0,40)-Vector(12,0,40),
             fov = 30,
             Parts = {
                 eyes = {
                     name = "Eyes" , 
-                    pos = Vector(15,-5,40),
+                    bone = "LrigScull",
+                    pos = Vector(15,-5,40)-Vector(12,0,40),
                     params = {
                         {
                             name = "Form" ,
@@ -1317,7 +1425,8 @@ gcpm.AddSpecies("pony",{
                 
                 eyelashes = {
                     name = "Eyelashes" , 
-                    pos = Vector(12,7,45), 
+                    bone = "LrigScull",
+                    pos = Vector(12,7,45)-Vector(12,0,40), 
                     params = {
                         { 
                             name = "Type" ,
@@ -1357,7 +1466,8 @@ gcpm.AddSpecies("pony",{
                 
                 mouth = {
                     name = "Mouth" , 
-                    pos = Vector(20,0,38),
+                    bone = "LrigScull",
+                    pos = Vector(20,0,38)-Vector(12,0,40),
                     params = { 
                         {
                             name = "Form" ,

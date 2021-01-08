@@ -250,10 +250,14 @@ function Paint(self)
 end
 SelectorPositions = {}
 function UpdateSelectors(self)
-	if SelectedNode then 
+	if SelectedNode then  
 		for k,v in pairs(SelectedNode) do
 			if v.pos then
-				SelectorPositions[k] = (Character:GetPos()+ v.pos):ToScreen()
+				local nodepos = v.pos
+				if v.bone then
+					nodepos = nodepos + Character:GetBonePosition(Character:LookupBone(v.bone))
+				end
+				SelectorPositions[k] = (Character:GetPos()+ nodepos):ToScreen()
 			end
 		end
 	end
@@ -262,10 +266,24 @@ mat_lid_ind = Material("gui/editor/lid_ind.png")
 SelectedPoint = false
 function DrawSelectors(self,ang)
 	if SelectedNode then
+		local race, species = gcpm.GetRace(Data)
+
 		local w, h = self:GetSize()
 		for k,v in pairs(SelectedNode) do
-			if v.pos then
-				local locpos = ((Character:GetPos()+ v.pos)- self.camvec-self.vLookatPos):GetNormal( )
+			local valid = true
+			if v.racial then 
+				if not race.Parts[k] then 
+					valid = false
+				end
+			end
+			if valid and v.pos then
+				local nodepos = v.pos
+
+				if v.bone then
+					nodepos = nodepos + Character:GetBonePosition(Character:LookupBone(v.bone))
+				end
+				
+				local locpos = ((Character:GetPos()+ nodepos)- self.camvec-self.vLookatPos):GetNormal( )
 				
 				--local tbl =(( v.pos)+LocalPlayer():GetPos()+ self.vCamPos   ):ToScreen() 
 				
@@ -459,7 +477,12 @@ end
 
 function LoadNode(node)
 	SelectedNode = node.Parts
-	SetLook(node.pos,node.fov or 75)
+	
+	local nodepos = node.pos 
+	if node.bone then
+		nodepos = nodepos + Character:GetBonePosition(Character:LookupBone(node.bone))
+	end
+	SetLook(nodepos,node.fov or 75)
 end
 
 function SetPart(ptype,pname)

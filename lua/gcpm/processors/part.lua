@@ -13,7 +13,41 @@ local function GetValue(species,data,key)
     end
 end
 
+
+
 GetDataValue = GetValue
+
+function GetProcDataValue(species,data,v)
+    local first = string.sub(v, 1, 1)
+    local key = string.sub(v, 2)
+    if first == '$' then
+        local value = GetValue(species,data,key)  
+        assert(value, "NOVALUE "..key)
+        return value
+    elseif first == '@' then
+        local key = string.sub(v, 2)
+        local code = "return "..key
+        local func = CompileString(code, "procedural_material", false)
+        local env = {}
+        for k,v in pairs(data) do env[k] = v end
+        
+        env.texture = function(pid,pval)
+            local p = gcpm.GetTexPart(data,pid,pval) 
+            if p then
+                return p.material
+            else
+                return ""
+            end
+        end
+
+        debug.setfenv(func, env)
+        local value = func() 
+        return value
+    else
+        return v
+    end 
+end
+
 
 local empty = {}
 
@@ -21,6 +55,8 @@ local function PrepareProceduralMat(species,data,matdata)
     local nt = {}
     for k,v in pairs(matdata) do
         if isstring(v)  then
+            nt[k] = GetProcDataValue(species,data,v)
+            --[[
             local first = string.sub(v, 1, 1)
             local key = string.sub(v, 2)
             if first == '$' then
@@ -31,12 +67,24 @@ local function PrepareProceduralMat(species,data,matdata)
                 local key = string.sub(v, 2)
                 local code = "return "..key
                 local func = CompileString(code, "procedural_material", false)
-                debug.setfenv(func, data)
+                local env = {}
+                for k,v in pairs(data) do env[k] = v end
+                
+                env.texture = function(pid,pval)
+                    local p = gcpm.GetTexPart(data,pid,pval) 
+                    if p then
+                        return p.material
+                    else
+                        return ""
+                    end
+                end
+
+                debug.setfenv(func, env)
                 local value = func() 
                 nt[k] = value
             else
                 nt[k] = v
-            end
+            end]]
         elseif istable(v) then
             nt[k] = PrepareProceduralMat(species,data,v)
         else
@@ -86,6 +134,7 @@ local function GetMaterial(species,data,eid,k,m)
                     local name = color_prefix..eid..k.."_"..id
                     if CLIENT then
                         local value = GetValue(species,data,v) or Color(0,0,0)
+                        local prepm = PrepareProceduralMat(species, data,m)
                         local matdata =  {
                             --["$basetexture"] = "",
                             ["$bumpmap"] = "models/mlp/base/render/body_n",
@@ -106,7 +155,7 @@ local function GetMaterial(species,data,eid,k,m)
                         end
                         
                         local cm = CreateMaterial(name, m.shader or "VertexLitGeneric",matdata)
-                        if m.texture then cm:SetTexture( "$basetexture", m.texture ) end
+                        if prepm.texture then cm:SetTexture( "$basetexture", prepm.texture ) end
                         cm:SetVector( "$color2", Vector(value.r/255 ,value.g/255 ,value.b/255)) 
                         cm:Recompute()
                     end
@@ -117,6 +166,7 @@ local function GetMaterial(species,data,eid,k,m)
                 local name = color_prefix..eid..k 
                 if CLIENT then
                     local value = GetValue(species,data,m.params) or Color(0,0,0) 
+                    local prepm = PrepareProceduralMat(species, data,m)
                     local matdata =  {
                         --["$basetexture"] = "",
                         ["$bumpmap"] = "models/mlp/base/render/body_n",
@@ -137,7 +187,7 @@ local function GetMaterial(species,data,eid,k,m)
                     end
 
                     local cm = CreateMaterial(name, m.shader or "VertexLitGeneric", matdata)
-                    if m.texture then cm:SetTexture( "$basetexture", m.texture ) end
+                    if prepm.texture then cm:SetTexture( "$basetexture", prepm.texture ) end
                     cm:SetVector( "$color2", Vector(value.r/255 ,value.g/255 ,value.b/255))
                     cm:Recompute()
                 end
@@ -239,7 +289,15 @@ hook.Add("GCPMUpdate", "parts", function(ent,data,species)
                     material = GetMaterial(species,data,eid,k,m)
                 end
 
+                if CLIENT and pdata.states then
+                    bpent:SetBasePath(species.PartsDirectory)
+                    bpent:SetStates(pdata.states)
+                    bpent:SetState(pdata.state)
+                end
+
                 bpent:Set(ent, mpath, color, material) 
+
+
             else
                 if IsValid(bpent) then
                     bpent:Remove()

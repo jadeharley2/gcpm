@@ -214,6 +214,61 @@ panels.edit_part = {
 	end
 }
 
+panels.edit_texpart = {
+	spawn = function( parent,variable)
+		local param = variable.param 
+		local cvalue = Data[param]
+
+		local available = gcpm.GetTexParts(Data,param)
+		
+		local indicators = {}
+		for k , v in SortedPairs(available) do 
+
+			local ITEM_CONTAINER = vgui.Create( "DPanel", parent ) 
+			ITEM_CONTAINER:SetSize( 100, 20 )
+			ITEM_CONTAINER:Dock( TOP )
+			
+			local ITEM_INDICATOR = vgui.Create( "DImageButton", ITEM_CONTAINER )
+			ITEM_INDICATOR:SetImage( "gui/editor/pictorect.png" )
+			ITEM_INDICATOR:SetSize( 20, 20 )
+			ITEM_INDICATOR:Dock( LEFT ) 
+			ITEM_INDICATOR.s = k 
+			indicators[k] = ITEM_INDICATOR
+			
+			local function UpdateIndicator(vv,val) 
+				if vv.s==val then 
+					vv:SetColor(Color(200,255,200)) 
+				else
+					vv:SetColor(Color(100,100,100))
+				end
+			end
+
+			UpdateIndicator(ITEM_INDICATOR,cvalue) 
+
+
+			local ITEM = vgui.Create( "DButton", ITEM_CONTAINER ) 
+			ITEM:SetSize( 200, 20 )  
+			ITEM:Dock( FILL )
+			ITEM:SetText(v.name or k)
+			ITEM.OnCursorEntered = function()  
+				Data[param] = k 
+				gcpm.Update(Character)
+			end 
+			ITEM.OnCursorExited = function()  
+				Data[param] = cvalue
+				gcpm.Update(Character)
+			end 
+			ITEM.DoClick = function()   
+				Data[param] = k 
+				cvalue = k
+				gcpm.Update(Character)
+				for _,vv in pairs(indicators) do
+					UpdateIndicator(vv,k) 
+				end
+			end  
+		end
+	end
+}
 
 panels.edit_skin = {
 	spawn = function( parent,variable) 
