@@ -20,13 +20,13 @@ gcpm.AddSpecies("pony",{
         
         horncolor =  {type="color",name="Horn Color",default = Color(150,150,150,100)},
 
+        height      = {type="number",default = 0,min=-0.5,max=0.2},
         bodyweight  = {type="number",default = 1,min=0.8,max=1.2},
         wingssize   = {type="number",default = 1,min=0.8,max=1.2},
         tailsize    = {type="number",default = 1,min=0.5,max=1.5},
         lmanesize   = {type="number",default = 1,min=0.5,max=1.5},
         umanesize   = {type="number",default = 1,min=0.5,max=1.5},
 
-        height      = {type="number",default = 0,min=-0.5,max=0.2},
         
         eyecolor_bg = {type="color",default = Color(255,255,255)},
         eyecolor_hole = {type="color",default = Color(0,0,0)},
@@ -42,6 +42,7 @@ gcpm.AddSpecies("pony",{
         eyelashes_type = {type="number",default = 0},
         eyelashes_color = {type="color",name="Horn Color",default = Color(10,10,10)},
 
+        cmark       = {type="string",name="Cmark",default="derpy"},
         cmark_color = {type="color",name="Cmark Color",default = Color(255,255,255)},
 
         eyeshadow =  {type="color",default = Color(150,150,255,0)},
@@ -83,7 +84,7 @@ gcpm.AddSpecies("pony",{
     Materials = {
         mouth = {}, 
         body = {
-            params = {
+            matdata = {
                 ["$basetexture"] = "models/mlp/base/body",
         
                 ["$bumpmap"] = "models/mlp/base/render/body_n",
@@ -99,65 +100,215 @@ gcpm.AddSpecies("pony",{
                 ["$rimlight"] =                1,
                 ["$rimlightexponent"] =        2,
                 ["$rimlightboost"] =           1 ,
-            },
-            procedural = true
+            }, 
+            mode = "procedural",  
+            layers = {
+                {
+                    texture = "models/mlp/base/body.png",
+                    color = "$coatcolor"
+                },
+                {
+                    texture = "@ 'models/mlp/body/'..(bodymask1 or 'none')..'.png'",
+                    color = "$bodymask1_c", 
+                },
+                {
+                    texture = "@ 'models/mlp/body/'..(bodymask2 or 'none')..'.png'",
+                    color = "$bodymask2_c", 
+                },
+                {
+                    texture = "@ 'models/mlp/body/'..(bodymask3 or 'none')..'.png'",
+                    color = "$bodymask3_c", 
+                },
+                {
+                    texture = "@ 'models/mlp/body/'..(bodymask4 or 'none')..'.png'",
+                    color = "$bodymask4_c", 
+                },
+                {
+                    texture = "@ 'models/mlp/body/'..(bodymask5 or 'none')..'.png'",
+                    color = "$bodymask5_c", 
+                },
+                {
+                    texture = "@ 'models/mlp/body/'..(bodymask6 or 'none')..'.png'",
+                    color = "$bodymask6_c", 
+                },
+                
+                {
+                    texture = "@ 'models/mlp/parts/eyeshadow.png'",
+                    color = "$eyeshadow", 
+                },
+                {
+                    texture = "@ 'models/mlp/parts/eyeline.png'",
+                    color = "$eyeliner", 
+                },
+                {
+                    texture = "@ 'models/mlp/parts/lips.png'",
+                    color = "$lips", 
+                },
+            } 
         },
         eyel = {
-            ["$Iris"]      =         "models/mlp/base/face/p_luna",
-            ["$Irisframe"] =0    ,
-    
-            ["$AmbientOcclTexture"] ="models/mlp/base/face/black"  ,   
-            ["$Envmap" ]            ="models/mlp/base/face/black"   ,  
-            ["$CorneaTexture"]     = "models/mlp/base/face/white"   ,   
-            ["$lightwarptexture"]= "models/mlp/clothes/lightwarp"  ,
-    
-            ["$EyeballRadius"] =3.7    ,
-            ["$AmbientOcclColor"] =Vector(0.3,0.3,0.3)  ,
-            ["$Dilation"] =0.5      ,
-            ["$Glossiness"] =1      ,
-            ["$ParallaxStrength"] =0.1          ,
-            ["$CorneaBumpStrength"] =0.1   ,
-    
-            ["$halflambert"] =1,
-            ["$nodecal"] =1,
-    
-            ["$RaytraceSphere"] =1     ,
-            ["$SphereTexkillCombo"] =0   ,
-    
-    
-            ["$eyeorigin"] =Vector(0, 0, 0)  ,
-            ["$irisu"] ="[0 1 0 0]",
-            ["$irisv"] ="[0 0 1 0]",
-            ["$Entityorigin"] =4.0 , 
+            matdata = { 
+                ["$Iris"]      =         "models/mlp/base/face/p_luna",
+                ["$Irisframe"] =0    ,
+        
+                ["$AmbientOcclTexture"] ="models/mlp/base/face/black"  ,   
+                ["$Envmap" ]            ="models/mlp/base/face/black"   ,  
+                ["$CorneaTexture"]     = "models/mlp/base/face/white"   ,   
+                ["$lightwarptexture"]= "models/mlp/clothes/lightwarp"  ,
+        
+                ["$EyeballRadius"] =3.7    ,
+                ["$AmbientOcclColor"] =Vector(0.3,0.3,0.3)  ,
+                ["$Dilation"] =0.5      ,
+                ["$Glossiness"] =1      ,
+                ["$ParallaxStrength"] =0.1          ,
+                ["$CorneaBumpStrength"] =0.1   ,
+        
+                ["$halflambert"] =1,
+                ["$nodecal"] =1,
+        
+                ["$RaytraceSphere"] =1     ,
+                ["$SphereTexkillCombo"] =0   ,
+        
+        
+                ["$eyeorigin"] =Vector(0, 0, 0)  ,
+                ["$irisu"] ="[0 1 0 0]",
+                ["$irisv"] ="[0 0 1 0]",
+                ["$Entityorigin"] =4.0 , 
+            },
+            mode = "procedural",  
+            shader = "eyes",
+            target = "iris",
+            clear = "$eyecolor_bg",
+            layers = {
+                {
+                    texture = "models/mlp/partrender/eye_oval.png",
+                    color = "$eyecolor_iris",
+                    w = "$eyeirissize",
+                    h = "$eyeirissize",
+                },
+                {
+                    texture = "models/mlp/partrender/eye_grad.png",
+                    color = "$eyecolor_grad",
+                    w = "$eyeirissize",
+                    h = "$eyeirissize",
+                },
+                {
+                    enabled = "$eyehaslines",
+                    texture = "models/mlp/partrender/eye_line_r2.png",
+                    color = "$eyecolor_line2",
+                    w = "$eyeirissize",
+                    h = "$eyeirissize",
+                },
+                {
+                    enabled = "$eyehaslines",
+                    texture = "models/mlp/partrender/eye_line_r1.png",
+                    color = "$eyecolor_line1",
+                    w = "$eyeirissize",
+                    h = "$eyeirissize",
+                },
+                {
+                    texture = "models/mlp/partrender/eye_oval.png",
+                    color = "$eyecolor_hole",
+                    w = "@ eyeirissize * eyeholesize * eyejholerssize",
+                    h = "@ eyeirissize * eyeholesize",
+                },
+                {
+                    texture = "models/mlp/partrender/eye_effect.png",
+                    color = Color(255,255,255),
+                    w = "$eyeirissize",
+                    h = "$eyeirissize",
+                },
+                {
+                    texture = "models/mlp/partrender/eye_reflection.png",
+                    color = Color(255,255,255),
+                    w = "$eyeirissize",
+                    h = "$eyeirissize",
+                },
+            } 
         },
         eyer = {
-            ["$Iris"]      =         "models/mlp/base/face/p_luna",
-            ["$Irisframe"] =0    ,
-    
-            ["$AmbientOcclTexture"] ="models/mlp/base/face/black"  ,   
-            ["$Envmap" ]            ="models/mlp/base/face/black"   ,  
-            ["$CorneaTexture"]     = "models/mlp/base/face/white"   ,   
-            ["$lightwarptexture"]= "models/mlp/clothes/lightwarp"  ,
-    
-            ["$EyeballRadius"] =3.7    ,
-            ["$AmbientOcclColor"] =Vector(0.3,0.3,0.3)  ,
-            ["$Dilation"] =0.5      ,
-            ["$Glossiness"] =1      ,
-            ["$ParallaxStrength"] =0.1          ,
-            ["$CorneaBumpStrength"] =0.1   ,
-    
-            ["$halflambert"] =1,
-            ["$nodecal"] =1,
-    
-            ["$RaytraceSphere"] =1     ,
-            ["$SphereTexkillCombo"] =0   ,
-    
-    
-            ["$eyeorigin"] =Vector(0, 0, 0)  ,
-            ["$irisu"] ="[0 1 0 0]",
-            ["$irisv"] ="[0 0 1 0]",
-            ["$Entityorigin"] =4.0 , 
+            matdata = {
+                ["$Iris"]      =         "models/mlp/base/face/p_luna",
+                ["$Irisframe"] =0    ,
+        
+                ["$AmbientOcclTexture"] ="models/mlp/base/face/black"  ,   
+                ["$Envmap" ]            ="models/mlp/base/face/black"   ,  
+                ["$CorneaTexture"]     = "models/mlp/base/face/white"   ,   
+                ["$lightwarptexture"]= "models/mlp/clothes/lightwarp"  ,
+        
+                ["$EyeballRadius"] =3.7    ,
+                ["$AmbientOcclColor"] =Vector(0.3,0.3,0.3)  ,
+                ["$Dilation"] =0.5      ,
+                ["$Glossiness"] =1      ,
+                ["$ParallaxStrength"] =0.1          ,
+                ["$CorneaBumpStrength"] =0.1   ,
+        
+                ["$halflambert"] =1,
+                ["$nodecal"] =1,
+        
+                ["$RaytraceSphere"] =1     ,
+                ["$SphereTexkillCombo"] =0   ,
+        
+        
+                ["$eyeorigin"] =Vector(0, 0, 0)  ,
+                ["$irisu"] ="[0 1 0 0]",
+                ["$irisv"] ="[0 0 1 0]",
+                ["$Entityorigin"] =4.0 , 
+            },
+            mode = "procedural",  
+            shader = "eyes",
+            target = "iris",
+            clear = "$eyecolor_bg",
+            layers = {
+                {
+                    texture = "models/mlp/partrender/eye_oval.png",
+                    color = "$eyecolor_iris",
+                    w = "$eyeirissize",
+                    h = "$eyeirissize",
+                },
+                {
+                    texture = "models/mlp/partrender/eye_grad.png",
+                    color = "$eyecolor_grad",
+                    w = "$eyeirissize",
+                    h = "$eyeirissize",
+                },
+                {
+                    enabled = "$eyehaslines",
+                    texture = "models/mlp/partrender/eye_line_l2.png",
+                    color = "$eyecolor_line2",
+                    w = "$eyeirissize",
+                    h = "$eyeirissize",
+                },
+                {
+                    enabled = "$eyehaslines",
+                    texture = "models/mlp/partrender/eye_line_l1.png",
+                    color = "$eyecolor_line1",
+                    w = "$eyeirissize",
+                    h = "$eyeirissize",
+                },
+                {
+                    texture = "models/mlp/partrender/eye_oval.png",
+                    color = "$eyecolor_hole",
+                    w = "@ eyeirissize * eyeholesize * eyejholerssize",
+                    h = "@ eyeirissize * eyeholesize",
+                },
+                {
+                    texture = "models/mlp/partrender/eye_effect.png",
+                    color = Color(255,255,255),
+                    w = "$eyeirissize",
+                    h = "$eyeirissize",
+                },
+                {
+                    texture = "models/mlp/partrender/eye_reflection.png",
+                    color = Color(255,255,255),
+                    w = "$eyeirissize",
+                    h = "$eyeirissize",
+                },
+            } 
         }, 
+
+
+
         cmark = {
             ["$basetexture"] = "models/mlp/cmarks/rarity",
     
@@ -279,156 +430,9 @@ gcpm.AddSpecies("pony",{
         skin = "eyelashes_type",
         materials = {
             {},
-            {--body
-                mode = "procedural",  
-                layers = {
-                    {
-                        texture = "models/mlp/base/body.png",
-                        color = "$coatcolor"
-                    },
-                    {
-                        texture = "@ 'models/mlp/body/'..(bodymask1 or 'none')..'.png'",
-                        color = "$bodymask1_c", 
-                    },
-                    {
-                        texture = "@ 'models/mlp/body/'..(bodymask2 or 'none')..'.png'",
-                        color = "$bodymask2_c", 
-                    },
-                    {
-                        texture = "@ 'models/mlp/body/'..(bodymask3 or 'none')..'.png'",
-                        color = "$bodymask3_c", 
-                    },
-                    {
-                        texture = "@ 'models/mlp/body/'..(bodymask4 or 'none')..'.png'",
-                        color = "$bodymask4_c", 
-                    },
-                    {
-                        texture = "@ 'models/mlp/body/'..(bodymask5 or 'none')..'.png'",
-                        color = "$bodymask5_c", 
-                    },
-                    {
-                        texture = "@ 'models/mlp/body/'..(bodymask6 or 'none')..'.png'",
-                        color = "$bodymask6_c", 
-                    },
-                    
-                    {
-                        texture = "@ 'models/mlp/parts/eyeshadow.png'",
-                        color = "$eyeshadow", 
-                    },
-                    {
-                        texture = "@ 'models/mlp/parts/eyeline.png'",
-                        color = "$eyeliner", 
-                    },
-                    {
-                        texture = "@ 'models/mlp/parts/lips.png'",
-                        color = "$lips", 
-                    },
-                } 
-            },
-            {--lefteye
-                mode = "procedural",  
-                shader = "eyes",
-                target = "iris",
-                clear = "$eyecolor_bg",
-                layers = {
-                    {
-                        texture = "models/mlp/partrender/eye_oval.png",
-                        color = "$eyecolor_iris",
-                        w = "$eyeirissize",
-                        h = "$eyeirissize",
-                    },
-                    {
-                        texture = "models/mlp/partrender/eye_grad.png",
-                        color = "$eyecolor_grad",
-                        w = "$eyeirissize",
-                        h = "$eyeirissize",
-                    },
-                    {
-                        enabled = "$eyehaslines",
-                        texture = "models/mlp/partrender/eye_line_r2.png",
-                        color = "$eyecolor_line2",
-                        w = "$eyeirissize",
-                        h = "$eyeirissize",
-                    },
-                    {
-                        enabled = "$eyehaslines",
-                        texture = "models/mlp/partrender/eye_line_r1.png",
-                        color = "$eyecolor_line1",
-                        w = "$eyeirissize",
-                        h = "$eyeirissize",
-                    },
-                    {
-                        texture = "models/mlp/partrender/eye_oval.png",
-                        color = "$eyecolor_hole",
-                        w = "@ eyeirissize * eyeholesize * eyejholerssize",
-                        h = "@ eyeirissize * eyeholesize",
-                    },
-                    {
-                        texture = "models/mlp/partrender/eye_effect.png",
-                        color = Color(255,255,255),
-                        w = "$eyeirissize",
-                        h = "$eyeirissize",
-                    },
-                    {
-                        texture = "models/mlp/partrender/eye_reflection.png",
-                        color = Color(255,255,255),
-                        w = "$eyeirissize",
-                        h = "$eyeirissize",
-                    },
-                } 
-            },
-            {--righteye
-                mode = "procedural",  
-                shader = "eyes",
-                target = "iris",
-                clear = "$eyecolor_bg",
-                layers = {
-                    {
-                        texture = "models/mlp/partrender/eye_oval.png",
-                        color = "$eyecolor_iris",
-                        w = "$eyeirissize",
-                        h = "$eyeirissize",
-                    },
-                    {
-                        texture = "models/mlp/partrender/eye_grad.png",
-                        color = "$eyecolor_grad",
-                        w = "$eyeirissize",
-                        h = "$eyeirissize",
-                    },
-                    {
-                        enabled = "$eyehaslines",
-                        texture = "models/mlp/partrender/eye_line_l2.png",
-                        color = "$eyecolor_line2",
-                        w = "$eyeirissize",
-                        h = "$eyeirissize",
-                    },
-                    {
-                        enabled = "$eyehaslines",
-                        texture = "models/mlp/partrender/eye_line_l1.png",
-                        color = "$eyecolor_line1",
-                        w = "$eyeirissize",
-                        h = "$eyeirissize",
-                    },
-                    {
-                        texture = "models/mlp/partrender/eye_oval.png",
-                        color = "$eyecolor_hole",
-                        w = "@ eyeirissize * eyeholesize * eyejholerssize",
-                        h = "@ eyeirissize * eyeholesize",
-                    },
-                    {
-                        texture = "models/mlp/partrender/eye_effect.png",
-                        color = Color(255,255,255),
-                        w = "$eyeirissize",
-                        h = "$eyeirissize",
-                    },
-                    {
-                        texture = "models/mlp/partrender/eye_reflection.png",
-                        color = Color(255,255,255),
-                        w = "$eyeirissize",
-                        h = "$eyeirissize",
-                    },
-                } 
-            },  
+            "body",
+            "eyel",
+            "eyer",
             {
                 mode = "color", 
                 params = "eyelashes_color"
@@ -502,16 +506,17 @@ gcpm.AddSpecies("pony",{
     },
     Parts = {
         ears = { 
-            material = "body",
+            material = "body", 
             variants = {
                 head_01_ears={
                     model="head_01_ears.mdl",
-                    material = {mode = "color", texture = "models/mlp/base/body", params = "coatcolor"}
+                    material = "body",--{mode = "color", texture = "models/mlp/base/body", params = "coatcolor"}
                 }
             }
         },
         wings = { 
             material = "wings",
+            default = "none",
             variants = {
                 none = {},
                 wings_01={
@@ -541,6 +546,7 @@ gcpm.AddSpecies("pony",{
         },
         horn = { 
             material = "horn",
+            default = "none",
             variants = {
                 none = {},
                 horn_01={
@@ -560,6 +566,7 @@ gcpm.AddSpecies("pony",{
         },
         uppermane = {
             basematerial = "uppermane", 
+            default = "DERPY",
             variants = {
                 none = {}, 
                 ["DERPY"]      = {
@@ -741,6 +748,7 @@ gcpm.AddSpecies("pony",{
             }
         },
         lowermane = {
+            default = "DERPY",
             variants = {
                 none = {},
                 ["DERPY"]      = {
@@ -866,6 +874,7 @@ gcpm.AddSpecies("pony",{
             }
         },
         tail = {
+            default = "DERPY",
             variants = {
                 none = {},
                 ["DERPY"]      = {
@@ -1014,9 +1023,9 @@ gcpm.AddSpecies("pony",{
             }
         }, 
     },
-    TexParts = {
+    TexParts = { 
         cmark = { 
-            variants = {
+            variants = { 
                 bon_bon         = { material = "models/mlp/cmarks/bon_bon" }, 
                 lyra            = { material = "models/mlp/cmarks/lyra" }, 
                 fluttershy      = { material = "models/mlp/cmarks/fluttershy" },
@@ -1049,7 +1058,16 @@ gcpm.AddSpecies("pony",{
                 custom01        = { material = "models/mlp/cmarks/custom01" },
                 custom02        = { material = "models/mlp/cmarks/custom02" } 
             }
-        }
+        },
+        --bodypattern = { 
+        --    variants = {
+        --        none = {},
+        --        leg_grad1 = {
+        --            name = "Leg gradient",
+        --            material = "models/mlp/cmarks/bon_bon" 
+        --        }, 
+        --    }
+        --}
     },
 
 
@@ -1118,6 +1136,19 @@ gcpm.AddSpecies("pony",{
                             name = "Coat color" ,
                             type = "edit_color",
                             param = "coatcolor"
+                        },
+                        {
+                            name = "Coat layers" ,
+                            type = "edit_layers",
+                            path = "materials/models/mlp/body/",--.png'", 
+                            params = {
+                                { type = "bodymask1", color = "bodymask1_c"},
+                                { type = "bodymask2", color = "bodymask2_c"},
+                                { type = "bodymask3", color = "bodymask3_c"},
+                                { type = "bodymask4", color = "bodymask4_c"},
+                                { type = "bodymask5", color = "bodymask5_c"},
+                                { type = "bodymask6", color = "bodymask6_c"},
+                            }
                         }
                     },
                 },
@@ -1319,17 +1350,17 @@ gcpm.AddSpecies("pony",{
                             onvalue = 2,
                             offvalue = 1
                         }, 
+                        --{
+                        --    name = "Cutiemark",
+                        --    type = "edit_cmark"
+                        --},
+                        --{
+                        --    name = "Custom cutiemark" ,
+                        --    type = "select_custom_cmark"
+                        --},
                         {
                             name = "Cutiemark",
-                            type = "edit_cmark"
-                        },
-                        {
-                            name = "Custom cutiemark" ,
-                            type = "select_custom_cmark"
-                        },
-                        {
-                            name = "Cutiemark",
-                            type = "edit_texpart",
+                            type = "edit_texpart2",
                             param = "cmark", 
                         },
                         {
@@ -1338,10 +1369,7 @@ gcpm.AddSpecies("pony",{
                             param = "cmark_color"
                         }
                     }
-                },
-                markings = {
-
-                },
+                }, 
             }
         },
         head = {

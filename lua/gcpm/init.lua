@@ -41,9 +41,21 @@ if SERVER then
     hook.Add( "PlayerSpawn", "GCPMPlySpawn", function( ply )
         if ply.gcpmdata then
             ApplyData(ply,ply.gcpmdata)
+            net.Start("gcpm_event")
+            net.WriteInt(10, 8)
+            net.WriteEntity(ply)
+            net.Broadcast()
         end
     end )
 elseif CLIENT then
+
+    function HideParts(ent,hide)
+        for k,v in pairs(CLIENTSIDE_ENTS) do
+            if v.Parent == ent then 
+                v:SetNoDraw(hide)
+            end
+        end
+    end
 
     function SetData(ent,data)
         if istable(data) then
@@ -59,11 +71,20 @@ elseif CLIENT then
         ent.gcpmdata = data
         Update(ent)
     end)
+    net.Receive("gcpm_event", function(len,ply)
+        local eventid = net.ReadInt(8)
+        local ent = net.ReadEntity() 
+        MsgN("EVENT ",eventid," at ",ent)
+        if eventid == 10 then
+            HideParts(ent,false)
+        end
+    end)
 
 	hook.Add( "CreateClientsideRagdoll", "gcpm_inherit", function( entity, ragdoll )
         ragdoll.gcpmdata = entity.gcpmdata
         if ragdoll.gcpmdata then
             Update(ragdoll) 
+            HideParts(entity,true)
         end
 	end )
 	
@@ -98,20 +119,51 @@ function Update(ent)
 end
 
 
+local directory = "gcpm/"
+file.CreateDir(directory)
+function Load(filename)
+    MsgN("load from ",directory..filename..'.json')
+    local json = file.Read(directory..filename..'.json', "DATA")
+    return util.JSONToTable(json)
+end
+function Save(filename,data)
+    local json = util.TableToJSON(data,true)
+    file.Write(directory..filename..'.json', json)
+    MsgN("save to ",directory..filename..'.json')
+end
+function ListPresets()
+    local t = {}
+    for k,v in ipairs(file.Find(directory.."*.json", "DATA","nameasc")) do
+        if string.sub(v, 1, 1) ~= '_' then
+            t[#t+1] = string.sub(v, 1, -6)
+        end
+    end
+    return t
+end
+
+
 --[[ SPECIES ]]
 function InitSpeciesParams(ent)
     --if IsValid(ent) then
         local data = ent.gcpmdata or {}
         if data.species then
             local species = GetSpecies(data.species)
-            if species and species.Parameters then 
-                for k,v in pairs(species.Parameters) do
-                    if data[k] == nil then
-                        data[k] = v.default 
-                    end 
+            if species then 
+                if species.Parameters then
+                    for k,v in pairs(species.Parameters) do
+                        if data[k] == nil then
+                            data[k] = v.default 
+                        end 
+                    end
                 end
-            end
-
+                if species.Parts then
+                    for k,v in pairs(species.Parts) do
+                        if v.default and data[k] == nil then
+                            data[k] = v.default
+                        end
+                    end
+                end
+            end 
             ent.gcpmdata = data
         end
     --else
@@ -224,18 +276,20 @@ if CLIENT then
                 ent.blinktarget = 0 
             end)
         end
-        timer.Create("gcpm_blink", math.Rand(4.6, 7), 1, function()  
+        timer.Create("gcpm_blink", math.Rand(4.6, 7)*0.8, 1, function()  
             Blink(ent)
         end)
     end
 
-    timer.Create("gcpm_blink", 2, 1, function() 
-        local lp = LocalPlayer()
-        Blink(lp)
-    end)
+    hook.Add( "InitPostEntity", "gcpm_blink", function() 
+        timer.Create("gcpm_blink", 2, 1, function() 
+            local lp = LocalPlayer()
+            Blink(lp)
+        end)
+    end )
     hook.Add("PrePlayerDraw", "gcpm_blink", function(ply, flags)
         local bt = ply.blinktarget
-        if bt then 
+        if bt and ply:GetModel() == "models/mlp/pony_default/player_default_base.mdl" then 
             local bts = ply.blinktargetsmooth or 0
             bts = bts + (bt - bts) * 0.1
             ply.blinktargetsmooth = bts 
@@ -245,21 +299,42 @@ if CLIENT then
         end
     end)
 
-end
+end 
 
 --temp noclip flight anim
-if SERVER then
+if SERVER then 
     util.AddNetworkString("gcpm_event")
     hook.Add("PlayerNoClip", "gcpm_flight", function(ply,state)
-        net.Start("gcpm_event")
-        net.WriteUInt(1, 8)
-        net.WriteEntity(ply)
-        net.WriteBit(state)
-        net.Broadcast()
-
-        MsgN("NOCLIPPP ",ply," = ",state)
+        --net.Start("gcpm_event")
+        --net.WriteUInt(1, 8)
+        --net.WriteEntity(ply) 
+        --net.WriteBit(state)
+        --net.Broadcast()
+--
+        --MsgN("NOCLIPPP ",ply," = ",state)
     end)
 else
+    hook.Add("HandlePlayerNoClipping","gcpm_flight", function(ply,velocity)
+        --local part = ply:GetCPPart("wings")
+        --if part then
+        --    part:SetState("open")
+        --end 
+    end)
+    hook.Add("PlayerNoClip", "gcpm_flight", function(ply,state)  
+        local part = ply:GetCPPart("wings")
+        if part then
+            if state then
+                if part:GetState() == "closed" then
+                    part:SetState("open") 
+                else
+                    return false 
+                end
+            else  
+                part:SetState("close")  
+            end
+        end 
+    end)
+    --[[
     net.Receive("gcpm_event", function() 
         local eid = net.ReadUInt(8)
         local ply= net.ReadEntity()
@@ -274,5 +349,5 @@ else
            -- ply:SetLayerSequence(ply.flight_layer,0)
             --ply.flight_layer
         end
-    end)
+    end)]]
 end

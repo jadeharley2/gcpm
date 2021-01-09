@@ -98,6 +98,14 @@ local color_prefix = "xcc_"
 
 local function GetMaterial(species,data,eid,k,m)
     local material = nil
+
+    if isstring(m) then 
+        local spmat = (species.Materials or {})[m]
+        if spmat then
+            m = spmat
+        end 
+    end
+
     if istable(m) then 
         if m.mode == "procedural" then
             local ttarget = m.target
@@ -194,7 +202,7 @@ local function GetMaterial(species,data,eid,k,m)
                 material =  '!'..name
             end
              
-        end
+        end 
     end
     return material
 end
@@ -312,11 +320,12 @@ hook.Add("GCPMUpdate", "parts", function(ent,data,species)
     if species.Body then
         for k,v in pairs(species.Body.materials) do
             local bodymat = nil
-            if v.mode=="procedural" then
-                bodymat = GetMaterial(species,data,eid,'body'..k,v)
-            elseif v.mode=="color" then
-                bodymat = GetMaterial(species,data,eid,'body'..k,v)
-            end
+            bodymat = GetMaterial(species,data,eid,'body'..k,v)
+            --if v.mode=="procedural" then
+            --    bodymat = GetMaterial(species,data,eid,'body'..k,v)
+            --elseif v.mode=="color" then
+            --    bodymat = GetMaterial(species,data,eid,'body'..k,v)
+            --end
             ent:SetSubMaterial(k-1,bodymat) 
             --MsgN("setsubmat ",ent," ",k-1," = ",bodymat)
         end

@@ -122,8 +122,18 @@ function BuildWindow()
 			name = "Species",
 			Action = function()
 				SpeciesSelector(Window) 
-			end
-		}
+			end,
+			internal = true
+		},
+		presets = {
+			name = "Presets",
+			Action = function()
+				SelectedNode = nil
+				local sspanel = GetPanel(Window)
+				NewPanel({type="presets",name = "Presets"},sspanel)
+			end,
+			internal = true
+		},
 	})
 
 	gcpm.Update(Character)
@@ -342,6 +352,7 @@ function GetPanel(window)
 
 		sspanel = vgui.Create("DScrollPanel",smpanel) 
 		sspanel:Dock(FILL)
+  
 		Window.sspanel = sspanel
 	end
 	return sspanel
@@ -418,7 +429,7 @@ SelectedNode = SelectedNode or nil
 
 function LoadTabs(data,off)
 	for k,v in pairs(Tabs) do
-		if k~="species" then
+		if not v.internal then
 			v:Remove()
 			Tabs[k] = nil
 		end
@@ -431,8 +442,10 @@ function LoadTabs(data,off)
 		TABBUTTON:SetSize( 128, 64 ) 
 		TABBUTTON:SetPos( 100+taboffcet, -20 )  
 		TABBUTTON:SetImage( "gui/editor/gui_tab.png" ) 
+		TABBUTTON:SetFont("Trebuchet24")
 		TABBUTTON:SetText(v.name)
 		TABBUTTON:SetColor(Color(0,0,0)) 
+		TABBUTTON.internal = TABBUTTON.internal or v.internal
 		TABBUTTON.OnCursorEntered = function() 
 			if SelectedTab ~= TABBUTTON then
 				local px,py =TABBUTTON:GetPos()

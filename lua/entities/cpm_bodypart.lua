@@ -15,28 +15,39 @@ function ENT:SetStates(states)
     self.states = states 
 end
 function ENT:SetState(stateid)
-    self.state = self.states[stateid] 
-    self.stateid = stateid
+    if self.stateid == stateid then 
+        return false
+    end
+    local nstate = self.states[stateid] 
+ 
+    if nstate then
+        self.state = nstate 
+        self.stateid = stateid 
 
-    local nstate = self.state
-    if nstate.model then
-        self:SetModel(self.basepath  ..'/'.. nstate.model)  
-    end
-    if nstate.sequence then
-        local sid = self:LookupSequence(nstate.sequence)
-        self:ResetSequence(sid)
-        if nstate.next then
-            local delay = self:SequenceDuration(sid)
-            --MsgN("DELAY ",delay," < ",nstate.sequence)
-            timer.Simple(delay, function()
+        MsgN("SETSTATE ",stateid)
+        local nstate = self.state
+        if nstate.model then
+            self:SetModel(self.basepath  ..'/'.. nstate.model)  
+        end
+        if nstate.sequence then
+            local sid = self:LookupSequence(nstate.sequence)
+            self:ResetSequence(sid)
+            if nstate.next then
+                local delay = self:SequenceDuration(sid)
+                --MsgN("DELAY ",delay," < ",nstate.sequence)
+                timer.Simple(delay, function()
+                    self:SetState(nstate.next)
+                end)
+            end
+        else
+            if nstate.next and nstate.next~=stateid then 
                 self:SetState(nstate.next)
-            end)
+            end
         end
-    else
-        if nstate.next and nstate.next~=stateid then 
-            self:SetState(nstate.next)
-        end
-    end
+
+        return true
+    end 
+    return false
 end
 function ENT:GetState() 
     return self.stateid
