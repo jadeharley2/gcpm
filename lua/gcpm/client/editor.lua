@@ -117,11 +117,13 @@ function BuildWindow()
 	APPLY:SetColor(Color(255,255,255,255)) 
 	APPLY.DoClick = Apply 
 
+	local defaultpos = Vector(0,0,30)
 	LoadTabs({
 		species = {
 			name = "Species",
 			Action = function()
 				SpeciesSelector(Window) 
+				SetLook(defaultpos, 75)
 			end,
 			internal = true
 		},
@@ -131,6 +133,7 @@ function BuildWindow()
 				SelectedNode = nil
 				local sspanel = GetPanel(Window)
 				NewPanel({type="presets",name = "Presets"},sspanel)
+				SetLook(defaultpos, 75)
 			end,
 			internal = true
 		},

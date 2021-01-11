@@ -154,7 +154,7 @@ gcpm.AddSpecies("deer",{
         },
         eyel = {
             matdata = { 
-                ["$Iris"]      =         "models/mlp/base/face/p_luna",
+               -- ["$Iris"]      =         "models/mlp/base/face/p_luna",
                 ["$Irisframe"] =0    ,
         
                 ["$AmbientOcclTexture"] ="models/mlp/base/face/black"  ,   
@@ -173,13 +173,7 @@ gcpm.AddSpecies("deer",{
                 ["$nodecal"] =1,
         
                 ["$RaytraceSphere"] =1     ,
-                ["$SphereTexkillCombo"] =0   ,
-        
-        
-                ["$eyeorigin"] =Vector(0, 0, 0)  ,
-                ["$irisu"] ="[0 1 0 0]",
-                ["$irisv"] ="[0 0 1 0]",
-                ["$Entityorigin"] =4.0 , 
+                ["$SphereTexkillCombo"] =0   , 
             },
             mode = "procedural",  
             shader = "eyes",
@@ -234,7 +228,7 @@ gcpm.AddSpecies("deer",{
         },
         eyer = {
             matdata = {
-                ["$Iris"]      =         "models/mlp/base/face/p_luna",
+                --["$Iris"]      =         "models/mlp/base/face/p_luna",
                 ["$Irisframe"] =0    ,
         
                 ["$AmbientOcclTexture"] ="models/mlp/base/face/black"  ,   
@@ -253,13 +247,7 @@ gcpm.AddSpecies("deer",{
                 ["$nodecal"] =1,
         
                 ["$RaytraceSphere"] =1     ,
-                ["$SphereTexkillCombo"] =0   ,
-        
-        
-                ["$eyeorigin"] =Vector(0, 0, 0)  ,
-                ["$irisu"] ="[0 1 0 0]",
-                ["$irisv"] ="[0 0 1 0]",
-                ["$Entityorigin"] =4.0 , 
+                ["$SphereTexkillCombo"] =0   , 
             },
             mode = "procedural",  
             shader = "eyes",

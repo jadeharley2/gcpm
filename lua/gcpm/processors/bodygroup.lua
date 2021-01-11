@@ -48,20 +48,23 @@ hook.Add("GCPMUpdate", "body", function(ent,data,species)
         end
     end
 
-    if species.Body.skin then
-        local val = GetDataValue(species,data,species.Body.skin)
-        ent:SetSkin(val)
-    end
-    if species.Body.flexes then
-        for k,v in pairs(species.Body.flexes) do
-            local fi = ent:GetFlexIDByName(k)
-            local val = GetDataValue(species,data,v)
-            ent:SetFlexWeight( fi, val )
+    local Body = species.Body
+    if Body then
+        if Body.skin then
+            local val = GetDataValue(species,data,Body.skin)
+            ent:SetSkin(val)
+        end
+        if Body.flexes then
+            for k,v in pairs(Body.flexes) do
+                local fi = ent:GetFlexIDByName(k)
+                local val = GetDataValue(species,data,v)
+                ent:SetFlexWeight( fi, val )
+            end
         end
     end
-    
-    if species.Body and CLIENT then 
-        local b = species.Body.bones
+        
+    if Body and CLIENT then 
+        local b = Body.bones
         if b then
             if b.modifiers.rescale then
                 for k,v in pairs(b.modifiers.rescale) do
@@ -79,7 +82,7 @@ hook.Add("GCPMUpdate", "body", function(ent,data,species)
                 end
             end  
         end
-        local pp = species.Body.poseparams
+        local pp = Body.poseparams
         if pp then
             for k,v in pairs(pp) do
                 local val = GetProcDataValue(species,data,v)
@@ -89,6 +92,5 @@ hook.Add("GCPMUpdate", "body", function(ent,data,species)
     else
         ent:SetMaterial(nil)
     end
-
 
 end)

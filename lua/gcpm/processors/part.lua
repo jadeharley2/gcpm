@@ -93,14 +93,15 @@ local function PrepareProceduralMat(species,data,matdata)
     end
     return nt
 end
-local procedural_prefix = "xpc_"
-local color_prefix = "xcc_"
+local procedural_prefix = "x2pc_"
+local color_prefix = "x2cc_"
 
 local function GetMaterial(species,data,eid,k,m)
     local material = nil
 
     if isstring(m) then 
         local spmat = (species.Materials or {})[m]
+        MsgN("SPMAT ",m," = ",spmat)
         if spmat then
             m = spmat
         end 
@@ -327,7 +328,8 @@ hook.Add("GCPMUpdate", "parts", function(ent,data,species)
             --    bodymat = GetMaterial(species,data,eid,'body'..k,v)
             --end
             ent:SetSubMaterial(k-1,bodymat) 
-            --MsgN("setsubmat ",ent," ",k-1," = ",bodymat)
+            MsgN("setsubmat ",ent," ",k-1," = ",bodymat)
+            
         end
     else
         ent:SetMaterial(nil)
