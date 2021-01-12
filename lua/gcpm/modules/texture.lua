@@ -54,7 +54,31 @@ function RenderTexture(RT,data)
     render.PopRenderTarget() 
 end
 
+function SetupMaterial(mat,data)
+    for k,v in pairs(data) do
+        local t = TypeID(v) 
+        if t == TYPE_NUMBER then
+            mat:SetFloat(k,v)
+            mat:SetInt(k,v)
+        elseif t == TYPE_STRING then 
+            mat:SetString(k,v)
+        elseif t == TYPE_TABLE then 
+            if IsColor(v) then
+                mat:SetVector(k, v:ToVector())
+            else
+                print("unknown table type in setup material",mat,k,"=",v)
+            end
+        elseif t == TYPE_VECTOR then
+            mat:SetVector(k, v)
+        elseif t == TYPE_MATRIX then
+            mat:SetMatrix(k, v)
+        else
+            print("unknown type in setup material",mat,k,"=",v)
+        end
 
+    end
+
+end
 
 hook.Add("HUDPaint", "gcpm_render_texture", function()
 

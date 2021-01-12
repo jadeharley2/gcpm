@@ -687,8 +687,8 @@ local expand_layer = function(parent,cvalue,colvalue,variable,item,update)
 		local val = string.sub(v, 1, -5)
 		local ITEM_CONTAINER = vgui.Create( "DPanel", parent ) 
 		ITEM_CONTAINER:SetSize( 100, 20 )
-		ITEM_CONTAINER:Dock( TOP )
-		
+		ITEM_CONTAINER:Dock( TOP ) 
+
 		local ITEM_INDICATOR = vgui.Create( "DImageButton", ITEM_CONTAINER )
 		ITEM_INDICATOR:SetImage( "gui/editor/pictorect.png" )
 		ITEM_INDICATOR:SetSize( 20, 20 )
@@ -736,47 +736,83 @@ panels.edit_layers = {
 		
 		local indicators = {}
 		local header = false
-		for k , v in ipairs(variable.params) do
+		local prmc = #variable.params
+
+		local function build() 
+			for k , v in ipairs(variable.params) do
 			 
-			local cvalue = Data[v.type]
-			local colvalue = Data[v.color]
-
-			local ITEM_CONTAINER = vgui.Create( "DPanel", parent ) 
-			ITEM_CONTAINER:SetSize( 100, 20 )
-			ITEM_CONTAINER:Dock( TOP )
-			
-			local ITEM_INDICATOR = vgui.Create( "DImageButton", ITEM_CONTAINER )
-			ITEM_INDICATOR:SetImage( "gui/editor/pictorect.png" )
-			ITEM_INDICATOR:SetSize( 20, 20 )
-			ITEM_INDICATOR:Dock( RIGHT ) 
-			ITEM_INDICATOR:SetColor(colvalue)
-			ITEM_INDICATOR.s = val
-
-			local ITEM = vgui.Create( "DButton", ITEM_CONTAINER ) 
-			ITEM:SetSize( 300, 20 )  
-			ITEM:Dock( TOP )
-			ITEM:SetText(("Layer "..k..": ") .. cvalue) 
-			ITEM.DoClick = function()   
-				header:Clear() 
-				expand_layer(header,cvalue,colvalue,variable,v,function(a,b)
-					ITEM_INDICATOR:SetColor(b)
-					ITEM:SetText(("Layer "..k..": ") .. a) 
-				end)
-				header:SizeToContentsY( )
-				parent:GetParent():InvalidateLayout()
-
+				local cvalue = Data[v.type]
+				local colvalue = Data[v.color]
+	
+				local ITEM_CONTAINER = vgui.Create( "DPanel", parent ) 
+				ITEM_CONTAINER:SetSize( 100, 20 )
+				ITEM_CONTAINER:Dock( TOP )
 				
-				for _,vv in pairs(indicators) do
-					if vv == ITEM then
-						vv:SetColor(Color(0,0,200))
-					else
-						vv:SetColor(Color(0,0,0))
-					end
+				local ITEM_INDICATOR = vgui.Create( "DImageButton", ITEM_CONTAINER )
+				ITEM_INDICATOR:SetImage( "gui/editor/pictorect.png" )
+				ITEM_INDICATOR:SetSize( 20, 20 )
+				ITEM_INDICATOR:Dock( RIGHT ) 
+				ITEM_INDICATOR:SetColor(colvalue)
+				ITEM_INDICATOR.s = val
+	
+				local ITEM_ID = vgui.Create( "DButton", ITEM_CONTAINER )  
+				ITEM_ID:SetText(k)
+				ITEM_ID:SetSize( 20, 20 )
+				ITEM_ID:Dock( LEFT )  
+	
+	
+				local ITEM_MOVEUP = vgui.Create( "DButton", ITEM_CONTAINER ) 
+				if k~=1 then
+					ITEM_MOVEUP:SetText("▲")
+				else 
+					ITEM_MOVEUP:SetText(" ")
 				end
-			end  
-			indicators[k] = ITEM
+				ITEM_MOVEUP:SetSize( 20, 20 )
+				ITEM_MOVEUP:Dock( LEFT )  
+				ITEM_MOVEUP.DoClick = function()   
+	
+				end
+				local ITEM_DOWN = vgui.Create( "DButton", ITEM_CONTAINER ) 
+				if k~=prmc then
+					ITEM_DOWN:SetText("▼")
+				else 
+					ITEM_DOWN:SetText(" ")
+				end
+				ITEM_DOWN:SetSize( 20, 20 )
+				ITEM_DOWN:Dock( LEFT ) 
+				ITEM_DOWN.DoClick = function()   
+	
+				end
+	 
+	
+				local ITEM = vgui.Create( "DButton", ITEM_CONTAINER ) 
+				ITEM:SetSize( 300, 20 )  
+				ITEM:Dock( TOP )
+				ITEM:SetText( cvalue) 
+				ITEM.DoClick = function()   
+					header:Clear() 
+					expand_layer(header,cvalue,colvalue,variable,v,function(a,b)
+						ITEM_INDICATOR:SetColor(b)
+						ITEM:SetText(  a) 
+					end)
+					header:SizeToContentsY( )
+					parent:GetParent():InvalidateLayout()
+	
+					
+					for _,vv in pairs(indicators) do
+						if vv == ITEM then
+							vv:SetColor(Color(0,0,200))
+						else
+							vv:SetColor(Color(0,0,0))
+						end
+					end
+				end  
+				indicators[k] = ITEM
+			end
 		end
-		
+
+
+		build() 
 		header = vgui.Create( "DPanel", parent )	 			 
 		header:SetPos( 25, 50 )		 
 		header:SetSize( 250, 1000 )	  

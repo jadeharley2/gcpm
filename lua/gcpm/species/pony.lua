@@ -27,6 +27,7 @@ gcpm.AddSpecies("pony",{
         lmanesize   = {type="number",default = 1,min=0.5,max=1.5},
         umanesize   = {type="number",default = 1,min=0.5,max=1.5},
 
+        heterochromia  = {type="bool",name="Heterochromia",default = false},
         
         eyecolor_bg = {type="color",default = Color(255,255,255)},
         eyecolor_hole = {type="color",default = Color(0,0,0)},
@@ -41,6 +42,15 @@ gcpm.AddSpecies("pony",{
 
         eyelashes_type = {type="number",default = 0},
         eyelashes_color = {type="color",name="Horn Color",default = Color(10,10,10)},
+
+        eye2color_bg = {type="color",default = Color(255,255,255)},
+        eye2color_hole = {type="color",default = Color(0,0,0)},
+        eye2color_iris = {type="color",default = Color(150,150,150)},
+        eye2color_grad = {type="color",default = Color(255,150,150)},
+        eye2color_line1 = {type="color",default = Color(150,255,150)}, 
+        eye2color_line2 = {type="color",default = Color(150,150,255)}, 
+        eye2color_effects = {type="color",default = Color(255,255,255)},
+
 
         cmark       = {type="string",name="Cmark",default="derpy"},
         cmark_color = {type="color",name="Cmark Color",default = Color(255,255,255)},
@@ -148,7 +158,7 @@ gcpm.AddSpecies("pony",{
         },
         eyel = {
             matdata = { 
-                ["$Iris"]      =         "models/mlp/base/face/p_luna",
+               -- ["$Iris"]      =         "models/mlp/base/face/p_luna",
                 ["$Irisframe"] =0    ,
         
                 ["$AmbientOcclTexture"] ="models/mlp/base/face/black"  ,   
@@ -167,60 +177,56 @@ gcpm.AddSpecies("pony",{
                 ["$nodecal"] =1,
         
                 ["$RaytraceSphere"] =1     ,
-                ["$SphereTexkillCombo"] =0   ,
-        
-        
-                ["$eyeorigin"] =Vector(0, 0, 0)  ,
-                ["$irisu"] ="[0 1 0 0]",
-                ["$irisv"] ="[0 0 1 0]",
-                ["$Entityorigin"] =4.0 , 
+                ["$SphereTexkillCombo"] =0   , 
             },
             mode = "procedural",  
             shader = "eyes",
             target = "iris",
-            clear = "$eyecolor_bg",
+            clear = "@switch(heterochromia,eye2color_bg,eyecolor_bg)",  
             layers = {
-                {
+                { 
                     texture = "models/mlp/partrender/eye_oval.png",
-                    color = "$eyecolor_iris",
+                    color = "@switch(heterochromia,eye2color_iris,eyecolor_iris)",
                     w = "$eyeirissize",
                     h = "$eyeirissize",
                 },
-                {
+                { 
                     texture = "models/mlp/partrender/eye_grad.png",
                     color = "$eyecolor_grad",
+                    color = "@switch(heterochromia,eye2color_grad,eyecolor_grad)",
                     w = "$eyeirissize",
                     h = "$eyeirissize",
                 },
                 {
-                    enabled = "$eyehaslines",
-                    texture = "models/mlp/partrender/eye_line_r2.png",
-                    color = "$eyecolor_line2",
+                    --enabled = "$eyehaslines",
+                    texture = "models/mlp/partrender/eye_line_r2.png", 
+                    color = "@switch(heterochromia,eye2color_line2,eyecolor_line2)",
                     w = "$eyeirissize",
                     h = "$eyeirissize",
                 },
                 {
-                    enabled = "$eyehaslines",
-                    texture = "models/mlp/partrender/eye_line_r1.png",
-                    color = "$eyecolor_line1",
+                    --enabled = "$eyehaslines",
+                    texture = "models/mlp/partrender/eye_line_r1.png", 
+                    color = "@switch(heterochromia,eye2color_line1,eyecolor_line1)",
                     w = "$eyeirissize",
                     h = "$eyeirissize",
                 },
-                {
+                { 
                     texture = "models/mlp/partrender/eye_oval.png",
                     color = "$eyecolor_hole",
+                    color = "@switch(heterochromia,eye2color_hole,eyecolor_hole)",
                     w = "@ eyeirissize * eyeholesize * eyejholerssize",
                     h = "@ eyeirissize * eyeholesize",
                 },
-                {
+                { 
                     texture = "models/mlp/partrender/eye_effect.png",
-                    color = Color(255,255,255),
+                    color = "@switch(heterochromia,eye2color_effects,eyecolor_effects)",
                     w = "$eyeirissize",
                     h = "$eyeirissize",
                 },
-                {
+                {  
                     texture = "models/mlp/partrender/eye_reflection.png",
-                    color = Color(255,255,255),
+                    color = "@switch(heterochromia,eye2color_effects,eyecolor_effects)",
                     w = "$eyeirissize",
                     h = "$eyeirissize",
                 },
@@ -228,7 +234,7 @@ gcpm.AddSpecies("pony",{
         },
         eyer = {
             matdata = {
-                ["$Iris"]      =         "models/mlp/base/face/p_luna",
+                --["$Iris"]      =         "models/mlp/base/face/p_luna",
                 ["$Irisframe"] =0    ,
         
                 ["$AmbientOcclTexture"] ="models/mlp/base/face/black"  ,   
@@ -247,19 +253,13 @@ gcpm.AddSpecies("pony",{
                 ["$nodecal"] =1,
         
                 ["$RaytraceSphere"] =1     ,
-                ["$SphereTexkillCombo"] =0   ,
-        
-        
-                ["$eyeorigin"] =Vector(0, 0, 0)  ,
-                ["$irisu"] ="[0 1 0 0]",
-                ["$irisv"] ="[0 0 1 0]",
-                ["$Entityorigin"] =4.0 , 
+                ["$SphereTexkillCombo"] =0   , 
             },
             mode = "procedural",  
             shader = "eyes",
             target = "iris",
             clear = "$eyecolor_bg",
-            layers = {
+            layers = {  
                 {
                     texture = "models/mlp/partrender/eye_oval.png",
                     color = "$eyecolor_iris",
@@ -273,14 +273,14 @@ gcpm.AddSpecies("pony",{
                     h = "$eyeirissize",
                 },
                 {
-                    enabled = "$eyehaslines",
+                    --enabled = "$eyehaslines",
                     texture = "models/mlp/partrender/eye_line_l2.png",
                     color = "$eyecolor_line2",
                     w = "$eyeirissize",
                     h = "$eyeirissize",
                 },
                 {
-                    enabled = "$eyehaslines",
+                    --enabled = "$eyehaslines",
                     texture = "models/mlp/partrender/eye_line_l1.png",
                     color = "$eyecolor_line1",
                     w = "$eyeirissize",
@@ -294,13 +294,13 @@ gcpm.AddSpecies("pony",{
                 },
                 {
                     texture = "models/mlp/partrender/eye_effect.png",
-                    color = Color(255,255,255),
+                    color = "$eyecolor_effects",
                     w = "$eyeirissize",
                     h = "$eyeirissize",
                 },
                 {
                     texture = "models/mlp/partrender/eye_reflection.png",
-                    color = Color(255,255,255),
+                    color = "$eyecolor_effects",
                     w = "$eyeirissize",
                     h = "$eyeirissize",
                 },
@@ -1069,7 +1069,14 @@ gcpm.AddSpecies("pony",{
         --    }
         --}
     },
-
+    Eyes = {
+        attachment = "eyes",
+        offset = 2,
+        set = 40,
+    },
+    Viewmodel = {
+        material = "body"
+    },
 
     Races = {
         earth = {
@@ -1378,6 +1385,7 @@ gcpm.AddSpecies("pony",{
             pos = Vector(15,0,40)-Vector(12,0,40),
             fov = 30,
             Parts = {
+              
                 eyes = {
                     name = "Eyes" , 
                     bone = "LrigScull",
@@ -1389,6 +1397,11 @@ gcpm.AddSpecies("pony",{
                             param = "eye_form",
                             min = 0,
                             max = 1
+                        }, 
+                        {
+                            name = "Heterochromia" ,
+                            type = "edit_bool",
+                            param = "heterochromia", 
                         }, 
                         {
                             name = "Back color" ,
@@ -1412,13 +1425,13 @@ gcpm.AddSpecies("pony",{
                             type = "edit_color",
                             param = "eyecolor_grad"
                         }, 
-                        {
-                            name = "No lines" ,
-                            type = "edit_bool",
-                            param = "eyehaslines",
-                            onvalue = 2,
-                            offvalue = 1
-                        }, 
+                        --{
+                        --    name = "No lines" ,
+                        --    type = "edit_bool",
+                        --    param = "eyehaslines",
+                        --    onvalue = 2,
+                        --    offvalue = 1
+                        --}, 
                         {
                             name = "Line 1 color" ,
                             type = "edit_color",
@@ -1448,9 +1461,57 @@ gcpm.AddSpecies("pony",{
                             type = "edit_color",
                             param = "eyecolor_hole"
                         }, 
+                        {
+                            name = "Effects" ,
+                            type = "edit_color",
+                            param = "eyecolor_effects"
+                        }, 
                     }
                 },
                 
+                eyes2 = {
+                    name = "Left Eye" , 
+                    bone = "LrigScull",
+                    enabled = "$heterochromia",
+                    pos = Vector(15,5,40)-Vector(12,0,40),
+                    params = { 
+                        {
+                            name = "Back color" ,
+                            type = "edit_color",
+                            param = "eye2color_bg"
+                        },  
+                        {
+                            name = "Iris color" ,
+                            type = "edit_color",
+                            param = "eye2color_iris"
+                        }, 
+                        {
+                            name = "Iris color 2" ,
+                            type = "edit_color",
+                            param = "eye2color_grad"
+                        },  
+                        {
+                            name = "Line 1 color" ,
+                            type = "edit_color",
+                            param = "eye2color_line1"
+                        }, 
+                        {
+                            name = "Line 2 color" ,
+                            type = "edit_color",
+                            param = "eye2color_line2"
+                        },   
+                        {
+                            name = "Pupil color" ,
+                            type = "edit_color",
+                            param = "eye2color_hole"
+                        }, 
+                        {
+                            name = "Effects" ,
+                            type = "edit_color",
+                            param = "eye2color_effects"
+                        }, 
+                    }
+                },
                 eyelashes = {
                     name = "Eyelashes" , 
                     bone = "LrigScull",
@@ -1519,5 +1580,5 @@ gcpm.AddSpecies("pony",{
 player_manager.AddValidModel( "ponytest", "models/mlp/pony_default/player_default_base.mdl" )   
 player_manager.AddValidHands("ponytest","models/mlp/v_hoofs.mdl", 0, "00000000") 
 if CLIENT then
-    list.Set( "PlayerOptionsModel", "ponytest", "models/mlp/pony_default/player_default_base.mdl" )
+    list.Set( "PlayerOptionsModel", "ponytest", "models/mlp/pony_default/player_default_base.mdl" ) 
 end

@@ -289,6 +289,13 @@ function DrawSelectors(self,ang)
 					valid = false
 				end
 			end
+			if v.enabled then
+				local dval = gcpm.GetProcDataValue(species,Data,v.enabled,false)
+				--print("DVAL",dval,v.enabled)
+				if not dval then
+					valid = false
+				end
+			end
 			if valid and v.pos then
 				local nodepos = v.pos
 

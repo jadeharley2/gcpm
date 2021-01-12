@@ -9,4 +9,5 @@
 	"$phongalbedotint" "1"
 	"$phongtint" "[1 .95 .95]"
 	"$phongfresnelranges"	"[0.5 6 10]"
+	"$color2" "[0 0 0]"
 }

@@ -82,15 +82,35 @@ hook.Add("GCPMUpdate", "body", function(ent,data,species)
                 end
             end  
         end
+    else
+        ent:SetMaterial(nil)
+    end
+
+    if Body and CLIENT then 
         local pp = Body.poseparams
         if pp then
             for k,v in pairs(pp) do
-                local val = GetProcDataValue(species,data,v)
+                local val = GetProcDataValue(species,data,v) 
                 ent:SetPoseParameter( k, val)
+                print("POSEPARAM ",ent,k,val)
             end
         end 
-    else
-        ent:SetMaterial(nil)
+    end
+    
+    if SERVER then  
+        if ent:IsPlayer() then
+            local mod = 0
+            local set = nil
+            local att = nil
+            local eyes = species.Eyes
+            if eyes then
+                mod = eyes.offset or 0 
+                att = eyes.attachment
+                set = eyes.set
+            end
+
+            gcpm.UpdateView(ent,att,mod,set)  
+        end
     end
 
 end)

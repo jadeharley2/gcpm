@@ -13,16 +13,21 @@ local function GetValue(species,data,key)
     end
 end
 
-
+local switch = function(on,a,b)
+    if on then 
+        return a 
+    end
+    return b
+end
 
 GetDataValue = GetValue
 
-function GetProcDataValue(species,data,v)
+function GetProcDataValue(species,data,v,def)
     local first = string.sub(v, 1, 1)
     local key = string.sub(v, 2)
     if first == '$' then
-        local value = GetValue(species,data,key)  
-        assert(value, "NOVALUE "..key)
+        local value = GetValue(species,data,key) or def
+        assert(value~=nil, "NOVALUE "..key)
         return value
     elseif first == '@' then
         local key = string.sub(v, 2)
@@ -39,6 +44,7 @@ function GetProcDataValue(species,data,v)
                 return ""
             end
         end
+        env.switch = switch
 
         debug.setfenv(func, env)
         local value = func() 
@@ -93,18 +99,20 @@ local function PrepareProceduralMat(species,data,matdata)
     end
     return nt
 end
-local procedural_prefix = "x2pc_"
-local color_prefix = "x2cc_"
+local procedural_prefix = "x3pc_"
+local color_prefix = "x3cc_"
 
-local function GetMaterial(species,data,eid,k,m)
+local function GetMaterial(species,data,eid,k,m,localmaterials)
     local material = nil
-
+    --print("request mat ",species,data,eid,k,m,localmaterials)
     if isstring(m) then 
-        local spmat = (species.Materials or {})[m]
-        MsgN("SPMAT ",m," = ",spmat)
+        local spmat = (localmaterials or {})[m] -- (species.Materials or {})[m]
+        --MsgN("SPMAT ",m," = ",spmat)
         if spmat then
-            m = spmat
+            return spmat
+            --m = spmat
         end 
+        
     end
 
     if istable(m) then 
@@ -134,6 +142,8 @@ local function GetMaterial(species,data,eid,k,m)
                 end
 
                 local mat = gcpm.RequestMaterial(name,prepm, m.shader or "VertexLitGeneric",matdata,ttarget)
+                --gcpm.SetupMaterial(mat,matdata)
+                mat:Recompute()
             end
             material = '!'..name 
         elseif m.mode=="color" then
@@ -165,6 +175,7 @@ local function GetMaterial(species,data,eid,k,m)
                         
                         local cm = CreateMaterial(name, m.shader or "VertexLitGeneric",matdata)
                         if prepm.texture then cm:SetTexture( "$basetexture", prepm.texture ) end
+                        --gcpm.SetupMaterial(cm,matdata)
                         cm:SetVector( "$color2", Vector(value.r/255 ,value.g/255 ,value.b/255)) 
                         cm:Recompute()
                     end
@@ -197,6 +208,7 @@ local function GetMaterial(species,data,eid,k,m)
 
                     local cm = CreateMaterial(name, m.shader or "VertexLitGeneric", matdata)
                     if prepm.texture then cm:SetTexture( "$basetexture", prepm.texture ) end
+                    --gcpm.SetupMaterial(cm,matdata)
                     cm:SetVector( "$color2", Vector(value.r/255 ,value.g/255 ,value.b/255))
                     cm:Recompute()
                 end
@@ -225,7 +237,18 @@ hook.Add("GCPMUpdate", "parts", function(ent,data,species)
 
     local eid = ent:EntIndex()
     local Race = species.Races[data.race] or {}
-    if CLIENT then
+
+    
+    local localmaterials = {}
+    for k,v in pairs(species.Materials) do
+        if v.mode then 
+            localmaterials[k] = GetMaterial(species,data,eid,k,v)
+            --MsgN("preload mat ",k," = ",localmaterials[k])
+        end
+    end
+
+    if CLIENT then 
+
         for k,v in pairs(bpdata) do 
             if not species.Parts[k] then
                 CLIENTSIDE_ENTS[v.ClientsideID] = nil
@@ -295,7 +318,7 @@ hook.Add("GCPMUpdate", "parts", function(ent,data,species)
                 local m = pdata.material
                 local material = nil
                 if m then
-                    material = GetMaterial(species,data,eid,k,m)
+                    material = GetMaterial(species,data,eid,k,m,localmaterials)
                 end
 
                 if CLIENT and pdata.states then
@@ -321,19 +344,33 @@ hook.Add("GCPMUpdate", "parts", function(ent,data,species)
     if species.Body then
         for k,v in pairs(species.Body.materials) do
             local bodymat = nil
-            bodymat = GetMaterial(species,data,eid,'body'..k,v)
+            bodymat = GetMaterial(species,data,eid,'body'..k,v,localmaterials)
             --if v.mode=="procedural" then
             --    bodymat = GetMaterial(species,data,eid,'body'..k,v)
             --elseif v.mode=="color" then
             --    bodymat = GetMaterial(species,data,eid,'body'..k,v)
             --end
             ent:SetSubMaterial(k-1,bodymat) 
-            MsgN("setsubmat ",ent," ",k-1," = ",bodymat)
+            --MsgN("setsubmat ",ent," ",k-1," = ",bodymat)
             
         end
     else
         ent:SetMaterial(nil)
     end
+
+    
+    if CLIENT then 
+        if ent==LocalPlayer() then 
+            if species.Viewmodel then 
+                local hands = ent:GetHands()
+                if IsValid(hands) then 
+                    local mat =  GetMaterial(species,data,eid,'hands',species.Viewmodel.material,localmaterials) 
+                    hands:SetMaterial(mat) 
+                end
+            end
+        end
+    end
+
 end)  
 
 

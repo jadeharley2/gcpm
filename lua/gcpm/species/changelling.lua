@@ -8,185 +8,282 @@ gcpm.AddSpecies("changelling",{
     PrintName = "Changelling",
     Directory = "models/mlp/pony_default",
     Parameters = {
-        coatcolor  = {type="color",name="Coat color"},
-        haircolor1 = {type="color",name="Color 1"},
-        haircolor2 = {type="color",name="Color 2"},
-        haircolor3 = {type="color",name="Color 3"},
-        haircolor4 = {type="color",name="Color 4"},
-        haircolor5 = {type="color",name="Color 5"},
-        haircolor6 = {type="color",name="Color 6"},
+        coatcolor  = {type="color",name="Coat color",default = Color(255,255,255)},
+        haircolor1 = {type="color",name="Color 1",default = Color(255,0,0)},
+        haircolor2 = {type="color",name="Color 2",default = Color(0,255,0)},
+        haircolor3 = {type="color",name="Color 3",default = Color(0,0,255)},
+        haircolor4 = {type="color",name="Color 4",default = Color(255,255,0)},
+        haircolor5 = {type="color",name="Color 5",default = Color(0,255,255)},
+        haircolor6 = {type="color",name="Color 6",default = Color(255,0,255)},
+        
+        horncolor =  {type="color",name="Horn Color",default = Color(150,150,150,100)},
+
+        height      = {type="number",default = 0,min=-0.5,max=0.2},
+        bodyweight  = {type="number",default = 1,min=0.8,max=1.2},
+        wingssize   = {type="number",default = 1,min=0.8,max=1.2},
+        tailsize    = {type="number",default = 1,min=0.5,max=1.5},
+        lmanesize   = {type="number",default = 1,min=0.5,max=1.5},
+        umanesize   = {type="number",default = 1,min=0.5,max=1.5},
+
+        heterochromia  = {type="bool",name="Heterochromia",default = false},
+        
+        eyecolor_bg = {type="color",default = Color(255,255,255)},
+        eyecolor_hole = {type="color",default = Color(0,0,0)},
+        eyecolor_iris = {type="color",default = Color(150,150,150)},
+        eyecolor_grad = {type="color",default = Color(255,150,150)},
+        eyecolor_line1 = {type="color",default = Color(150,255,150)}, 
+        eyecolor_line2 = {type="color",default = Color(150,150,255)},
+        eyeirissize = {type="number",default = 0.6},
+        eyehaslines = {type="bool",default = true}, 
+        eyeholesize = {type="number",default = 0.7},
+        eyejholerssize = {type="number",default = 1},
+
+        eyelashes_type = {type="number",default = 0},
+        eyelashes_color = {type="color",name="Horn Color",default = Color(10,10,10)},
+
+        eye2color_bg = {type="color",default = Color(255,255,255)},
+        eye2color_hole = {type="color",default = Color(0,0,0)},
+        eye2color_iris = {type="color",default = Color(150,150,150)},
+        eye2color_grad = {type="color",default = Color(255,150,150)},
+        eye2color_line1 = {type="color",default = Color(150,255,150)}, 
+        eye2color_line2 = {type="color",default = Color(150,150,255)}, 
+        eye2color_effects = {type="color",default = Color(255,255,255)},
+ 
+
+        eyeshadow =  {type="color",default = Color(150,150,255,0)},
+        eyeliner =   {type="color",default = Color(0,0,0,100)},
+        lips    =   {type="color",default = Color(150,150,255,0)},
+        
+        head_form_0  = {type="number",default = 0,min=0,max=1},
+        eye_form     = {type="number",default = 0,min=0,max=1},
+        eyelash_form = {type="number",default = 1,min=0,max=1},
+ 
+        bodymask1   = {type="string",default="none"},
+        bodymask2   = {type="string",default="none"},
+        bodymask3   = {type="string",default="none"},
+        bodymask4   = {type="string",default="none"},
+        bodymask5   = {type="string",default="none"},
+        bodymask6   = {type="string",default="none"}, 
+        bodymask1_c = {type="color",name="Mask 1 Color",default = Color(255,0,0)},
+        bodymask2_c = {type="color",name="Mask 2 Color",default = Color(255,0,0)},
+        bodymask3_c = {type="color",name="Mask 3 Color",default = Color(255,0,0)},
+        bodymask4_c = {type="color",name="Mask 4 Color",default = Color(255,0,0)},
+        bodymask5_c = {type="color",name="Mask 5 Color",default = Color(255,0,0)},
+        bodymask6_c = {type="color",name="Mask 6 Color",default = Color(255,0,0)},
+
     },
     Materials = {
-        mouth = {},
         body = {
-            ["$basetexture"] = "models/mlp/base/body",
-    
-            ["$bumpmap"] = "models/mlp/base/render/body_n",
-            ["$model"] = 1,
-            ["$phong"] = 1,
-            
-            ["$phongexponent"] = 0.6,
-            ["$phongboost"] = 0.5,
-            ["$phongalbedotint"] = 1,
-            ["$phongtint"] = Vector(1,0.95,0.95),
-            ["$phongfresnelranges"] =	Vector(0.5,6,10),
-            
-            ["$rimlight"] =                1,
-            ["$rimlightexponent"] =        2,
-            ["$rimlightboost"] =           1 ,
+            matdata = {  
+                ["$bumpmap"] = "models/mlp/base/render/body_n",
+                ["$model"] = 1,
+                ["$phong"] = 1,
+                
+                ["$phongexponent"] = 0.6,
+                ["$phongboost"] = 0.5,
+                ["$phongalbedotint"] = 1,
+                ["$phongtint"] = Vector(1,0.95,0.95),
+                ["$phongfresnelranges"] =	Vector(0.5,6,10),
+                
+                ["$rimlight"] =                1,
+                ["$rimlightexponent"] =        2,
+                ["$rimlightboost"] =           1 ,
+            }, 
+            mode = "procedural",  
+            layers = {
+                {
+                    texture = "models/mlp/base/body2.png",
+                    color = "$coatcolor"
+                }, 
+                {
+                    texture = "@ 'models/mlp/body/'..(bodymask1 or 'none')..'.png'",
+                    color = "$bodymask1_c", 
+                },
+                {
+                    texture = "@ 'models/mlp/body/'..(bodymask2 or 'none')..'.png'",
+                    color = "$bodymask2_c", 
+                },
+                {
+                    texture = "@ 'models/mlp/body/'..(bodymask3 or 'none')..'.png'",
+                    color = "$bodymask3_c", 
+                },
+                {
+                    texture = "@ 'models/mlp/body/'..(bodymask4 or 'none')..'.png'",
+                    color = "$bodymask4_c", 
+                },
+                {
+                    texture = "@ 'models/mlp/body/'..(bodymask5 or 'none')..'.png'",
+                    color = "$bodymask5_c", 
+                },
+                {
+                    texture = "@ 'models/mlp/body/'..(bodymask6 or 'none')..'.png'",
+                    color = "$bodymask6_c", 
+                }, 
+                
+                {
+                    texture = "@ 'models/mlp/parts/eyeshadow.png'",
+                    color = "$eyeshadow", 
+                },
+                {
+                    texture = "@ 'models/mlp/parts/eyeline.png'",
+                    color = "$eyeliner", 
+                },
+                {
+                    texture = "@ 'models/mlp/parts/lips.png'",
+                    color = "$lips", 
+                }, 
+            } 
         },
         eyel = {
-            ["$Iris"]      =         "models/mlp/base/face/p_luna",
-            ["$Irisframe"] =0    ,
-    
-            ["$AmbientOcclTexture"] ="models/mlp/base/face/black"  ,   
-            ["$Envmap" ]            ="models/mlp/base/face/black"   ,  
-            ["$CorneaTexture"]     = "models/mlp/base/face/white"   ,   
-            ["$lightwarptexture"]= "models/mlp/clothes/lightwarp"  ,
-    
-            ["$EyeballRadius"] =3.7    ,
-            ["$AmbientOcclColor"] =Vector(0.3,0.3,0.3)  ,
-            ["$Dilation"] =0.5      ,
-            ["$Glossiness"] =1      ,
-            ["$ParallaxStrength"] =0.1          ,
-            ["$CorneaBumpStrength"] =0.1   ,
-    
-            ["$halflambert"] =1,
-            ["$nodecal"] =1,
-    
-            ["$RaytraceSphere"] =1     ,
-            ["$SphereTexkillCombo"] =0   ,
-    
-    
-            ["$eyeorigin"] =Vector(0, 0, 0)  ,
-            ["$irisu"] ="[0 1 0 0]",
-            ["$irisv"] ="[0 0 1 0]",
-            ["$Entityorigin"] =4.0 , 
+            matdata = { 
+               -- ["$Iris"]      =         "models/mlp/base/face/p_luna",
+                ["$Irisframe"] =0    ,
+        
+                ["$AmbientOcclTexture"] ="models/mlp/base/face/black"  ,   
+                ["$Envmap" ]            ="models/mlp/base/face/black"   ,  
+                ["$CorneaTexture"]     = "models/mlp/base/face/white"   ,   
+                ["$lightwarptexture"]= "models/mlp/clothes/lightwarp"  ,
+        
+                ["$EyeballRadius"] =3.7    ,
+                ["$AmbientOcclColor"] =Vector(0.3,0.3,0.3)  ,
+                ["$Dilation"] =0.5      ,
+                ["$Glossiness"] =1      ,
+                ["$ParallaxStrength"] =0.1          ,
+                ["$CorneaBumpStrength"] =0.1   ,
+        
+                ["$halflambert"] =1,
+                ["$nodecal"] =1,
+        
+                ["$RaytraceSphere"] =1     ,
+                ["$SphereTexkillCombo"] =0   , 
+            },
+            mode = "procedural",  
+            shader = "eyes",
+            target = "iris",
+            clear = "@switch(heterochromia,eye2color_bg,eyecolor_bg)",  
+            layers = {
+                { 
+                    texture = "models/mlp/partrender/eye_oval.png",
+                    color = "@switch(heterochromia,eye2color_iris,eyecolor_iris)",
+                    w = "$eyeirissize",
+                    h = "$eyeirissize",
+                },
+                { 
+                    texture = "models/mlp/partrender/eye_grad.png",
+                    color = "$eyecolor_grad",
+                    color = "@switch(heterochromia,eye2color_grad,eyecolor_grad)",
+                    w = "$eyeirissize",
+                    h = "$eyeirissize",
+                },
+                {
+                    --enabled = "$eyehaslines",
+                    texture = "models/mlp/partrender/eye_line_r2.png", 
+                    color = "@switch(heterochromia,eye2color_line2,eyecolor_line2)",
+                    w = "$eyeirissize",
+                    h = "$eyeirissize",
+                },
+                {
+                    --enabled = "$eyehaslines",
+                    texture = "models/mlp/partrender/eye_line_r1.png", 
+                    color = "@switch(heterochromia,eye2color_line1,eyecolor_line1)",
+                    w = "$eyeirissize",
+                    h = "$eyeirissize",
+                },
+                { 
+                    texture = "models/mlp/partrender/eye_oval.png",
+                    color = "$eyecolor_hole",
+                    color = "@switch(heterochromia,eye2color_hole,eyecolor_hole)",
+                    w = "@ eyeirissize * eyeholesize * eyejholerssize",
+                    h = "@ eyeirissize * eyeholesize",
+                },
+                { 
+                    texture = "models/mlp/partrender/eye_effect.png",
+                    color = "@switch(heterochromia,eye2color_effects,eyecolor_effects)",
+                    w = "$eyeirissize",
+                    h = "$eyeirissize",
+                },
+                {  
+                    texture = "models/mlp/partrender/eye_reflection.png",
+                    color = "@switch(heterochromia,eye2color_effects,eyecolor_effects)",
+                    w = "$eyeirissize",
+                    h = "$eyeirissize",
+                },
+            } 
         },
         eyer = {
-            ["$Iris"]      =         "models/mlp/base/face/p_luna",
-            ["$Irisframe"] =0    ,
-    
-            ["$AmbientOcclTexture"] ="models/mlp/base/face/black"  ,   
-            ["$Envmap" ]            ="models/mlp/base/face/black"   ,  
-            ["$CorneaTexture"]     = "models/mlp/base/face/white"   ,   
-            ["$lightwarptexture"]= "models/mlp/clothes/lightwarp"  ,
-    
-            ["$EyeballRadius"] =3.7    ,
-            ["$AmbientOcclColor"] =Vector(0.3,0.3,0.3)  ,
-            ["$Dilation"] =0.5      ,
-            ["$Glossiness"] =1      ,
-            ["$ParallaxStrength"] =0.1          ,
-            ["$CorneaBumpStrength"] =0.1   ,
-    
-            ["$halflambert"] =1,
-            ["$nodecal"] =1,
-    
-            ["$RaytraceSphere"] =1     ,
-            ["$SphereTexkillCombo"] =0   ,
-    
-    
-            ["$eyeorigin"] =Vector(0, 0, 0)  ,
-            ["$irisu"] ="[0 1 0 0]",
-            ["$irisv"] ="[0 0 1 0]",
-            ["$Entityorigin"] =4.0 , 
+            matdata = {
+                --["$Iris"]      =         "models/mlp/base/face/p_luna",
+                ["$Irisframe"] =0    ,
+        
+                ["$AmbientOcclTexture"] ="models/mlp/base/face/black"  ,   
+                ["$Envmap" ]            ="models/mlp/base/face/black"   ,  
+                ["$CorneaTexture"]     = "models/mlp/base/face/white"   ,   
+                ["$lightwarptexture"]= "models/mlp/clothes/lightwarp"  ,
+        
+                ["$EyeballRadius"] =3.7    ,
+                ["$AmbientOcclColor"] =Vector(0.3,0.3,0.3)  ,
+                ["$Dilation"] =0.5      ,
+                ["$Glossiness"] =1      ,
+                ["$ParallaxStrength"] =0.1          ,
+                ["$CorneaBumpStrength"] =0.1   ,
+        
+                ["$halflambert"] =1,
+                ["$nodecal"] =1,
+        
+                ["$RaytraceSphere"] =1     ,
+                ["$SphereTexkillCombo"] =0   , 
+            },
+            mode = "procedural",  
+            shader = "eyes",
+            target = "iris",
+            clear = "$eyecolor_bg",
+            layers = {  
+                {
+                    texture = "models/mlp/partrender/eye_oval.png",
+                    color = "$eyecolor_iris",
+                    w = "$eyeirissize",
+                    h = "$eyeirissize",
+                },
+                {
+                    texture = "models/mlp/partrender/eye_grad.png",
+                    color = "$eyecolor_grad",
+                    w = "$eyeirissize",
+                    h = "$eyeirissize",
+                },
+                {
+                    --enabled = "$eyehaslines",
+                    texture = "models/mlp/partrender/eye_line_l2.png",
+                    color = "$eyecolor_line2",
+                    w = "$eyeirissize",
+                    h = "$eyeirissize",
+                },
+                {
+                    --enabled = "$eyehaslines",
+                    texture = "models/mlp/partrender/eye_line_l1.png",
+                    color = "$eyecolor_line1",
+                    w = "$eyeirissize",
+                    h = "$eyeirissize",
+                },
+                {
+                    texture = "models/mlp/partrender/eye_oval.png",
+                    color = "$eyecolor_hole",
+                    w = "@ eyeirissize * eyeholesize * eyejholerssize",
+                    h = "@ eyeirissize * eyeholesize",
+                },
+                {
+                    texture = "models/mlp/partrender/eye_effect.png",
+                    color = "$eyecolor_effects",
+                    w = "$eyeirissize",
+                    h = "$eyeirissize",
+                },
+                {
+                    texture = "models/mlp/partrender/eye_reflection.png",
+                    color = "$eyecolor_effects",
+                    w = "$eyeirissize",
+                    h = "$eyeirissize",
+                },
+            } 
         }, 
-        cmark = {
-            ["$basetexture"] = "models/mlp/cmarks/rarity",
-    
-            ["$translucent"] = 1, 
-            ["$phong"] = 1, 
-            ["$phongexponent"] = 6,
-            ["$phongboost"] = 0.05,
-            ["$phongalbedotint"] = 1,
-            ["$phongtint"] = Vector(1,0.95,0.95),
-            ["$phongfresnelranges"] =	Vector(0.5,6,10),
-            
-            ["$rimlight"] =                1,
-            ["$rimlightexponent"] =        2,
-            ["$rimlightboost"] =           1 ,
-        },
-
-        horn = {
-            ["$basetexture"] = "models/mlp/base/horn",
-     
-            ["$model"] = 1,
-            ["$phong"] = 1,
-            
-            ["$phongexponent"] = 0.6,
-            ["$phongboost"] = 0.5,
-            ["$phongalbedotint"] = 1,
-            ["$phongtint"] = Vector(1,0.95,0.95),
-            ["$phongfresnelranges"] =	Vector(0.5,6,10),
-            
-            ["$rimlight"] =                1,
-            ["$rimlightexponent"] =        2,
-            ["$rimlightboost"] =           1 ,
-        },
-        wings = { 
-            ["$basetexture"] = "models/mlp/base/wings",
-    
-            ["$model"] = 1,
-            ["$phong"] = 1,
-            
-            ["$phongexponent"] = 0.6,
-            ["$phongboost"] = 0.5,
-            ["$phongalbedotint"] = 1,
-            ["$phongtint"] = Vector(1,0.95,0.95),
-            ["$phongfresnelranges"] =	Vector(0.5,6,10),
-            
-            ["$rimlight"] =                1,
-            ["$rimlightexponent"] =        2,
-            ["$rimlightboost"] =           1 ,
-        },
-        uppermane = {
-            ["$basetexture"] = "models/mlp/base/wings",
-    
-            ["$model"] = 1,
-            ["$phong"] = 1,
-            
-            ["$phongexponent"] = 0.6,
-            ["$phongboost"] = 0.5,
-            ["$phongalbedotint"] = 1,
-            ["$phongtint"] = Vector(1,0.95,0.95),
-            ["$phongfresnelranges"] =	Vector(0.5,6,10),
-            
-            ["$rimlight"] =                1,
-            ["$rimlightexponent"] =        2,
-            ["$rimlightboost"] =           1 ,
-        },
-        lowermane = {
-            ["$basetexture"] = "models/mlp/base/wings",
-    
-            ["$model"] = 1,
-            ["$phong"] = 1,
-            
-            ["$phongexponent"] = 0.6,
-            ["$phongboost"] = 0.5,
-            ["$phongalbedotint"] = 1,
-            ["$phongtint"] = Vector(1,0.95,0.95),
-            ["$phongfresnelranges"] =	Vector(0.5,6,10),
-            
-            ["$rimlight"] =                1,
-            ["$rimlightexponent"] =        2,
-            ["$rimlightboost"] =           1 ,
-        },
-        tail = {
-            ["$basetexture"] = "models/mlp/base/wings",
-    
-            ["$model"] = 1,
-            ["$phong"] = 1,
-            
-            ["$phongexponent"] = 0.6,
-            ["$phongboost"] = 0.5,
-            ["$phongalbedotint"] = 1,
-            ["$phongtint"] = Vector(1,0.95,0.95),
-            ["$phongfresnelranges"] =	Vector(0.5,6,10),
-            
-            ["$rimlight"] =                1,
-            ["$rimlightexponent"] =        2,
-            ["$rimlightboost"] =           1 ,
-        },
     },
     Models = {
         {
@@ -207,11 +304,80 @@ gcpm.AddSpecies("changelling",{
             Skin = 3
         } 
     },
+    Body = {
+        skin = "eyelashes_type",
+        materials = {
+            {},
+            "body",
+            "eyel",
+            "eyer",
+            {
+                mode = "color", 
+                params = "eyelashes_color"
+            },   
+            {
+                mode = "color", 
+                texture = "models/mlp/base/l0",
+                params = "eyelashes_color",
+                matdata = {
+                    ["$alphatest"] = 1
+                },
+            },   
+            {
+                mode = "color", 
+                texture = "models/mlp/base/l1",
+                params = "eyelashes_color",
+                matdata = {
+                    ["$alphatest"] = 1
+                },
+            },   
+        },
+        flexes = {
+            m01 = "head_form_0",
+            e01 = "eye_form",
+            eyelashesturn = "eyelash_form"
+        },
+        bones = {
+            groups = {
+                leg_bl = {"Lrig_LEG_BL_Femur","Lrig_LEG_BL_Tibia",
+                "Lrig_LEG_BL_LargeCannon","Lrig_LEG_BL_PhalanxPrima","Lrig_LEG_BL_RearHoof"},
+                leg_br = {"Lrig_LEG_BR_Femur","Lrig_LEG_BR_Tibia",
+                "Lrig_LEG_BR_LargeCannon","Lrig_LEG_BR_PhalanxPrima","Lrig_LEG_BR_RearHoof"}, 
+                leg_fl = {"Lrig_LEG_FL_Scapula","Lrig_LEG_FL_Humerus","Lrig_LEG_FL_Radius",
+                "Lrig_LEG_FL_Metacarpus","Lrig_LEG_FL_PhalangesManus","Lrig_LEG_FL_FrontHoof"},
+                leg_fr = {"Lrig_LEG_FR_Scapula","Lrig_LEG_FR_Humerus","Lrig_LEG_FR_Radius",
+                "Lrig_LEG_FR_Metacarpus","Lrig_LEG_FR_PhalangesManus","Lrig_LEG_FR_FrontHoof"},
+                neck = {"LrigNeck1","LrigNeck2","LrigNeck3"},
+                ribcage = {"LrigSpine1","LrigSpine2","LrigRibcage"},
+                rear = {"LrigPelvis"},
+                tail = {"Tail01","Tail02","Tail03"},--,"LrigTail4","LrigTail5","LrigTail6"},
+                uppermane = {"Mane01","Mane04","Mane05","Mane06","Mane07"},
+                lowermane = {"Mane02","Mane03","Mane03_tip"},
+                --wings = {"WingRight0.R","WingRight0.L","LrigRibcage"},
+            },
+            modifiers = {
+                rescale = {
+                    leg_bl = "$bodyweight",
+                    leg_br = "$bodyweight",
+                    leg_fl = "$bodyweight",
+                    leg_fr = "$bodyweight",
+                    neck = "$bodyweight",
+                    rear = "$bodyweight",
+                    ["tail:tail"] = "$tailsize",
+                    ["lowermane:lowermane"] = "$lmanesize",
+                    ["uppermane:uppermane"] = "$umanesize",
+                }
+            }
+        },
+        poseparams = {
+            height_test = "$height"
+        }
+    },
     PartsDirectory = "models/mlp/pony_default/parts",
     Parts = {
         ears = {
             variants = {
-                chang_ears={model="chang_ears.mdl"}
+                chang_ears={model="chang_ears.mdl",material = "body"}
             }
         },
         wings = {
@@ -223,7 +389,7 @@ gcpm.AddSpecies("changelling",{
         horn = {
             variants = {
                 none = {},
-                changhorn_01={model="changhorn_01.mdl"}
+                changhorn_01={model="changhorn_01.mdl",material = "body"}
             }
         },
         mane = {
@@ -254,26 +420,66 @@ gcpm.AddSpecies("changelling",{
     Editor = {
         body = {
             name = "Body" ,
-            pos = Vector(10,0,20),
-            params =
-            {  
-                {
-                    name = "Weight" ,
-                    type = "edit_number",
-                    param = "bodyweight",
-                    min = 0.8,
-                    max = 1.2
-                },
-                {
-                    name = "Coat color" ,
-                    type = "edit_color",
-                    param = "coatcolor"
-                }
-            },
+            pos = Vector(0,0,28), 
             Parts = {
+
+                body = {
+                    name = "Body" ,
+                    pos = Vector(10,0,25),
+                    params =
+                    {  
+                        {
+                            name = "Weight" ,
+                            type = "edit_number",
+                            param = "bodyweight",
+                            min = 0.8,
+                            max = 1.2
+                        },
+                        {
+                            name = "Height" ,
+                            type = "edit_number",
+                            param = "height",
+                            min = -0.5,
+                            max = 0.2
+                        },
+                        {
+                            name = "Coat color" ,
+                            type = "edit_color",
+                            param = "coatcolor"
+                        },  
+                        {
+                            name = "Coat layers" ,
+                            type = "edit_layers",
+                            path = "materials/models/mlp/body/",--.png'", 
+                            params = {
+                                { type = "bodymask1", color = "bodymask1_c"},
+                                { type = "bodymask2", color = "bodymask2_c"},
+                                { type = "bodymask3", color = "bodymask3_c"},
+                                { type = "bodymask4", color = "bodymask4_c"},
+                                { type = "bodymask5", color = "bodymask5_c"},
+                                { type = "bodymask6", color = "bodymask6_c"},
+                            }
+                        }
+                    },
+                },
+
+                horn = {
+                    name = "Horn" , 
+                    bone = "LrigScull",
+                    pos = Vector(6,0,12), 
+                    racial = true,
+                    params = {  
+                        {
+                            name = "Color" ,
+                            type = "edit_color",
+                            param = "horncolor"
+                        },  
+                    } 
+                },
                 uppermane = {
                     name = "Uppermane" , 
-                    pos = Vector(18,0,55),
+                    bone = "LrigScull", 
+                    pos = Vector(15,0,55)-Vector(12,0,43),
                     params = {
                         {
                             name = "Mane Upper" ,
@@ -284,6 +490,13 @@ gcpm.AddSpecies("changelling",{
                             name = "Mane Upper" ,
                             type = "edit_part",
                             param = "uppermane", 
+                        }, 
+                        {
+                            name = "Size" ,
+                            type = "edit_number", 
+                            param = "umanesize",
+                            min = 0.5,
+                            max = 1.5
                         }, 
                         {
                             name = "Color 1" ,
@@ -317,14 +530,24 @@ gcpm.AddSpecies("changelling",{
                         }
                     } 
                 },
+                
+                
                 lowermane = {
                     name = "Lowermane" ,
-                    pos = Vector(5,0,40),
+                    bone = "LrigScull", 
+                    pos = Vector(5,0,40)-Vector(12,0,43),
                     params = {
                         {
-                            name = "Tail" ,
+                            name = "Lower mane" ,
                             type = "edit_part",
                             param = "lowermane", 
+                        }, 
+                        {
+                            name = "Size" ,
+                            type = "edit_number", 
+                            param = "lmanesize",
+                            min = 0.5,
+                            max = 1.5
                         }, 
                         {
                             name = "Color 1" ,
@@ -367,11 +590,12 @@ gcpm.AddSpecies("changelling",{
                             type = "edit_part",
                             param = "tail", 
                         }, 
-                        tailsize = {
-                            name = "Tail size" ,
-                            type = "number", 
-                            min = 0.8,
-                            max = 1.1
+                        {
+                            name = "Size" ,
+                            type = "edit_number", 
+                            param = "tailsize",
+                            min = 0.5,
+                            max = 1.5
                         }, 
                         {
                             name = "Color 1" ,
@@ -404,64 +628,32 @@ gcpm.AddSpecies("changelling",{
                             param = "haircolor6"
                         }
                     } 
-                },
-                cutiemark = {
-                    name = "Cutiemark",
-                    pos = Vector(-8,6,27),
-                    params = {
-                        {
-                            name = "View" ,
-                            type = "view_cmark" 
-                        },
-                        {
-                            name = "No cutiemark" ,
-                            type = "edit_bool",
-                            param = "cmark_enabled",
-                            onvalue = 2,
-                            offvalue = 1
-                        }, 
-                        {
-                            name = "Cutiemark",
-                            type = "edit_cmark"
-                        },
-                        {
-                            name = "Custom cutiemark" ,
-                            type = "select_custom_cmark"
-                        },
-                        {
-                            name = "Cutiemark",
-                            type = "edit_type",
-                            param = "cmark",
-                            choices =
-                            {
-                                    "bon bon", "lyra", "fluttershy",
-                                    "trixie", "celestia", "applej"
-                                    ,"derpy" ,"drops" ,"cloudy"
-                                    ,"time" ,"sflowers" ,"twilight"
-                                    ,"rosen" ,"zecora" ,"mine"
-                                    ,"island" ,"firezap" ,"applem"
-                                    ,"pankk" ,"storm" ,"fan"
-                                    ,"rainbow dash" ,"time2" ,"carrots"
-                                    ,"fruits" ,"note" ,"pinkie_pie"
-                                    ,"rarity" ,"octavia" ,"custom01" 
-                                    ,"custom02" 
-                            }
-                        }
-                    }
-                },
-                markings = {
-
-                },
+                }, 
             }
         },
         head = {
-            name = "Head" ,
-            pos = Vector(15,-5,40),
+            name = "Face" ,
+            bone = "LrigScull",
+            pos = Vector(15,0,40)-Vector(12,0,40),
+            fov = 30,
             Parts = {
                 eyes = {
                     name = "Eyes" , 
-                    pos = Vector(15,-5,40),
+                    bone = "LrigScull",
+                    pos = Vector(15,-5,40)-Vector(12,0,40),
                     params = {
+                        {
+                            name = "Form" ,
+                            type = "edit_number",
+                            param = "eye_form",
+                            min = 0,
+                            max = 1
+                        }, 
+                        {
+                            name = "Heterochromia" ,
+                            type = "edit_bool",
+                            param = "heterochromia", 
+                        }, 
                         {
                             name = "Back color" ,
                             type = "edit_color",
@@ -483,14 +675,7 @@ gcpm.AddSpecies("changelling",{
                             name = "Iris color 2" ,
                             type = "edit_color",
                             param = "eyecolor_grad"
-                        }, 
-                        {
-                            name = "No lines" ,
-                            type = "edit_bool",
-                            param = "eyehaslines",
-                            onvalue = 2,
-                            offvalue = 1
-                        }, 
+                        },  
                         {
                             name = "Line 1 color" ,
                             type = "edit_color",
@@ -520,8 +705,99 @@ gcpm.AddSpecies("changelling",{
                             type = "edit_color",
                             param = "eyecolor_hole"
                         }, 
+                        {
+                            name = "Effects" ,
+                            type = "edit_color",
+                            param = "eyecolor_effects"
+                        }, 
                     }
-                }
+                },
+                
+                eyes2 = {
+                    name = "Left Eye" , 
+                    bone = "LrigScull",
+                    enabled = "$heterochromia",
+                    pos = Vector(15,5,40)-Vector(12,0,40),
+                    params = { 
+                        {
+                            name = "Back color" ,
+                            type = "edit_color",
+                            param = "eye2color_bg"
+                        },  
+                        {
+                            name = "Iris color" ,
+                            type = "edit_color",
+                            param = "eye2color_iris"
+                        }, 
+                        {
+                            name = "Iris color 2" ,
+                            type = "edit_color",
+                            param = "eye2color_grad"
+                        },  
+                        {
+                            name = "Line 1 color" ,
+                            type = "edit_color",
+                            param = "eye2color_line1"
+                        }, 
+                        {
+                            name = "Line 2 color" ,
+                            type = "edit_color",
+                            param = "eye2color_line2"
+                        },   
+                        {
+                            name = "Pupil color" ,
+                            type = "edit_color",
+                            param = "eye2color_hole"
+                        }, 
+                        {
+                            name = "Effects" ,
+                            type = "edit_color",
+                            param = "eye2color_effects"
+                        }, 
+                    }
+                },
+                
+                eyelashes = {
+                    name = "Eyelashes" , 
+                    bone = "LrigScull",
+                    pos = Vector(12,7,45)-Vector(12,0,40), 
+                    params = {
+                        { 
+                            name = "Type" ,
+                            type = "edit_skin",
+                            param = "eyelashes_type",
+                            choices = {
+                                { name = "Both", val = 0 },
+                                { name = "Bottom", val = 1 },
+                                { name = "Top", val = 2 },
+                                { name = "none", val = 3 },
+                            }
+                        },  
+                        {
+                            name = "Rotation" ,
+                            type = "edit_number",
+                            param = "eyelash_form",
+                            min = 0,
+                            max = 1
+                        }, 
+                        {
+                            name = "Color" ,
+                            type = "edit_color",
+                            param = "eyelashes_color"
+                        },  
+                        {
+                            name = "Eyeliner" ,
+                            type = "edit_color",
+                            param = "eyeliner"
+                        },  
+                        {
+                            name = "Eyeshadow" ,
+                            type = "edit_color",
+                            param = "eyeshadow"
+                        },   
+                    }
+                },
+                 
             }
         }
 

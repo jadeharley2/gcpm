@@ -7,13 +7,36 @@ species = {} -- species or {}
 
 
 function IsCPM(ent)
-
+    return IsValid(ent) and ent.gcpmdata ~= nil
 end
 
 function Init(ent)
 end
 
 if SERVER then
+    
+	function SendCPlayers(ply)
+		for name, ent in pairs(ents.GetAll()) do
+			if ent.gcpmdata then 
+				MsgN("gcpm sent ",ent)
+				net.Start("gcpm_data")
+                net.WriteEntity(ent)
+                net.WriteTable(data) 
+				if ply=="all" then
+                    net.Broadcast()
+				else
+					net.Send(ply) 
+				end
+			end
+		end 
+    end
+    
+	hook.Add("PlayerFullLoad", "ppm_sendall", function(ply) 
+		MsgN("SEND GCPM TO ",ply)
+		SendCPlayers(ply) 
+    end)
+    concommand.Add("gcpm_resend", function() SendCPlayers("all") end)
+    
     util.AddNetworkString("gcpm_data")
     function ValidateData(data,old)
         return data
@@ -115,6 +138,12 @@ function Update(ent)
                 end  
             end)
         end)
+        if SERVER then
+            net.Start("gcpm_data")
+            net.WriteEntity(ent)
+            net.WriteTable(data)
+            net.Broadcast()
+        end
     end
 end
 
@@ -142,102 +171,6 @@ function ListPresets()
 end
 
 
---[[ SPECIES ]]
-function InitSpeciesParams(ent)
-    --if IsValid(ent) then
-        local data = ent.gcpmdata or {}
-        if data.species then
-            local species = GetSpecies(data.species)
-            if species then 
-                if species.Parameters then
-                    for k,v in pairs(species.Parameters) do
-                        if data[k] == nil then
-                            data[k] = v.default 
-                        end 
-                    end
-                end
-                if species.Parts then
-                    for k,v in pairs(species.Parts) do
-                        if v.default and data[k] == nil then
-                            data[k] = v.default
-                        end
-                    end
-                end
-            end 
-            ent.gcpmdata = data
-        end
-    --else
-    --    MsgN(ent," ??? ")
-    --end
-end
-
-function AddSpecies(id,data)
-    species[id] = data 
-end
-
-function LoadSpecies()
-    local function RecuInclude(dir) 
-        local files, directories = file.Find( dir.."*.lua", "LUA" )
-        for k,v in pairs(files) do  
-            AddCSLuaFile(dir..v)
-            include(dir..v)
-        end
-        for k,v in pairs(directories) do 
-            RecuInclude(dir..v.."/")
-        end
-    end
-    RecuInclude("gcpm/species/")
-end
-
-function GetSpecies(k)
-    if k then
-        return species[k] 
-    end
-end
-function GetRace(data)
-    local spc = GetSpecies(data.species)
-    if spc then
-        return spc.Races[data.race], spc
-    end
-end
-function GetSpeciesList()
-    return species
-end
-function GetParts(data,ptype)
-    local species = GetSpecies(data.species)
-    if species then
-        local parts = species.Parts[ptype]
-        if parts then
-            return parts.variants or {}
-        end
-    end
-    return {}
-end
-function GetTexParts(data,ptype)
-    local species = GetSpecies(data.species)
-    if species then
-        local parts = species.TexParts[ptype]
-        if parts then
-            return parts.variants or {}
-        end
-    end
-    return {}
-end
-function GetPart(data,ptype,pvalue)
-    local parts = GetParts(data,ptype)
-    if parts then
-        return parts[pvalue] 
-    end
-    return nil
-end
-function GetTexPart(data,ptype,pvalue)
-    local parts = GetTexParts(data,ptype) 
-    if parts then
-        return parts[pvalue] 
-    end
-    return nil
-end
-LoadSpecies()
 
 --[[ INIT ]]
  
@@ -246,19 +179,21 @@ AddCSLuaFile("gcpm/client/editor.lua")
 AddCSLuaFile("gcpm/client/background.lua")
 AddCSLuaFile("gcpm/client/panels.lua")
 
-AddCSLuaFile("gcpm/processors/part.lua")
-AddCSLuaFile("gcpm/processors/texture.lua")
-AddCSLuaFile("gcpm/processors/bodygroup.lua")
+AddCSLuaFile("gcpm/modules/species.lua")
+AddCSLuaFile("gcpm/modules/part.lua")
+AddCSLuaFile("gcpm/modules/texture.lua")
+AddCSLuaFile("gcpm/modules/bodygroup.lua")
 if CLIENT then
     include("gcpm/client/ximagebutton.lua")
     include("gcpm/client/panels.lua")
     include("gcpm/client/background.lua")
     include("gcpm/client/editor.lua")
     
-    include("gcpm/processors/texture.lua")
+    include("gcpm/modules/texture.lua")
 end
-include("gcpm/processors/part.lua")
-include("gcpm/processors/bodygroup.lua")
+include("gcpm/modules/species.lua")
+include("gcpm/modules/part.lua")
+include("gcpm/modules/bodygroup.lua")
 
 
 MsgN("gcpm init finished")
@@ -271,20 +206,24 @@ if CLIENT then
 
     local function Blink(ent)
         if IsValid(ent) then
+            local id = ent:EntIndex()
             ent.blinktarget = 1
-            timer.Create("unblink", 0.1, 1, function()
+            timer.Create("unblink"..id, 0.1, 1, function()
                 ent.blinktarget = 0 
             end)
+            timer.Create("gcpm_blink"..id, math.Rand(4.6, 7)*0.8, 1, function()  
+                Blink(ent)
+            end)
         end
-        timer.Create("gcpm_blink", math.Rand(4.6, 7)*0.8, 1, function()  
-            Blink(ent)
-        end)
     end
-
+    local function StartBlink()
+        for k,v in pairs(player.GetAll()) do 
+            Blink(v)
+        end 
+    end
     hook.Add( "InitPostEntity", "gcpm_blink", function() 
         timer.Create("gcpm_blink", 2, 1, function() 
-            local lp = LocalPlayer()
-            Blink(lp)
+            StartBlink()
         end)
     end )
     hook.Add("PrePlayerDraw", "gcpm_blink", function(ply, flags)
@@ -298,7 +237,8 @@ if CLIENT then
             ply:SetFlexWeight(bl, bts)
         end
     end)
-
+    timer.Destroy("gcpm_blink")
+    StartBlink()
 end 
 
 --temp noclip flight anim
@@ -350,4 +290,29 @@ else
             --ply.flight_layer
         end
     end)]]
+end
+
+
+
+--player view position
+if SERVER then
+    function UpdateView(ply,attachment,mod,set) 
+        local att = ply:LookupAttachment( attachment or "eyes" ) 
+        if att > 0 then
+            mod = mod or 0
+            local eyes = ply:GetAttachment( att ).Pos
+            local pp = ply:GetPos() 
+            local diff = (set or eyes.Z-pp.Z)+mod
+            print("eyes diff",diff,"=",eyes.Z,pp.Z,mod,set)
+            ply:SetViewOffset(Vector(0,0,diff))
+        end
+    end
+    --hook.Add("PlayerSpawn", "gcpm_update_view", function(ply)
+    --    --UpdateView(ply)
+    --end)
+    hook.Add("PlayerSetModel", "gcpm_setup", function(ply)
+        if IsCPM(ply) then
+            return true
+        end
+    end) 
 end

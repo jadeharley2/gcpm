@@ -27,6 +27,8 @@ gcpm.AddSpecies("deer",{
         lmanesize   = {type="number",default = 1,min=0.5,max=1.5},
         umanesize   = {type="number",default = 1,min=0.5,max=1.5},
 
+        heterochromia  = {type="bool",name="Heterochromia",default = false},
+
         eyecolor_bg = {type="color",default = Color(255,255,255)},
         eyecolor_hole = {type="color",default = Color(0,0,0)},
         eyecolor_iris = {type="color",default = Color(150,150,150)},
@@ -37,6 +39,15 @@ gcpm.AddSpecies("deer",{
         eyehaslines = {type="bool",default = true}, 
         eyeholesize = {type="number",default = 0.7},
         eyejholerssize = {type="number",default = 1},
+        eyecolor_effects = {type="color",default = Color(255,255,255)},
+
+        eye2color_bg = {type="color",default = Color(255,255,255)},
+        eye2color_hole = {type="color",default = Color(0,0,0)},
+        eye2color_iris = {type="color",default = Color(150,150,150)},
+        eye2color_grad = {type="color",default = Color(255,150,150)},
+        eye2color_line1 = {type="color",default = Color(150,255,150)}, 
+        eye2color_line2 = {type="color",default = Color(150,150,255)}, 
+        eye2color_effects = {type="color",default = Color(255,255,255)},
 
         eyelashes_type = {type="number",default = 0},
         eyelashes_color = {type="color",name="Horn Color",default = Color(10,10,10)},
@@ -72,9 +83,7 @@ gcpm.AddSpecies("deer",{
     Materials = {
       
         body = {
-            matdata = {
-                ["$basetexture"] = "models/mlp/base/body",
-        
+            matdata = {  
                 ["$bumpmap"] = "models/mlp/base/render/body_n",
                 ["$model"] = 1,
                 ["$phong"] = 1,
@@ -178,49 +187,51 @@ gcpm.AddSpecies("deer",{
             mode = "procedural",  
             shader = "eyes",
             target = "iris",
-            clear = "$eyecolor_bg",
+            clear = "@switch(heterochromia,eye2color_bg,eyecolor_bg)",  
             layers = {
-                {
+                { 
                     texture = "models/mlp/partrender/eye_oval.png",
-                    color = "$eyecolor_iris",
+                    color = "@switch(heterochromia,eye2color_iris,eyecolor_iris)",
                     w = "$eyeirissize",
                     h = "$eyeirissize",
                 },
-                {
+                { 
                     texture = "models/mlp/partrender/eye_grad.png",
                     color = "$eyecolor_grad",
+                    color = "@switch(heterochromia,eye2color_grad,eyecolor_grad)",
                     w = "$eyeirissize",
                     h = "$eyeirissize",
                 },
                 {
-                    enabled = "$eyehaslines",
-                    texture = "models/mlp/partrender/eye_line_r2.png",
-                    color = "$eyecolor_line2",
+                    --enabled = "$eyehaslines",
+                    texture = "models/mlp/partrender/eye_line_r2.png", 
+                    color = "@switch(heterochromia,eye2color_line2,eyecolor_line2)",
                     w = "$eyeirissize",
                     h = "$eyeirissize",
                 },
                 {
-                    enabled = "$eyehaslines",
-                    texture = "models/mlp/partrender/eye_line_r1.png",
-                    color = "$eyecolor_line1",
+                    --enabled = "$eyehaslines",
+                    texture = "models/mlp/partrender/eye_line_r1.png", 
+                    color = "@switch(heterochromia,eye2color_line1,eyecolor_line1)",
                     w = "$eyeirissize",
                     h = "$eyeirissize",
                 },
-                {
+                { 
                     texture = "models/mlp/partrender/eye_oval.png",
                     color = "$eyecolor_hole",
+                    color = "@switch(heterochromia,eye2color_hole,eyecolor_hole)",
                     w = "@ eyeirissize * eyeholesize * eyejholerssize",
                     h = "@ eyeirissize * eyeholesize",
                 },
-                {
+                { 
                     texture = "models/mlp/partrender/eye_effect.png",
-                    color = Color(255,255,255),
+                    color = "@switch(heterochromia,eye2color_effects,eyecolor_effects)",
                     w = "$eyeirissize",
                     h = "$eyeirissize",
                 },
-                {
+                {  
                     texture = "models/mlp/partrender/eye_reflection.png",
-                    color = Color(255,255,255),
+                    color = "@switch(heterochromia,eye2color_effects,eyecolor_effects)",
                     w = "$eyeirissize",
                     h = "$eyeirissize",
                 },
@@ -253,7 +264,7 @@ gcpm.AddSpecies("deer",{
             shader = "eyes",
             target = "iris",
             clear = "$eyecolor_bg",
-            layers = {
+            layers = {  
                 {
                     texture = "models/mlp/partrender/eye_oval.png",
                     color = "$eyecolor_iris",
@@ -267,14 +278,14 @@ gcpm.AddSpecies("deer",{
                     h = "$eyeirissize",
                 },
                 {
-                    enabled = "$eyehaslines",
+                    --enabled = "$eyehaslines",
                     texture = "models/mlp/partrender/eye_line_l2.png",
                     color = "$eyecolor_line2",
                     w = "$eyeirissize",
                     h = "$eyeirissize",
                 },
                 {
-                    enabled = "$eyehaslines",
+                    --enabled = "$eyehaslines",
                     texture = "models/mlp/partrender/eye_line_l1.png",
                     color = "$eyecolor_line1",
                     w = "$eyeirissize",
@@ -288,13 +299,13 @@ gcpm.AddSpecies("deer",{
                 },
                 {
                     texture = "models/mlp/partrender/eye_effect.png",
-                    color = Color(255,255,255),
+                    color = "$eyecolor_effects",
                     w = "$eyeirissize",
                     h = "$eyeirissize",
                 },
                 {
                     texture = "models/mlp/partrender/eye_reflection.png",
-                    color = Color(255,255,255),
+                    color = "$eyecolor_effects",
                     w = "$eyeirissize",
                     h = "$eyeirissize",
                 },
@@ -384,6 +395,15 @@ gcpm.AddSpecies("deer",{
         poseparams = {
             height_test = "$height"
         }
+    },
+    Eyes = {
+        attachment = "eyes",
+        offset = 2,
+        set = 40,
+    },
+    Viewmodel = {
+        material = "body",
+        Bodygroups ={}
     },
     PartsDirectory = "models/mlp/pony_default/parts",
     Parts = { 
@@ -1038,6 +1058,11 @@ gcpm.AddSpecies("deer",{
                             max = 1
                         }, 
                         {
+                            name = "Heterochromia" ,
+                            type = "edit_bool",
+                            param = "heterochromia", 
+                        }, 
+                        {
                             name = "Back color" ,
                             type = "edit_color",
                             param = "eyecolor_bg"
@@ -1059,13 +1084,13 @@ gcpm.AddSpecies("deer",{
                             type = "edit_color",
                             param = "eyecolor_grad"
                         }, 
-                        {
-                            name = "No lines" ,
-                            type = "edit_bool",
-                            param = "eyehaslines",
-                            onvalue = 2,
-                            offvalue = 1
-                        }, 
+                        --{
+                        --    name = "No lines" ,
+                        --    type = "edit_bool",
+                        --    param = "eyehaslines",
+                        --    onvalue = 2,
+                        --    offvalue = 1
+                        --}, 
                         {
                             name = "Line 1 color" ,
                             type = "edit_color",
@@ -1094,6 +1119,55 @@ gcpm.AddSpecies("deer",{
                             name = "Pupil color" ,
                             type = "edit_color",
                             param = "eyecolor_hole"
+                        }, 
+                        {
+                            name = "Effects" ,
+                            type = "edit_color",
+                            param = "eyecolor_effects"
+                        }, 
+                    }
+                },
+                
+                eyes2 = {
+                    name = "Left Eye" , 
+                    bone = "LrigScull",
+                    enabled = "$heterochromia",
+                    pos = Vector(15,5,40)-Vector(12,0,40),
+                    params = { 
+                        {
+                            name = "Back color" ,
+                            type = "edit_color",
+                            param = "eye2color_bg"
+                        },  
+                        {
+                            name = "Iris color" ,
+                            type = "edit_color",
+                            param = "eye2color_iris"
+                        }, 
+                        {
+                            name = "Iris color 2" ,
+                            type = "edit_color",
+                            param = "eye2color_grad"
+                        },  
+                        {
+                            name = "Line 1 color" ,
+                            type = "edit_color",
+                            param = "eye2color_line1"
+                        }, 
+                        {
+                            name = "Line 2 color" ,
+                            type = "edit_color",
+                            param = "eye2color_line2"
+                        },   
+                        {
+                            name = "Pupil color" ,
+                            type = "edit_color",
+                            param = "eye2color_hole"
+                        }, 
+                        {
+                            name = "Effects" ,
+                            type = "edit_color",
+                            param = "eye2color_effects"
                         }, 
                     }
                 },
