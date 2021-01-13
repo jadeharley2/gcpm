@@ -45,6 +45,7 @@ hook.Add("GCPMUpdate", "body", function(ent,data,species)
         for k,v in pairs(model.Bodygroups) do
             local bg = ent:FindBodygroupByName(k)
             ent:SetBodygroup(bg, v)
+            print("bgroup set",ent,k,bg,"=",v)
         end
     end
 
@@ -60,6 +61,12 @@ hook.Add("GCPMUpdate", "body", function(ent,data,species)
                 local val = GetDataValue(species,data,v)
                 ent:SetFlexWeight( fi, val )
             end
+        end
+    end
+    if model.Flexes then
+        for k,v in pairs(model.Flexes) do
+            local fi = ent:GetFlexIDByName(k) 
+            ent:SetFlexWeight( fi, v )
         end
     end
         

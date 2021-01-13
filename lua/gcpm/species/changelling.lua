@@ -18,8 +18,9 @@ gcpm.AddSpecies("changelling",{
         
         horncolor =  {type="color",name="Horn Color",default = Color(150,150,150,100)},
 
-        height      = {type="number",default = 0,min=-0.5,max=0.2},
+        height      = {type="number",default = 0,min=0,max=0.2}, -- -0.5
         bodyweight  = {type="number",default = 1,min=0.8,max=1.2},
+        weightbalance  = {type="number",default = 0.5,min=0,max=1},
         wingssize   = {type="number",default = 1,min=0.8,max=1.2},
         tailsize    = {type="number",default = 1,min=0.5,max=1.5},
         lmanesize   = {type="number",default = 1,min=0.5,max=1.5},
@@ -33,6 +34,7 @@ gcpm.AddSpecies("changelling",{
         eyecolor_grad = {type="color",default = Color(255,150,150)},
         eyecolor_line1 = {type="color",default = Color(150,255,150)}, 
         eyecolor_line2 = {type="color",default = Color(150,150,255)},
+        eyecolor_effects = {type="color",default = Color(255,255,255)},
         eyeirissize = {type="number",default = 0.6},
         eyehaslines = {type="bool",default = true}, 
         eyeholesize = {type="number",default = 0.7},
@@ -56,6 +58,7 @@ gcpm.AddSpecies("changelling",{
         
         head_form_0  = {type="number",default = 0,min=0,max=1},
         eye_form     = {type="number",default = 0,min=0,max=1},
+        eye_form2     = {type="number",default = 0,min=0,max=1},
         eyelash_form = {type="number",default = 1,min=0,max=1},
  
         bodymask1   = {type="string",default="none"},
@@ -64,12 +67,18 @@ gcpm.AddSpecies("changelling",{
         bodymask4   = {type="string",default="none"},
         bodymask5   = {type="string",default="none"},
         bodymask6   = {type="string",default="none"}, 
+        bodymask7   = {type="string",default="none"}, 
+        bodymask8   = {type="string",default="none"}, 
+        bodymask9   = {type="string",default="none"}, 
         bodymask1_c = {type="color",name="Mask 1 Color",default = Color(255,0,0)},
         bodymask2_c = {type="color",name="Mask 2 Color",default = Color(255,0,0)},
         bodymask3_c = {type="color",name="Mask 3 Color",default = Color(255,0,0)},
         bodymask4_c = {type="color",name="Mask 4 Color",default = Color(255,0,0)},
         bodymask5_c = {type="color",name="Mask 5 Color",default = Color(255,0,0)},
         bodymask6_c = {type="color",name="Mask 6 Color",default = Color(255,0,0)},
+        bodymask7_c = {type="color",name="Mask 7 Color",default = Color(255,0,0)},
+        bodymask8_c = {type="color",name="Mask 8 Color",default = Color(255,0,0)},
+        bodymask9_c = {type="color",name="Mask 9 Color",default = Color(255,0,0)},
 
     },
     Materials = {
@@ -119,6 +128,18 @@ gcpm.AddSpecies("changelling",{
                     texture = "@ 'models/mlp/body/'..(bodymask6 or 'none')..'.png'",
                     color = "$bodymask6_c", 
                 }, 
+                {
+                    texture = "@ 'models/mlp/body/'..(bodymask7 or 'none')..'.png'",
+                    color = "$bodymask7_c", 
+                },
+                {
+                    texture = "@ 'models/mlp/body/'..(bodymask8 or 'none')..'.png'",
+                    color = "$bodymask8_c", 
+                },
+                {
+                    texture = "@ 'models/mlp/body/'..(bodymask9 or 'none')..'.png'",
+                    color = "$bodymask9_c", 
+                },
                 
                 {
                     texture = "@ 'models/mlp/parts/eyeshadow.png'",
@@ -290,7 +311,8 @@ gcpm.AddSpecies("changelling",{
             File = "player_default_base.mdl",
             Bodygroups = {
                 Body = 2,
-                Cmark = 1
+                Cmark = 1,
+                dump_bones_donotuse=0,
             },
             Materials = { 
                 mouth = 0,
@@ -334,8 +356,10 @@ gcpm.AddSpecies("changelling",{
         },
         flexes = {
             m01 = "head_form_0",
-            e01 = "eye_form",
-            eyelashesturn = "eyelash_form"
+            e01 = "eye_form", 
+            eyelashesturn = "eyelash_form",
+            langry = "eye_form2",
+            rangry = "eye_form2",
         },
         bones = {
             groups = {
@@ -373,6 +397,16 @@ gcpm.AddSpecies("changelling",{
             height_test = "$height"
         }
     },
+    
+    Eyes = {
+        attachment = "eyes",
+        offset = 2,
+        set = 40,
+    },
+    Viewmodel = {
+        material = "body"
+    },
+
     PartsDirectory = "models/mlp/pony_default/parts",
     Parts = {
         ears = {
@@ -389,7 +423,13 @@ gcpm.AddSpecies("changelling",{
         horn = {
             variants = {
                 none = {},
-                changhorn_01={model="changhorn_01.mdl",material = "body"}
+                changhorn_01={
+                    model="changhorn_01.mdl",
+                    material = {
+                        mode = "color",   
+                        params = "coatcolor"
+                    }
+                }
             }
         },
         mane = {
@@ -458,6 +498,9 @@ gcpm.AddSpecies("changelling",{
                                 { type = "bodymask4", color = "bodymask4_c"},
                                 { type = "bodymask5", color = "bodymask5_c"},
                                 { type = "bodymask6", color = "bodymask6_c"},
+                                { type = "bodymask7", color = "bodymask7_c"},
+                                { type = "bodymask8", color = "bodymask8_c"},
+                                { type = "bodymask9", color = "bodymask9_c"},
                             }
                         }
                     },
@@ -649,6 +692,13 @@ gcpm.AddSpecies("changelling",{
                             min = 0,
                             max = 1
                         }, 
+                        {
+                            name = "Evilness" ,
+                            type = "edit_number",
+                            param = "eye_form2",
+                            min = 0,
+                            max = 1
+                        },  
                         {
                             name = "Heterochromia" ,
                             type = "edit_bool",

@@ -12,6 +12,8 @@ gcpm.AddSpecies("deer",{
         coatcolor2  = {type="color",name="Coat color 2",default = Color(255,255,255)},
         coatcolor2_overlay  = {type="bool",name="Coat overlay",default = true},
         hornscolor = {type="color",name="Horns color",default = Color(100,100,100)},
+        hoovescolor = {type="color",name="Hooves color",default = Color(10,10,10)},
+
         haircolor1 = {type="color",name="Color 1",default = Color(255,0,0)},
         haircolor2 = {type="color",name="Color 2",default = Color(0,255,0)},
         haircolor3 = {type="color",name="Color 3",default = Color(0,0,255)},
@@ -21,12 +23,14 @@ gcpm.AddSpecies("deer",{
         
         nose = {type="color",name="Nose color",default = Color(30,30,30)},
        
-        height      = {type="number",default = 0,min=-0.5,max=0.2},
+        height      = {type="number",default = 0,min=0,max=0.2}, -- -0.5
         bodyweight  = {type="number",default = 1,min=0.8,max=1.2},
+        weightbalance  = {type="number",default = 0.5,min=0,max=1},
         tailsize    = {type="number",default = 1,min=0.5,max=1.5},
         lmanesize   = {type="number",default = 1,min=0.5,max=1.5},
         umanesize   = {type="number",default = 1,min=0.5,max=1.5},
-
+        hornssize    = {type="number",default = 1,min=0.5,max=1},
+        
         heterochromia  = {type="bool",name="Heterochromia",default = false},
 
         eyecolor_bg = {type="color",default = Color(255,255,255)},
@@ -35,11 +39,11 @@ gcpm.AddSpecies("deer",{
         eyecolor_grad = {type="color",default = Color(255,150,150)},
         eyecolor_line1 = {type="color",default = Color(150,255,150)}, 
         eyecolor_line2 = {type="color",default = Color(150,150,255)},
+        eyecolor_effects = {type="color",default = Color(255,255,255)},
         eyeirissize = {type="number",default = 0.6},
         eyehaslines = {type="bool",default = true}, 
         eyeholesize = {type="number",default = 0.7},
         eyejholerssize = {type="number",default = 1},
-        eyecolor_effects = {type="color",default = Color(255,255,255)},
 
         eye2color_bg = {type="color",default = Color(255,255,255)},
         eye2color_hole = {type="color",default = Color(0,0,0)},
@@ -48,6 +52,10 @@ gcpm.AddSpecies("deer",{
         eye2color_line1 = {type="color",default = Color(150,255,150)}, 
         eye2color_line2 = {type="color",default = Color(150,150,255)}, 
         eye2color_effects = {type="color",default = Color(255,255,255)},
+
+        eye_form     = {type="number",default = 0,min=0,max=1},
+        eye_form2     = {type="number",default = 0,min=0,max=1},
+        eyelash_form = {type="number",default = 1,min=0,max=1},
 
         eyelashes_type = {type="number",default = 0},
         eyelashes_color = {type="color",name="Horn Color",default = Color(10,10,10)},
@@ -58,12 +66,18 @@ gcpm.AddSpecies("deer",{
         bodymask4   = {type="string",default="none"},
         bodymask5   = {type="string",default="none"},
         bodymask6   = {type="string",default="none"}, 
+        bodymask7   = {type="string",default="none"}, 
+        bodymask8   = {type="string",default="none"}, 
+        bodymask9   = {type="string",default="none"}, 
         bodymask1_c = {type="color",name="Mask 1 Color",default = Color(255,0,0)},
         bodymask2_c = {type="color",name="Mask 2 Color",default = Color(255,0,0)},
         bodymask3_c = {type="color",name="Mask 3 Color",default = Color(255,0,0)},
         bodymask4_c = {type="color",name="Mask 4 Color",default = Color(255,0,0)},
         bodymask5_c = {type="color",name="Mask 5 Color",default = Color(255,0,0)},
         bodymask6_c = {type="color",name="Mask 6 Color",default = Color(255,0,0)},
+        bodymask7_c = {type="color",name="Mask 7 Color",default = Color(255,0,0)},
+        bodymask8_c = {type="color",name="Mask 8 Color",default = Color(255,0,0)},
+        bodymask9_c = {type="color",name="Mask 9 Color",default = Color(255,0,0)},
     },
     MaterialBase = { 
         ["$bumpmap"] = "models/mlp/base/render/body_n",
@@ -134,6 +148,18 @@ gcpm.AddSpecies("deer",{
                     color = "$bodymask6_c", 
                 },
                 {
+                    texture = "@ 'models/mlp/body/'..(bodymask7 or 'none')..'.png'",
+                    color = "$bodymask7_c", 
+                },
+                {
+                    texture = "@ 'models/mlp/body/'..(bodymask8 or 'none')..'.png'",
+                    color = "$bodymask8_c", 
+                },
+                {
+                    texture = "@ 'models/mlp/body/'..(bodymask9 or 'none')..'.png'",
+                    color = "$bodymask9_c", 
+                },
+                {
                     enabled = "$coatcolor2_overlay",
                     texture = "@ 'models/mlp/body/deer_second.png'",
                     color = "$coatcolor2", 
@@ -157,7 +183,7 @@ gcpm.AddSpecies("deer",{
                 },
                 {
                     texture = "@ 'models/mlp/parts/deerhooves.png'",
-                    color = "$nose", 
+                    color = "$hoovescolor", 
                 },
             } 
         },
@@ -318,14 +344,18 @@ gcpm.AddSpecies("deer",{
             File = "player_default_base.mdl",
             Bodygroups = {
                 Body = 1,
-                Cmark = 1
+                Cmark = 1,
+                dump_bones_donotuse=0,
             },
             Materials = { 
                 mouth = 0,
                 body = 1,
                 eyel = 2,
                 eyer = 3,  
-            }
+            },
+            Flexes = {
+                m02=0
+            },
         } 
     },
     Body = {
@@ -358,6 +388,8 @@ gcpm.AddSpecies("deer",{
         },
         flexes = { 
             e01 = "eye_form",
+            langry = "eye_form2",
+            rangry = "eye_form2",
             eyelashesturn = "eyelash_form"
         },
         bones = {
@@ -376,17 +408,20 @@ gcpm.AddSpecies("deer",{
                 tail = {"Tail01","Tail02","Tail03"},--,"LrigTail4","LrigTail5","LrigTail6"},
                 uppermane = {"Mane01","Mane04","Mane05","Mane06","Mane07"},
                 lowermane = {"Mane02","Mane03","Mane03_tip"},
+                scull = {"LrigScull"},
                 --wings = {"WingRight0.R","WingRight0.L","LrigRibcage"},
             },
             modifiers = {
                 rescale = {
-                    leg_bl = "$bodyweight",
-                    leg_br = "$bodyweight",
-                    leg_fl = "$bodyweight",
-                    leg_fr = "$bodyweight",
+                    leg_bl = "@bodyweight-0.1",
+                    leg_br = "@bodyweight-0.1",
+                    leg_fl = "@bodyweight-0.1",
+                    leg_fr = "@bodyweight-0.1",
                     neck = "$bodyweight",
-                    rear = "$bodyweight",
+                    ribcage = "@ (1-0.1*weightbalance)",
+                    rear = "@bodyweight * (0.7+0.3*weightbalance)",
                     ["tail:tail"] = "$tailsize",
+                    ["horns:scull"] = "$hornssize",
                     ["lowermane:lowermane"] = "$lmanesize",
                     ["uppermane:uppermane"] = "$umanesize",
                 }
@@ -420,6 +455,20 @@ gcpm.AddSpecies("deer",{
                 none = {},
                 horns_01={
                     model="deerhorns_01.mdl",
+                    material = {
+                        mode = "color",   
+                        params = "hornscolor"
+                    }
+                },
+                horns_02={
+                    model="deerhorns_02.mdl",
+                    material = {
+                        mode = "color",   
+                        params = "hornscolor"
+                    }
+                },
+                horns_03={
+                    model="deerhorns_03.mdl",
                     material = {
                         mode = "color",   
                         params = "hornscolor"
@@ -761,7 +810,7 @@ gcpm.AddSpecies("deer",{
             name = "Generic deer",
             Parts = {
                 ears = { whitelist = {"head_01_ears"} }, 
-                horns = { whitelist = {"horns_01"} }, 
+                --horns = { whitelist = {"horns_01"} }, 
                 --tail = {model="deertail_01.mdl"},
             }
         }, 
@@ -785,10 +834,17 @@ gcpm.AddSpecies("deer",{
                             max = 1.2
                         },
                         {
+                            name = "Weight balance" ,
+                            type = "edit_number",
+                            param = "weightbalance",
+                            min = 0,
+                            max = 1
+                        }, 
+                        {
                             name = "Height" ,
                             type = "edit_number",
                             param = "height",
-                            min = -0.5,
+                            min = 0,
                             max = 0.2
                         },
                         {
@@ -801,6 +857,11 @@ gcpm.AddSpecies("deer",{
                             type = "edit_color",
                             param = "coatcolor2"
                         },
+                        {
+                            name = "Hooves color" ,
+                            type = "edit_color",
+                            param = "hoovescolor"
+                        }, 
                         {
                             name = "Overlay coat 2" ,
                             type = "edit_bool",
@@ -817,21 +878,31 @@ gcpm.AddSpecies("deer",{
                                 { type = "bodymask4", color = "bodymask4_c"},
                                 { type = "bodymask5", color = "bodymask5_c"},
                                 { type = "bodymask6", color = "bodymask6_c"},
+                                { type = "bodymask7", color = "bodymask7_c"},
+                                { type = "bodymask8", color = "bodymask8_c"},
+                                { type = "bodymask9", color = "bodymask9_c"},
                             }
                         }
                     },
                 },
 
                 horns = {
-                    name = "Horns" , 
+                    name = "Antlers" , 
                     bone = "LrigScull", 
                     pos = Vector(8,0,60)-Vector(12,0,43),
                     params = { 
-                       -- {
-                       --     name = "Mane Upper" ,
-                       --     type = "edit_part",
-                       --     param = "uppermane", 
-                       -- }, 
+                        {
+                            name = "Antlers" ,
+                            type = "edit_part",
+                            param = "horns",
+                        }, 
+                        {
+                            name = "Size" ,
+                            type = "edit_number", 
+                            param = "hornssize",
+                            min = 0.5,
+                            max = 1
+                        }, 
                         {
                             name = "Color" ,
                             type = "edit_color",
@@ -1057,6 +1128,13 @@ gcpm.AddSpecies("deer",{
                             min = 0,
                             max = 1
                         }, 
+                        {
+                            name = "Evilness" ,
+                            type = "edit_number",
+                            param = "eye_form2",
+                            min = 0,
+                            max = 1
+                        },  
                         {
                             name = "Heterochromia" ,
                             type = "edit_bool",

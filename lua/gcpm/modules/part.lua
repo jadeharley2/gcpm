@@ -54,7 +54,6 @@ function GetProcDataValue(species,data,v,def)
     end 
 end
 
-
 local empty = {}
 
 local function PrepareProceduralMat(species,data,matdata)
@@ -227,6 +226,13 @@ if CLIENT then
         local bpdata = self.gcpm_bpdata or {}
         return bpdata[key]
     end
+    function ENTITY:SetHideCPPart(key,hide) 
+        local part = self:GetCPPart(key)
+        if IsValid(part) then
+            part:SetNoDraw(hide)
+        end
+    end
+    
 end
 
 

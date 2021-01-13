@@ -98,7 +98,7 @@ function BuildWindow()
 	Character.gcpmdata = Data
 	Character.Editor = true
 	Character:SetSequence(0)
- 
+	gcpm.InitSpeciesParams(Character)
 
 	mdl.camang =Angle(0,70,0)
 	mdl.camangadd=Angle(0,0,0)
@@ -151,6 +151,7 @@ function Apply()
 	end
 
 	gcpm.SetData(LocalPlayer(),Character.gcpmdata) 
+	gcpm.Save("_current",Character.gcpmdata) 
 	colorFlash(APPLY, 0.1, Color(0,200,0),Color(255,255,255)) 
 end
 function colorFlash()
@@ -220,6 +221,13 @@ function Paint(self)
 			local fi = Character:GetFlexIDByName(k)
 			local val = gcpm.GetDataValue(species,Data,v)
 			Character:SetFlexWeight( fi, val )
+		end
+		local model = species.Models[1]
+		if model.Flexes then
+			for k,v in pairs(model.Flexes) do
+				local fi = Character:GetFlexIDByName(k) 
+				Character:SetFlexWeight( fi, v )
+			end
 		end
 	end
 

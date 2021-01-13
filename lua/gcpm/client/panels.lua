@@ -377,6 +377,7 @@ panels.presets = {
 			for k,v in pairs(NewData) do
 				Data[k] = v
 			end
+			gcpm.InitSpeciesParams(Character)
 			gcpm.Update(Character)
 		---	PPM.cleanPony(PPM.editor3_pony)
 		---	PPM.mergePonyData(PPM.editor_ponydata,PPM.Load(selected_fname))

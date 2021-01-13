@@ -218,7 +218,9 @@ if CLIENT then
     end
     local function StartBlink()
         for k,v in pairs(player.GetAll()) do 
-            Blink(v)
+            if IsCPM(v) then
+                Blink(v)
+            end
         end 
     end
     hook.Add( "InitPostEntity", "gcpm_blink", function() 
