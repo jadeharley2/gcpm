@@ -2,6 +2,9 @@
 AddCSLuaFile()
 module( "gcpm", package.seeall )
 
+species = {} -- species or {}
+species_models = {}
+
 --[[ SPECIES ]]
 function InitSpeciesParams(ent)
     --if IsValid(ent) then
@@ -30,9 +33,27 @@ function InitSpeciesParams(ent)
     --    MsgN(ent," ??? ")
     --end
 end
+function HasSpeciesModel(ent)
+    local model = ent:GetModel()
+    local key = species_models[model]
+    return key~=nil
+end
 
 function AddSpecies(id,data)
     species[id] = data 
+    for k,v in pairs(data.Models) do
+        local p = data.Directory .."/".. v.File
+        species_models[p] = id
+    end
+end
+function GetSpeciesByModel(model)
+    if TypeID(model) == TYPE_ENTITY then
+        model = model:GetModel()
+    end
+    local key = species_models[model]
+    if key then
+        return GetSpecies(key)
+    end
 end
 
 function LoadSpecies()

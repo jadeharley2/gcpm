@@ -2,12 +2,11 @@
 AddCSLuaFile()
 module( "gcpm", package.seeall )
 
-species = {} -- species or {}
 
 
 
 function IsCPM(ent)
-    return IsValid(ent) and ent.gcpmdata ~= nil
+    return IsValid(ent) and HasSpeciesModel(ent) -- ent.gcpmdata ~= nil
 end
 
 function Init(ent)
@@ -111,6 +110,14 @@ elseif CLIENT then
         end
 	end )
 	
+
+    hook.Add( "InitPostEntity", "gcpm_loadsave", function() 
+        local data = Load("_current")
+        if data then 
+            SetData(LocalPlayer(),data)
+        end
+    end )
+
 end
 
 
@@ -152,8 +159,10 @@ local directory = "gcpm/"
 file.CreateDir(directory)
 function Load(filename)
     MsgN("load from ",directory..filename..'.json')
-    local json = file.Read(directory..filename..'.json', "DATA")
-    return util.JSONToTable(json)
+    if file.Exists(directory..filename..'.json', "DATA") then
+        local json = file.Read(directory..filename..'.json', "DATA")
+        return util.JSONToTable(json)
+    end
 end
 function Save(filename,data)
     local json = util.TableToJSON(data,true)
@@ -203,7 +212,6 @@ MsgN("gcpm init finished")
 
 --temp blink timer
 if CLIENT then
-
     local function Blink(ent)
         if IsValid(ent) then
             local id = ent:EntIndex()
@@ -228,6 +236,9 @@ if CLIENT then
             StartBlink()
         end)
     end )
+    hook.Add("GCPMUpdate", "blinkStart", function(ent,data,species)
+        Blink(ent)
+    end)
     hook.Add("PrePlayerDraw", "gcpm_blink", function(ply, flags)
         local bt = ply.blinktarget
         if bt and ply:GetModel() == "models/mlp/pony_default/player_default_base.mdl" then 

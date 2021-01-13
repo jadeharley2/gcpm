@@ -104,13 +104,16 @@ local function IsBodyPart(ent)
 end
 
 hook.Add( "PlayerLeaveVehicle", "gcpm_bonemerge_fix", function( ply, veh )
-    for k,v in pairs(ply:GetChildren()) do
-        if IsBodyPart(v) then
-            v:SetParent(ply)
-            v:RemoveEffects(EF_BONEMERGE)
-            v:AddEffects(EF_BONEMERGE)
-        end
-    end
+   -- for k,v in pairs(ply:GetChildren()) do
+   --     if IsBodyPart(v) then
+   --         v:SetParent(ply)
+   --         v:RemoveEffects(EF_BONEMERGE)
+   --         v:AddEffects(EF_BONEMERGE)
+   --     end
+   -- end 
+    if gcpm.IsCPM(ply) then
+        gcpm.ApplyData(ply,ply.gcpmdata) 
+    end 
 end )
 hook.Add("PostPlayerDeath","gcpm_body_part",function(ply)
     for k,v in pairs(ply:GetChildren()) do
