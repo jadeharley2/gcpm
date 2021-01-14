@@ -477,6 +477,17 @@ gcpm.AddSpecies("deer",{
             }
         },
        
+        neckfur = {
+            basematerial = "body", 
+            default = "none",
+            variants = {
+                none = {}, 
+                ["FUR01"]      = {
+                    model="deerfur_01",
+                    material = {mode = "color", params = "coatcolor2"}
+                }, 
+            }
+        },
         uppermane = {
             basematerial = "uppermane", 
             default = "DERPY",
@@ -863,6 +874,11 @@ gcpm.AddSpecies("deer",{
                             param = "hoovescolor"
                         }, 
                         {
+                            name = "Neck fur" ,
+                            type = "edit_part",
+                            param = "neckfur",
+                        }, 
+                        {
                             name = "Overlay coat 2" ,
                             type = "edit_bool",
                             param = "coatcolor2_overlay", 
@@ -910,6 +926,7 @@ gcpm.AddSpecies("deer",{
                         },  
                     } 
                 },
+                
                 uppermane = {
                     name = "Uppermane" , 
                     bone = "LrigScull", 
