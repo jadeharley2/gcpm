@@ -121,3 +121,23 @@ hook.Add("GCPMUpdate", "body", function(ent,data,species)
     end
 
 end)
+hook.Add("GCPMClear", "body", function(ent)
+
+    if CLIENT then  
+        --remove bone manipulator
+        for k,v in pairs(ent:GetChildren()) do  
+            local c = v:GetClass()
+            if c == "manipulate_bone"then
+                v:Remove()
+            end
+        end 
+    else
+        --remove flex manipulator
+        for k,v in pairs(ent:GetChildren()) do  
+            local c = v:GetClass()
+            if c == "manipulate_flex" then
+                v:Remove()
+            end
+        end 
+    end 
+end)

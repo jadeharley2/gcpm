@@ -378,7 +378,24 @@ hook.Add("GCPMUpdate", "parts", function(ent,data,species)
     end
 
 end)  
+hook.Add("GCPMClear", "parts", function(ent)
 
+    if CLIENT then  
+        --remove parts 
+        for k,v in pairs(CLIENTSIDE_ENTS) do  
+            if v.Parent == ent then
+                v:Remove()
+                CLIENTSIDE_ENTS[k] = nil 
+            end
+        end
+    end
+
+    --clear materials
+    ent:SetMaterial(nil)
+    for k=0,20 do
+        ent:SetSubMaterial(k, nil)
+    end 
+end)
 
 concommand.Add("client_ent_list", function()
     for k,v in SortedPairs(CLIENTSIDE_ENTS) do

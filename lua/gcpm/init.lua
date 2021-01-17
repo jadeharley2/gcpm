@@ -6,7 +6,19 @@ module( "gcpm", package.seeall )
 
 
 function IsCPM(ent)
-    return IsValid(ent) and HasSpeciesModel(ent) -- ent.gcpmdata ~= nil
+    if not IsValid(ent) then return false end
+    if ent:IsPlayer() then
+        if ent:GetInfo('cl_playermodel')~="ponytest" then
+            return false
+        end
+    end
+    return HasSpeciesModel(ent)  -- ent.gcpmdata ~= nil
+end
+
+function ClearCPM(ent)
+    if not IsValid(ent) then return false end 
+    ent.gcpmdata = nil
+    Update(ent)
 end
 
 function Init(ent)
@@ -41,17 +53,26 @@ if SERVER then
         return data
     end
     function ApplyData(ent,data)
-        ent.gcpmdata = ValidateData(data,ent.gcpmdata)
-        
-        local species = GetSpecies(data.species)
-        if species then
-            hook.Run("GCPMUpdate",ent,data,species)
+        if table.Count(data) == 0 then
+            ent.gcpmdata = nil
+            hook.Run("GCPMClear",ent)
+            net.Start("gcpm_data")
+            net.WriteEntity(ent)
+            net.WriteTable(data)
+            net.Broadcast()
+        else
+            ent.gcpmdata = ValidateData(data,ent.gcpmdata)
+            
+            local species = GetSpecies(data.species)
+            if species then
+                hook.Run("GCPMUpdate",ent,data,species)
+            end
+    
+            net.Start("gcpm_data")
+            net.WriteEntity(ent)
+            net.WriteTable(data)
+            net.Broadcast()
         end
-
-        net.Start("gcpm_data")
-        net.WriteEntity(ent)
-        net.WriteTable(data)
-        net.Broadcast()
     end
     net.Receive("gcpm_data", function(len,ply)
         local ent = net.ReadEntity()
@@ -90,7 +111,11 @@ elseif CLIENT then
     net.Receive("gcpm_data", function(len,ply)
         local ent = net.ReadEntity()
         local data = net.ReadTable()
-        ent.gcpmdata = data
+        if table.Count(data) == 0 then
+            ent.gcpmdata = nil
+        else 
+            ent.gcpmdata = data
+        end
         Update(ent)
     end)
     net.Receive("gcpm_event", function(len,ply)
@@ -149,6 +174,14 @@ function Update(ent)
             net.Start("gcpm_data")
             net.WriteEntity(ent)
             net.WriteTable(data)
+            net.Broadcast()
+        end
+    else
+        hook.Run("GCPMClear",ent)
+        if SERVER then
+            net.Start("gcpm_data")
+            net.WriteEntity(ent)
+            net.WriteTable({})
             net.Broadcast()
         end
     end
@@ -324,8 +357,13 @@ if SERVER then
     --    --UpdateView(ply)
     --end)
     hook.Add("PlayerSetModel", "gcpm_setup", function(ply)
+        MsgN("check gcpm model of ",ply," =?= ",IsCPM(ply))
         if IsCPM(ply) then
             return true
+        else
+            if ply.gcpmdata then
+                ClearCPM(ply)
+            end
         end
     end) 
 end
